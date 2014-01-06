@@ -1,10 +1,10 @@
-/*! \file  RobotHandler.h
+/*! \file  ObjectHandler.h
     \brief Classes defining the interface for handling messages to/from Enki robots.
 
  */
 
-#ifndef ENKI_ROBOT_HANDLER_H
-#define ENKI_ROBOT_HANDLER_H
+#ifndef ENKI_OBJECT_HANDLER_H
+#define ENKI_OBJECT_HANDLER_H
 
 
 namespace zmq
@@ -15,28 +15,28 @@ namespace zmq
 namespace Enki
 {
     class World;
-    class Robot;
+    class PhysicalObject;
     
     //! Abstract base class, defines the message-handling interface for Enki
     /*! Users should implement their own message handling according for each robot type.
 
      */
-    class RobotHandler
+    class ObjectHandler
     {
     public:
-        RobotHandler() { }
-        virtual ~RobotHandler() { }
+        ObjectHandler() { }
+        virtual ~ObjectHandler() { }
         
         //! Robot factory method
         /*! Override this method to create the appropriate
-            robot type.
+            object type.
 
          */
-        virtual std::string createRobot(zmq::socket_t* sock, World* world) = 0;
+        virtual std::string createObject(zmq::socket_t* sock, World* world) = 0;
 
         //! Handle incoming message
         /*! Override this method to handle incoming messages
-            for your particular robot.
+            for your particular object.
 
             \arg sock The socket containing the message to be handled.
                       It's a 0MQ multipart message, with the 
@@ -47,7 +47,7 @@ namespace Enki
 
         //! Assemble outgoing messages
         /*! Override this method to create outgoing messages 
-            for your particular robot.
+            for your particular object.
 
             \arg sock Outgoing messages are written to socket sock.
             

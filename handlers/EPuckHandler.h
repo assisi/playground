@@ -8,7 +8,7 @@
 
 #include <map>
 
-#include "handlers/RobotHandler.h"
+#include "handlers/ObjectHandler.h"
 
 namespace Enki
 {
@@ -19,7 +19,7 @@ namespace Enki
     /*! Users should implement their own message handling according for each robot type.
 
      */
-    class EPuckHandler : public RobotHandler
+    class EPuckHandler : public ObjectHandler
     {
     public:
         EPuckHandler() { }
@@ -34,7 +34,7 @@ namespace Enki
             \return Returns the name of the created robot.
 
          */
-        virtual std::string createRobot(zmq::socket_t* sock, World* world);
+        virtual std::string createObject(zmq::socket_t* sock, World* world);
 
         //! Handle incoming message
         /*! Handles E-Puck motion commands.

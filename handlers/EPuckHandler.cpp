@@ -28,7 +28,7 @@ namespace Enki
 {
 
     /* virtual */
-    string EPuckHandler::createRobot(socket_t* sock, World* world)
+    string EPuckHandler::createObject(socket_t* sock, World* world)
     {
         string name("");
         message_t msg;     

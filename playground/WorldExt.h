@@ -14,7 +14,7 @@
 
 #include "PhysicalEngine.h"
 
-#include "handlers/RobotHandler.h"
+#include "handlers/ObjectHandler.h"
 
 namespace Enki
 {
@@ -53,7 +53,7 @@ namespace Enki
             The WorldExt object takes ownership of the RobotHandler, i.e.,
 it must be created on the heap and should not be deleted!
          */
-        bool addHandler(std::string type, RobotHandler* handler);
+        bool addHandler(std::string type, ObjectHandler* handler);
 
     protected:
         virtual void controlStep(double dt);
@@ -66,7 +66,7 @@ it must be created on the heap and should not be deleted!
          */
         bool handleSim_(void);
 
-        typedef std::map<std::string, RobotHandler*> HandlerMap;
+        typedef std::map<std::string, ObjectHandler*> HandlerMap;
         // Robot handler pointer, one handler per robot type
         HandlerMap handlers_;
         // Pointers to handlers, grouped by object name
