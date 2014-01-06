@@ -8,23 +8,28 @@
 
 #include <vector>
 
-#include <PhyscalEngine.h>
+//#include <PhysicalEngine.h>
 
 #include <interactions/IRSensor.h>
 
 namespace Enki
 {
+    // Forward declarations
+    class Robot;
+    class IRSensor;
+    
     class Casu : public Robot
     {
     public:
         //! Create a CASU
-        Casu();
+        Casu(void);
 
         //! Destructor
-        ~Casu() { }
+        ~Casu();
 
         //! Range
-        std::vector<IRSensor> range_sensors;
+        typedef std::vector<IRSensor*> IRSensorVector;
+        IRSensorVector range_sensors;
 
         
     };

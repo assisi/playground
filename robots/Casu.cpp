@@ -2,9 +2,16 @@
 
  */
 
-#include <boost/foreach.h>
+#include <cmath>
 
-#include <Casu.h>
+#include <boost/foreach.hpp>
+#include <boost/math/constants/constants.hpp>
+
+#include <PhysicalEngine.h>
+
+#include "Casu.h"
+
+const double pi = boost::math::constants::pi<double>();
 
 namespace Enki
 {
@@ -13,19 +20,18 @@ namespace Enki
     {
       
         // Add range sensors
-        range_sensors[0] = new IRSensor(this, Vector(0.75,0), 0.5, deg2rad(0), 
+        range_sensors[0] = new IRSensor(this, Vector(0.866,0), 0.5, 0, 
                                         2, 3731, 0.3, 0.7, 0);
-        range_sensors[1] = new IRSensor(this, Vector(0.38,0.65), 0.5, deg2rad(60), 
+        range_sensors[1] = new IRSensor(this, Vector(0.43,0.75), 0.5, pi/3, 
                                         2, 3731, 0.3, 0.7, 0);
-        range_sensors[2] = new IRSensor(this, Vector(-0.38,0.65), 0.5, deg2rad(120), 
+        range_sensors[2] = new IRSensor(this, Vector(-0.43,0.75), 0.5, 2*pi/3, 
                                         2, 3731, 0.3, 0.7, 0);
-        range_sensors[3] = new IRSensor(this, Vector(-0.75,0), 0.5, deg2rad(180), 
+        range_sensors[3] = new IRSensor(this, Vector(-0.866,0), 0.5, pi, 
                                         2, 3731, 0.3, 0.7, 0);
-        range_sensors[4] = new IRSensor(this, Vector(-0.35,-0.65), 0.5, -deg2rad(120), 
+        range_sensors[4] = new IRSensor(this, Vector(-0.43,-0.75), 0.5, -2*pi/3, 
                                         2, 3731, 0.3, 0.7, 0);
-        range_sensors[5] = new IRSensor(this, Vector(0.35,-0.65), 0.5, -deg2rad(60), 
+        range_sensors[5] = new IRSensor(this, Vector(0.43,-0.75), 0.5, -pi/3, 
                                         2, 3731, 0.3, 0.7, 0);
-
         
         
         BOOST_FOREACH(IRSensor* p, range_sensors)
@@ -33,8 +39,18 @@ namespace Enki
             addLocalInteraction(p);
         }
         
-        setCustomHull(,);
-        setColor(Color(0.8,0.8,0.8,0.5));
+        // Set physical properties
+        double radius = 1;
+        double height = 2;
+        Polygone hex;
+        for (double a = pi/6; a < 2*pi; a += pi/3)
+        {
+            hex.push_back(Point(radius * cos(a), radius * sin(a)));
+        }
+        PhysicalObject::Hull hull(PhysicalObject::Part(hex, height));
+        setCustomHull(hull, 1000);
+        setColor(Color(0.8,0.8,0.8,0.3));
+        PhysicalObject::dryFrictionCoefficient = 1000; // Casus are immovabl
     }
 
     Casu::~Casu()

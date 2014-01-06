@@ -52,10 +52,11 @@ add_definitions(${QT_DEFINITIONS})
 
 # The ASSISI playground
 set(playground_SOURCES AssisiPlaygroundMain.cpp
-                           ../handlers/EPuckHandler.cpp
-                           AssisiPlayground.cpp
-                           WorldExt.cpp
-                           ${ProtoSources})
+                       AssisiPlayground.cpp
+                       WorldExt.cpp
+                       ../robots/Casu.cpp
+                       ../handlers/EPuckHandler.cpp
+                       ${ProtoSources})
 
 # For MOC-ing
 set(playground_QT_HEADERS AssisiPlayground.h)

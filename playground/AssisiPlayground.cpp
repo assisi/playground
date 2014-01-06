@@ -10,28 +10,9 @@ namespace Enki
 		ViewerWidget(world, parent),
 		subjectiveView(false)
 	{
-        // Three blue cylinders
-		for (double d = 40; d < 60; d += 8)
-		{
-			PhysicalObject* o = new PhysicalObject;
-			o->pos = Point(d, 20);
-			o->setCylindric(4, 2, 10);
-			o->setColor(Color(0.2, 0.2, 0.6));
-			o->dryFrictionCoefficient = 0.;
-			world->addObject(o);
-		}
 
 	}
-
     
-    void EnkiPlayground::addEPuck(World *world, Point pos)
-    {
-        EPuck *epuck = new EPuck;
-        epuck->pos = pos;
-        world->addObject(epuck);
-    }
-	
-
     // Inherited from viewer 
     /* virtual */
     void EnkiPlayground::timerEvent(QTimerEvent * event)
