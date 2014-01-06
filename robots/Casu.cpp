@@ -16,7 +16,8 @@ const double pi = boost::math::constants::pi<double>();
 namespace Enki
 {
     Casu::Casu(void) :
-        range_sensors(6)
+        range_sensors(6),
+        top_led(Color::red, this)
     {
       
         // Add range sensors

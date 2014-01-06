@@ -15,8 +15,8 @@ namespace Enki
     class World;
     class EPuck;
     
-    //! Abstract base class, defines the message-handling interface for Enki
-    /*! Users should implement their own message handling according for each robot type.
+    //! Handling of EPuck robots
+    /*! 
 
      */
     class EPuckHandler : public ObjectHandler

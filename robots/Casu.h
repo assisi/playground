@@ -11,6 +11,7 @@
 //#include <PhysicalEngine.h>
 
 #include <interactions/IRSensor.h>
+#include "interactions/DiagnosticLed.h"
 
 namespace Enki
 {
@@ -30,8 +31,8 @@ namespace Enki
         //! Range
         typedef std::vector<IRSensor*> IRSensorVector;
         IRSensorVector range_sensors;
-
         
+        DiagnosticLed top_led;
     };
 }
 
