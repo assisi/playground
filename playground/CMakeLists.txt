@@ -28,13 +28,14 @@ include_directories (${CMAKE_SOURCE_DIR}
 #link_directories (${CMAKE_BINARY_DIR})
 
 # Demo world "server" (no GUI)
-set(test_ext_SOURCES WorldExt.cpp
-                     ../handlers/EPuckHandler.cpp
-                     TestWorldExt.cpp
-                     ${ProtoSources})
+#set(test_ext_SOURCES WorldExt.cpp
+#                     ../handlers/EPuckHandler.cpp
+#                     ../handlers/CasuHandler.cpp
+#                     TestWorldExt.cpp
+#                     ${ProtoSources})
 
-add_executable(test_ext ${test_ext_SOURCES})
-target_link_libraries(test_ext ${enki_LIBRARIES} ${ZeroMQ_LIBRARY} ${PROTOBUF_LIBRARY})
+#add_executable(test_ext ${test_ext_SOURCES})
+#target_link_libraries(test_ext ${enki_LIBRARIES} ${ZeroMQ_LIBRARY} ${PROTOBUF_LIBRARY})
 
 # Demo EPuck wander behavior ("client")
 set(wander_demo_SOURCES wander_demo.cpp
@@ -56,6 +57,7 @@ set(playground_SOURCES AssisiPlaygroundMain.cpp
                        WorldExt.cpp
                        ../robots/Casu.cpp
                        ../handlers/EPuckHandler.cpp
+                       ../handlers/CasuHandler.cpp
                        ${ProtoSources})
 
 # For MOC-ing

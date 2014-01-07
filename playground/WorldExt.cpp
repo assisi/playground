@@ -131,6 +131,7 @@ namespace Enki
             // Read command
             subscriber_->recv(&msg);
             string sim_cmd = msg_to_str(msg);
+            cerr << sim_cmd << endl;
             if (sim_cmd == "spawn")
             {
                 // Command is spawn
@@ -139,6 +140,7 @@ namespace Enki
                 {
                     subscriber_->recv(&msg);
                     string robot_type(msg_to_str(msg));
+                    cerr << robot_type << endl;
                     if (handlers_.count(robot_type) > 0)
                     {
                         string name = handlers_[robot_type]->createObject(subscriber_, 

@@ -28,7 +28,7 @@ namespace Enki
 {
 
     /* virtual */
-    string EPuckHandler::createObject(socket_t* sock, World* world)
+    string CasuHandler::createObject(socket_t* sock, World* world)
     {
         string name("");
         message_t msg;     
@@ -43,16 +43,16 @@ namespace Enki
                 Point pos(spawn_msg.pose().position().x(),
                           spawn_msg.pose().position().y());
                 double yaw(spawn_msg.pose().orientation().z());
-                if (epucks_.count(name) < 1)
+                if (casus_.count(name) < 1)
                 {
-                    epucks_[name] = new EPuck;
-                    epucks_[name]->pos = pos;
-                    epucks_[name]->angle = yaw;
-                    world->addObject(epucks_[name]);
+                    casus_[name] = new Casu;
+                    casus_[name]->pos = pos;
+                    casus_[name]->angle = yaw;
+                    world->addObject(casus_[name]);
                 }
                 else
                 {
-                    cerr << "EPuck "<< name << " already exists." << endl;
+                    cerr << "Casu "<< name << " already exists." << endl;
                 }
             }
             else
@@ -70,7 +70,7 @@ namespace Enki
 // -----------------------------------------------------------------------------
 
     /* virtual */
-    int EPuckHandler::handleIncoming(socket_t* sock, const string& name)
+    int CasuHandler::handleIncoming(socket_t* sock, const string& name)
     {
         int count = 0;
         message_t msg;
@@ -81,7 +81,7 @@ namespace Enki
         }
         sock->recv(&msg);
         string device(msg_to_str(msg));
-        if (device == "base")
+        if (device == "DiagnosticLed")
         {
             if (last_part(*sock))
             {
@@ -91,29 +91,49 @@ namespace Enki
             }
             sock->recv(&msg);
             string cmd(msg_to_str(msg));
-            if (cmd != "vel")
+            if (cmd == "On")
             {
-                cerr << "Unknown command for " << name << "/" << device << endl;
-                return 0;
+
+                if (last_part(*sock))
+                {
+                    cerr << "Missing commad body for "
+                         << name << "/" << device << "/" << cmd << endl;
+                    return 0;
+                }
+                sock->recv(&msg);
+                ColorStamped color_msg;
+                if (color_msg.ParseFromString(msg_to_str(msg)))
+                {
+                    casus_[name]->top_led.on( Enki::Color(color_msg.color().red(),
+                                                          color_msg.color().green(),
+                                                          color_msg.color().blue(),
+                                                          color_msg.color().alpha() ) );
+                }
+                else
+                {
+                    cerr << "Invalid argument type for " 
+                         << name << "/" << device << "/" << cmd << endl;
+                }
             }
-            if (last_part(*sock))
+            else if (cmd == "Off")
             {
-                cerr << "Missing commad body for "
-                     << name << "/" << device << "/" << cmd << endl;
-                return 0;
-            }
-            sock->recv(&msg);
-            DiffDrive drive;
-            if (drive.ParseFromString(msg_to_str(msg)))
-            {
-                epucks_[name]->leftSpeed = drive.vel_left();
-                epucks_[name]->rightSpeed = drive.vel_right();
+                if (last_part(*sock))
+                {
+                    cerr << "Missing commad body for "
+                         << name << "/" << device << "/" << cmd << endl;
+                    return 0;
+                }
+                sock->recv(&msg);
+                /* Since the command is "Off", we don't care about
+                   the message contents.
+                */
+                casus_[name]->top_led.off( );
             }
             else
             {
-                cerr << "Invalid argument type for " 
-                     << name << "/" << device << "/" << cmd << endl;
-            }
+                cerr << "Unknown command for " << name << "/" << device << endl;
+                return 0;
+            }         
         }
         else
         {
@@ -123,14 +143,15 @@ namespace Enki
     }
 
     /* virtual */
-    int EPuckHandler::sendOutgoing(socket_t* sock)
+    int CasuHandler::sendOutgoing(socket_t* sock)
     {
         int count = 1;
-        BOOST_FOREACH(const EPuckMap::value_type& ep, epucks_)
+        BOOST_FOREACH(const CasuMap::value_type& ep, casus_)
         {
             /* Publishing IR readings */
 
             // Send message envelope
+            /*
             message_t msg;
             str_to_msg(ep.first, msg);
             sock->send(msg, ZMQ_SNDMORE);
@@ -154,7 +175,7 @@ namespace Enki
             str_to_msg(data_str, msg);
             sock->send(msg);
             count++;
-
+            */
             /* Publish other stuff as necessary ... */
         }
         return count;

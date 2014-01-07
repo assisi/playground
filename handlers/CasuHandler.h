@@ -5,12 +5,16 @@
 #ifndef ENKI_CASU_HANDLER_H
 #define ENKI_CASU_HANDLER_H
 
-#incude <map>
+#include <map>
 
 #include "handlers/ObjectHandler.h"
 
 namespace Enki
 {
+
+    class Casu;
+    class World;
+
     //! Handling of Casus
     /*!
 
@@ -18,8 +22,8 @@ namespace Enki
     class CasuHandler : public ObjectHandler
     {
     public:
-        ObjectHandler() { }
-        virtual ~ObjectHandler() { }
+        CasuHandler() { }
+        virtual ~CasuHandler() { }
 
         //! Casu factory method
         /*! Creates Casus.
@@ -35,7 +39,7 @@ namespace Enki
         /*! Handles casu actuator commands.
 
          */
-        virtual int hanleIncoming(zmq::socket* t sock, const std::string& name);
+        virtual int handleIncoming(zmq::socket_t* sock, const std::string& name);
 
         //! Assemble outgoing messages.
         /*! Sends CASU sensor data messages.

@@ -37,6 +37,7 @@
 #include "WorldExt.h"
 #include "AssisiPlayground.h"
 #include "handlers/EPuckHandler.h"
+#include "handlers/CasuHandler.h"
 #include "robots/Casu.h"
 
 using namespace std;
@@ -53,20 +54,12 @@ int main(int argc, char *argv[])
     string sub_address("tcp://127.0.0.1:5556");
     WorldExt world(r, pub_address, sub_address);
 
-    // Add a Casu to the world.
-    Casu *casu = new Casu();
-    world.addObject(casu);
-
-    Casu *casu2 = new Casu();
-    casu2->pos = Point(10,10);
-    casu2->angle = 1.5;
-    casu2->setCylindric(2,2,1000);
-    casu2->setColor(Color(0.8,0,0,0.01));
-    world.addObject(casu2);
-
     // Add handlers
     EPuckHandler *eh = new EPuckHandler();
     world.addHandler("EPuck", eh);
+
+    CasuHandler *ch = new CasuHandler();
+    world.addHandler("Casu", ch);
 
     EnkiPlayground viewer(&world);	
 	viewer.show();
