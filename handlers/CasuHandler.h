@@ -48,7 +48,7 @@ namespace Enki
         /*! Sends CASU sensor data messages.
 
          */
-        virtual int sendOutgoing(zmq::socket_t* sock);
+        virtual int sendOutgoing(zmq::socket_t& socket);
 
     private:
         typedef std::map<std::string, Casu*> CasuMap;

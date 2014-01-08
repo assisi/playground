@@ -28,7 +28,6 @@ namespace zmq
         socket.getsockopt(ZMQ_RCVMORE, &more, &more_size);
         return  (more == 1) ? false : true;
     }
-
 // -----------------------------------------------------------------------------
 
     //! Convert message data to string.
@@ -80,17 +79,17 @@ namespace zmq
         if (len > 0)
         {
             name = msg_to_str(msg);
-            assert(!last_part(socket));
+            //assert(!last_part(socket));
             len += socket.recv(&msg);
             device = msg_to_str(msg);
             //std::cout << device << std::endl;
 
-            assert(!last_part(socket));
+            //assert(!last_part(socket));
             len += socket.recv(&msg);
             command = msg_to_str(msg);
             //std::cout << command << std::endl;
             
-            assert(!last_part(socket));
+            //assert(!last_part(socket));
             len += socket.recv(&msg);
             data = msg_to_str(msg);
             //std::cout << data << std::endl;

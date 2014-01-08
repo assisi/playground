@@ -57,6 +57,7 @@ set(playground_SOURCES AssisiPlaygroundMain.cpp
                        WorldExt.cpp
                        ../robots/Casu.cpp
                        ../handlers/EPuckHandler.cpp
+                       ../handlers/CasuHandler.cpp
                        ${ProtoSources})
 
 # For MOC-ing

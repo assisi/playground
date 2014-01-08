@@ -6,7 +6,7 @@
 #include <boost/foreach.hpp>
 
 #include <zmq.hpp>
-#include "playground/zmq_helpers.h"
+#include "playground/zmq_helpers.hpp"
 
 #include "robots/Casu.h"
 #include "handlers/CasuHandler.h"
@@ -66,32 +66,17 @@ namespace Enki
             if (command == "On")
             {
                 ColorStamped color_msg;
-                assert(color_msg.ParseFromString(msg_to_str(msg)));
-                {
-                    casus_[name]->top_led.on( Enki::Color(color_msg.color().red(),
-                                                          color_msg.color().green(),
-                                                          color_msg.color().blue(),
-                                                          color_msg.color().alpha() ) );
-                }
-                else
-                {
-                    cerr << "Invalid argument type for " 
-                         << name << "/" << device << "/" << cmd << endl;
-                }
+                assert(color_msg.ParseFromString(data));
+                casus_[name]->top_led.on( Enki::Color(color_msg.color().red(),
+                                                      color_msg.color().green(),
+                                                      color_msg.color().blue(),
+                                                      color_msg.color().alpha() ) );
+                count++;
             }
-            else if (cmd == "Off")
+            else if (command == "Off")
             {
-                if (last_part(*sock))
-                {
-                    cerr << "Missing commad body for "
-                         << name << "/" << device << "/" << cmd << endl;
-                    return 0;
-                }
-                sock->recv(&msg);
-                /* Since the command is "Off", we don't care about
-                   the message contents.
-                */
                 casus_[name]->top_led.off( );
+                count++;
             }
             else
             {
@@ -106,42 +91,30 @@ namespace Enki
         return count;
     }
 
-    /* virtual */
-    int CasuHandler::sendOutgoing(socket_t* sock)
-    {
-        int count = 1;
-        BOOST_FOREACH(const CasuMap::value_type& ep, casus_)
-        {
-            /* Publishing IR readings */
+// -----------------------------------------------------------------------------
 
-            // Send message envelope
-            /*
-            message_t msg;
-            str_to_msg(ep.first, msg);
-            sock->send(msg, ZMQ_SNDMORE);
-            str_to_msg("ir", msg);
-            sock->send(msg, ZMQ_SNDMORE);
-            str_to_msg("ranges", msg);
-            sock->send(msg, ZMQ_SNDMORE);
-            
-            // Send IR data (convert cm->m)
+    /* virtual */
+    int CasuHandler::sendOutgoing(socket_t& socket)
+    {
+        int count = 0;
+        BOOST_FOREACH(const CasuMap::value_type& ca, casus_)
+        {
+            std::string data;
+            /* Publishing IR readings */
             RangeArray ranges;
-            ranges.add_range(0.01*ep.second->infraredSensor0.getDist());
-            ranges.add_range(0.01*ep.second->infraredSensor1.getDist());
-            ranges.add_range(0.01*ep.second->infraredSensor2.getDist());
-            ranges.add_range(0.01*ep.second->infraredSensor3.getDist());
-            ranges.add_range(0.01*ep.second->infraredSensor4.getDist());
-            ranges.add_range(0.01*ep.second->infraredSensor5.getDist());
-            ranges.add_range(0.01*ep.second->infraredSensor6.getDist());
-            ranges.add_range(0.01*ep.second->infraredSensor7.getDist());
-            std::string data_str;
-            ranges.SerializeToString(&data_str);
-            str_to_msg(data_str, msg);
-            sock->send(msg);
-            count++;
-            */
+            BOOST_FOREACH(IRSensor* ir, ca.second->range_sensors)
+            {
+                ranges.add_range(0.01*ir->getDist());                
+            }
+            ranges.SerializeToString(&data);
+            zmq::send_multipart(socket, ca.first, "ir", "ranges", data);
+
             /* Publish other stuff as necessary ... */
+
+            count++;
         }
         return count;
     }
+// -----------------------------------------------------------------------------
+
 }

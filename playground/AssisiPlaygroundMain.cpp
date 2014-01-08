@@ -3,7 +3,7 @@
 #include "WorldExt.h"
 #include "AssisiPlayground.h"
 #include "handlers/EPuckHandler.h"
-//#include "handlers/CasuHandler.h"
+#include "handlers/CasuHandler.h"
 #include "robots/Casu.h"
 
 using namespace std;
@@ -23,8 +23,8 @@ int main(int argc, char *argv[])
     EPuckHandler *eh = new EPuckHandler();
     world.addHandler("EPuck", eh);
 
-//    CasuHandler *ch = new CasuHandler();
-//    world.addHandler("Casu", ch);
+    CasuHandler *ch = new CasuHandler();
+    world.addHandler("Casu", ch);
 
     EnkiPlayground viewer(&world);	
 	viewer.show();

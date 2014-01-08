@@ -110,7 +110,7 @@ namespace Enki
             
             std::string data;
             ranges.SerializeToString(&data);
-            send_multipart(socket, ep.first, "ir", "ranges", data);
+            zmq::send_multipart(socket, ep.first, "ir", "ranges", data);
             count++;
 
             /* Publish other stuff as necessary ... */
