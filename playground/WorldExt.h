@@ -62,9 +62,13 @@ it must be created on the heap and should not be deleted!
 
         //! Simulation command handling
         /*!
-
+            \param device Can be "spawn"
+            \param cmd    Robot type; currently EPuck and Casu are supported
+            \param data   AssisiMsg::Spawn message, serialized to string
          */
-        bool handleSim_(void);
+        bool handleSim_(const std::string& device,
+                        const std::string& robot_type,
+                        const std::string& data);
 
         typedef std::map<std::string, ObjectHandler*> HandlerMap;
         // Robot handler pointer, one handler per robot type

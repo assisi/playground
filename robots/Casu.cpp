@@ -17,7 +17,7 @@ namespace Enki
 {
     Casu::Casu(void) :
         range_sensors(6),
-        top_led(Color::red, this)
+        top_led(this)
     {
       
         // Add range sensors

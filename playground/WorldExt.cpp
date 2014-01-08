@@ -8,7 +8,7 @@
 #include <boost/foreach.hpp>
 
 #include <zmq.hpp>
-#include "zmq_helpers.h"
+#include "zmq_helpers.hpp"
 
 #include "handlers/ObjectHandler.h"
 #include "WorldExt.h"
@@ -88,26 +88,30 @@ namespace Enki
         // Icoming messages represent controller outputs
         int in_count = 0;
 
-        message_t msg;
-        // Read message header
-        int len = subscriber_->recv(&msg, ZMQ_DONTWAIT);
+        string name;
+        string device;
+        string command;
+        string data;
+        int len = recv_multipart(*subscriber_, name, device,
+                                 command, data, ZMQ_DONTWAIT);
         while (len > 0)
         {
             in_count++;
-            string target = msg_to_str(msg);
-            if (target == "sim")
+            if (name == "sim")
             {
-                handleSim_();
+                handleSim_(device, command, data);
             }
-            else if (handlers_by_object_.count(target) > 0)
+            else if (handlers_by_object_.count(name) > 0)
             {
-                handlers_by_object_[target]->handleIncoming(subscriber_, target);
+                handlers_by_object_[name]->handleIncoming(name, device, 
+                                                          command, data);
             }
             else
             {
-                cerr << "Unknown object: " << target << endl;
+                cerr << "Unknown object: " << name << endl;
             }    
-            len = subscriber_->recv(&msg, ZMQ_DONTWAIT);
+            len = recv_multipart(*subscriber_, name, device,
+                                 command, data, ZMQ_DONTWAIT);
         }
 
         // Publish sensor data
@@ -116,55 +120,43 @@ namespace Enki
         // Invoke all handlers to send messages
         BOOST_FOREACH(const HandlerMap::value_type& rh, handlers_)
         {
-            rh.second->sendOutgoing(publisher_);
+            rh.second->sendOutgoing(*publisher_);
         }
 
     }
 
 // -----------------------------------------------------------------------------
 
-    bool WorldExt::handleSim_(void)
+    bool WorldExt::handleSim_(const string& device, 
+                              const string& robot_type,
+                              const string& data)
     {
-        message_t msg;
-        if (!last_part(*subscriber_))
+        if (device == "spawn")
         {
-            // Read command
-            subscriber_->recv(&msg);
-            string sim_cmd = msg_to_str(msg);
-            cerr << sim_cmd << endl;
-            if (sim_cmd == "spawn")
+            // Device is spawn
+            // Read command contents and spawn robot
+            if (handlers_.count(robot_type) > 0)
             {
-                // Command is spawn
-                // Read command contents and spawn robot
-                if (!last_part(*subscriber_))
+                string name = handlers_[robot_type]->createObject(data, this);
+                if (name.length() > 0)
                 {
-                    subscriber_->recv(&msg);
-                    string robot_type(msg_to_str(msg));
-                    cerr << robot_type << endl;
-                    if (handlers_.count(robot_type) > 0)
-                    {
-                        string name = handlers_[robot_type]->createObject(subscriber_, 
-                                                                         this);
-                        if (name.length() > 0)
-                        {
-                            // New robot was spawned
-                            handlers_by_object_[name] = handlers_[robot_type];
-                            subscriber_->setsockopt(ZMQ_SUBSCRIBE, 
-                                                    name.c_str(), 
-                                                    name.length());
-                        }
-                    }
+                    // New robot was spawned
+                    handlers_by_object_[name] = handlers_[robot_type];
+                    subscriber_->setsockopt(ZMQ_SUBSCRIBE, 
+                                            name.c_str(), 
+                                            name.length());
                 }
             }
             else
             {
-                cerr << "Unknown command to sim!" << std::endl;
+                cerr << "Unknown robot type " << robot_type << endl;
             }
         }
         else
         {
-            cerr << "Missing message body for sim message!" << endl; 
+            cerr << "Unknown sim device!" << endl; 
         }
+        return true;
     }
 
 // -----------------------------------------------------------------------------

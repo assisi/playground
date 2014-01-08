@@ -28,81 +28,45 @@ namespace Enki
 {
 
     /* virtual */
-    string CasuHandler::createObject(socket_t* sock, World* world)
+    string CasuHandler::createObject(const std::string& data, 
+                                     World* world)
     {
-        string name("");
-        message_t msg;     
-        if (!last_part(*sock))
+        string name = "";
+        Spawn spawn_msg;     
+        assert(spawn_msg.ParseFromString(data));
+        if (casus_.count(spawn_msg.name()) < 1)
         {
-            sock->recv(&msg);
-            string msg_str(msg_to_str(msg));
-            Spawn spawn_msg;
-            if (spawn_msg.ParseFromString(msg_str))
-            {
-                name = spawn_msg.name();
-                Point pos(spawn_msg.pose().position().x(),
-                          spawn_msg.pose().position().y());
-                double yaw(spawn_msg.pose().orientation().z());
-                if (casus_.count(name) < 1)
-                {
-                    casus_[name] = new Casu;
-                    casus_[name]->pos = pos;
-                    casus_[name]->angle = yaw;
-                    world->addObject(casus_[name]);
-                }
-                else
-                {
-                    cerr << "Casu "<< name << " already exists." << endl;
-                }
-            }
-            else
-            {
-                cerr << "Error deserializing spawn message!" << endl;
-            }
+            name = spawn_msg.name();
+            Point pos(spawn_msg.pose().position().x(),
+                      spawn_msg.pose().position().y());
+            double yaw(spawn_msg.pose().orientation().z());
+            casus_[name] = new Casu;
+            casus_[name]->pos = pos;
+            casus_[name]->angle = yaw;
+            world->addObject(casus_[name]);
         }
         else
         {
-            cerr << "Missing message body from spawn message!" << std::endl;
-        } 
+            cerr << "Casu "<< spawn_msg.name() << " already exists." << endl;
+        }
         return name;
     }
 
 // -----------------------------------------------------------------------------
 
     /* virtual */
-    int CasuHandler::handleIncoming(socket_t* sock, const string& name)
+    int CasuHandler::handleIncoming(const std::string& name,
+                                    const std::string& device,
+                                    const std::string& command,
+                                    const std::string& data)
     {
         int count = 0;
-        message_t msg;
-        if (last_part(*sock))
-        {
-            cerr << "Missing command body for " << name << endl;
-            return 0;
-        }
-        sock->recv(&msg);
-        string device(msg_to_str(msg));
         if (device == "DiagnosticLed")
         {
-            if (last_part(*sock))
+            if (command == "On")
             {
-                cerr << "Missing commad body for "
-                     << name << "/" << device << endl;
-                return 0;
-            }
-            sock->recv(&msg);
-            string cmd(msg_to_str(msg));
-            if (cmd == "On")
-            {
-
-                if (last_part(*sock))
-                {
-                    cerr << "Missing commad body for "
-                         << name << "/" << device << "/" << cmd << endl;
-                    return 0;
-                }
-                sock->recv(&msg);
                 ColorStamped color_msg;
-                if (color_msg.ParseFromString(msg_to_str(msg)))
+                assert(color_msg.ParseFromString(msg_to_str(msg)));
                 {
                     casus_[name]->top_led.on( Enki::Color(color_msg.color().red(),
                                                           color_msg.color().green(),

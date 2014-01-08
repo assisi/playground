@@ -38,11 +38,11 @@ include_directories (${CMAKE_SOURCE_DIR}
 #target_link_libraries(test_ext ${enki_LIBRARIES} ${ZeroMQ_LIBRARY} ${PROTOBUF_LIBRARY})
 
 # Demo EPuck wander behavior ("client")
-set(wander_demo_SOURCES wander_demo.cpp
-                        ${ProtoSources})
+#set(wander_demo_SOURCES wander_demo.cpp
+#                        ${ProtoSources})
 
-add_executable(wander_demo ${wander_demo_SOURCES})
-target_link_libraries(wander_demo ${ZeroMQ_LIBRARY} ${PROTOBUF_LIBRARY})
+#add_executable(wander_demo ${wander_demo_SOURCES})
+#target_link_libraries(wander_demo ${ZeroMQ_LIBRARY} ${PROTOBUF_LIBRARY})
 
 find_package(Qt4 REQUIRED)
 find_package(OpenGL REQUIRED)
@@ -57,7 +57,6 @@ set(playground_SOURCES AssisiPlaygroundMain.cpp
                        WorldExt.cpp
                        ../robots/Casu.cpp
                        ../handlers/EPuckHandler.cpp
-                       ../handlers/CasuHandler.cpp
                        ${ProtoSources})
 
 # For MOC-ing

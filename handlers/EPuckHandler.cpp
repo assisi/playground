@@ -1,12 +1,14 @@
 /*
 
  */
+#include <cassert>
+
 #include <iostream>
 
 #include <boost/foreach.hpp>
 
 #include <zmq.hpp>
-#include "playground/zmq_helpers.h"
+#include "playground/zmq_helpers.hpp"
 
 #include "robots/e-puck/EPuck.h"
 #include "handlers/EPuckHandler.h"
@@ -27,117 +29,73 @@ using namespace AssisiMsg;
 namespace Enki
 {
 
+// -----------------------------------------------------------------------------
     /* virtual */
-    string EPuckHandler::createObject(socket_t* sock, World* world)
+    string EPuckHandler::createObject(const std::string& data,
+                                      World* world)
     {
-        string name("");
-        message_t msg;     
-        if (!last_part(*sock))
+        string name = "";
+        Spawn spawn_msg;
+        assert(spawn_msg.ParseFromString(data));
+        if (epucks_.count(spawn_msg.name()) < 1)
         {
-            sock->recv(&msg);
-            string msg_str(msg_to_str(msg));
-            Spawn spawn_msg;
-            if (spawn_msg.ParseFromString(msg_str))
-            {
-                name = spawn_msg.name();
-                Point pos(spawn_msg.pose().position().x(),
-                          spawn_msg.pose().position().y());
-                double yaw(spawn_msg.pose().orientation().z());
-                if (epucks_.count(name) < 1)
-                {
-                    epucks_[name] = new EPuck;
-                    epucks_[name]->pos = pos;
-                    epucks_[name]->angle = yaw;
-                    world->addObject(epucks_[name]);
-                }
-                else
-                {
-                    cerr << "EPuck "<< name << " already exists." << endl;
-                }
-            }
-            else
-            {
-                cerr << "Error deserializing spawn message!" << endl;
-            }
+            name = spawn_msg.name();
+            Point pos(spawn_msg.pose().position().x(),
+                      spawn_msg.pose().position().y());
+            double yaw(spawn_msg.pose().orientation().z());
+            epucks_[name] = new EPuck;
+            epucks_[name]->pos = pos;
+            epucks_[name]->angle = yaw;
+            world->addObject(epucks_[name]);
         }
         else
         {
-            cerr << "Missing message body from spawn message!" << std::endl;
-        } 
+            cerr << "Robot " << spawn_msg.name() << " already exists!" << endl;
+        }
         return name;
     }
 
 // -----------------------------------------------------------------------------
 
     /* virtual */
-    int EPuckHandler::handleIncoming(socket_t* sock, const string& name)
+    int EPuckHandler::handleIncoming(const std::string& name,
+                                     const std::string& device,
+                                     const std::string& command,
+                                     const std::string& data)
     {
         int count = 0;
-        message_t msg;
-        if (last_part(*sock))
-        {
-            cerr << "Missing command body for " << name << endl;
-            return 0;
-        }
-        sock->recv(&msg);
-        string device(msg_to_str(msg));
         if (device == "base")
         {
-            if (last_part(*sock))
+            if (command == "vel")
             {
-                cerr << "Missing commad body for "
-                     << name << "/" << device << endl;
-                return 0;
-            }
-            sock->recv(&msg);
-            string cmd(msg_to_str(msg));
-            if (cmd != "vel")
-            {
-                cerr << "Unknown command for " << name << "/" << device << endl;
-                return 0;
-            }
-            if (last_part(*sock))
-            {
-                cerr << "Missing commad body for "
-                     << name << "/" << device << "/" << cmd << endl;
-                return 0;
-            }
-            sock->recv(&msg);
-            DiffDrive drive;
-            if (drive.ParseFromString(msg_to_str(msg)))
-            {
+                DiffDrive drive;
+                assert(drive.ParseFromString(data));
                 epucks_[name]->leftSpeed = drive.vel_left();
                 epucks_[name]->rightSpeed = drive.vel_right();
+                count++;
             }
             else
             {
-                cerr << "Invalid argument type for " 
-                     << name << "/" << device << "/" << cmd << endl;
-            }
+                cerr << "Unknown command " << command
+                     << " for " << name << "/" << device << endl;
+            }      
         }
         else
         {
-            cerr << "Unknown device " << device << endl;
+            cerr << "Unknown device " << command << " for " << name << endl;
         }
         return count;
     }
 
+// -----------------------------------------------------------------------------
+
     /* virtual */
-    int EPuckHandler::sendOutgoing(socket_t* sock)
+    int EPuckHandler::sendOutgoing(socket_t& socket)
     {
-        int count = 1;
+        int count = 0;
         BOOST_FOREACH(const EPuckMap::value_type& ep, epucks_)
         {
             /* Publishing IR readings */
-
-            // Send message envelope
-            message_t msg;
-            str_to_msg(ep.first, msg);
-            sock->send(msg, ZMQ_SNDMORE);
-            str_to_msg("ir", msg);
-            sock->send(msg, ZMQ_SNDMORE);
-            str_to_msg("ranges", msg);
-            sock->send(msg, ZMQ_SNDMORE);
             
             // Send IR data (convert cm->m)
             RangeArray ranges;
@@ -149,10 +107,10 @@ namespace Enki
             ranges.add_range(0.01*ep.second->infraredSensor5.getDist());
             ranges.add_range(0.01*ep.second->infraredSensor6.getDist());
             ranges.add_range(0.01*ep.second->infraredSensor7.getDist());
-            std::string data_str;
-            ranges.SerializeToString(&data_str);
-            str_to_msg(data_str, msg);
-            sock->send(msg);
+            
+            std::string data;
+            ranges.SerializeToString(&data);
+            send_multipart(socket, ep.first, "ir", "ranges", data);
             count++;
 
             /* Publish other stuff as necessary ... */

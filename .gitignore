@@ -14,6 +14,7 @@
 
 # Emacs backup files
 *~
+\#*#
 
 # Build folders
 build*/

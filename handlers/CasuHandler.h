@@ -33,13 +33,16 @@ namespace Enki
 
           \return Returns the name of the created robot.
         */
-        virtual std::string createObject(zmq::socket_t* sock, World* world);
+        virtual std::string createObject(const std::string& data, World* world);
 
         //! Handle incoming message
         /*! Handles casu actuator commands.
 
          */
-        virtual int handleIncoming(zmq::socket_t* sock, const std::string& name);
+        virtual int handleIncoming(const std::string& name,
+                                   const std::string& device,
+                                   const std::string& command,
+                                   const std::string& data);
 
         //! Assemble outgoing messages.
         /*! Sends CASU sensor data messages.

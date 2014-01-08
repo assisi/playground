@@ -32,7 +32,8 @@ namespace Enki
             object type.
 
          */
-        virtual std::string createObject(zmq::socket_t* sock, World* world) = 0;
+        virtual std::string createObject(const std::string& data,
+                                         World* world) = 0;
 
         //! Handle incoming message
         /*! Override this method to handle incoming messages
@@ -43,16 +44,19 @@ namespace Enki
                       first part(s) peeled off.
 
          */
-        virtual int handleIncoming(zmq::socket_t* sock, const std::string& name) = 0;
+        virtual int handleIncoming(const std::string& name,
+                                   const std::string& device,
+                                   const std::string& command,
+                                   const std::string& data) = 0;
 
-        //! Assemble outgoing messages
-        /*! Override this method to create outgoing messages 
+        //! Send outgoing messages.
+        /*! Override this method to send outgoing messages 
             for your particular object.
 
             \arg sock Outgoing messages are written to socket sock.
             
          */
-        virtual int sendOutgoing(zmq::socket_t* sock) = 0;
+        virtual int sendOutgoing(zmq::socket_t& socket) = 0;
     };
 
 }
