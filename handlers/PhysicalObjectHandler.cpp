@@ -34,22 +34,52 @@ namespace Enki
                                      World* world)
     {
         string name = "";
-        Spawn spawn_msg;     
-        assert(spawn_msg.ParseFromString(data));
-        if (objects_.count(spawn_msg.name()) < 1)
+        Spawn msg;     
+        assert(msg.ParseFromString(data));
+        if (objects_.count(msg.name()) < 1)
         {
-            name = spawn_msg.name();
-            Point pos(spawn_msg.pose().position().x(),
-                      spawn_msg.pose().position().y());
-            double yaw(spawn_msg.pose().orientation().z());
-            casus_[name] = new Casu;
-            casus_[name]->pos = pos;
-            casus_[name]->angle = yaw;
-            world->addObject(casus_[name]);
+            name = msg.name();
+            Point pos(msg.pose().position().x(),
+                      msg.pose().position().y());
+            double yaw(msg.pose().orientation().z());
+            objects_[name] = new PhysicalObject;
+            objects_[name]->pos = pos;
+            objects_[name]->angle = yaw;
+            if (msg.has_color())
+            {
+                objects_[name]->setColor(Color(msg.color().red(),
+                                               msg.color().green(),
+                                               msg.color().blue()));
+            }
+            if (msg.type() == "Cylinder")
+            {
+                objects_[name]->setCylindric(msg.cylinder_shape().radius(),
+                                             msg.cylinder_shape().height(),
+                                             msg.cylinder_shape().mass());
+                world->addObject(objects_[name]);
+            }
+            else if (msg.type() == "Polygon")
+            {
+                Polygone p;
+                for (int i = 0; i < msg.polygon().vertices_size(); i++)
+                {
+                    p.push_back(Point(msg.polygon().vertices(i).x()),
+                                Point(msg.polygon().vertices(i).y()));
+                }
+                PhysicalObject::Hull hull(PhysicalObject::Part(p, msg.polygon().height()));
+                objects_[name]->setCustomHull(hull, msg.polygon().mass());
+                world->addObject(objects_[name]);
+            }
+            else
+            {
+                cerr << "Unknown object type: " << msg.type() << endl;
+                delete objects_[name];
+                objects_.erase(name);
+            }
         }
         else
         {
-            cerr << "Casu "<< spawn_msg.name() << " already exists." << endl;
+            cerr << "Object "<< msg.name() << " already exists." << endl;
         }
         return name;
     }
@@ -63,21 +93,15 @@ namespace Enki
                                     const std::string& data)
     {
         int count = 0;
-        if (device == "DiagnosticLed")
+        if (device == "Pos")
         {
-            if (command == "On")
+            if (command == "Set")
             {
-                ColorStamped color_msg;
-                assert(color_msg.ParseFromString(data));
-                casus_[name]->top_led.on( Enki::Color(color_msg.color().red(),
-                                                      color_msg.color().green(),
-                                                      color_msg.color().blue(),
-                                                      color_msg.color().alpha() ) );
-                count++;
-            }
-            else if (command == "Off")
-            {
-                casus_[name]->top_led.off( );
+                PoseStamped msg;
+                assert(msg.ParseFromString(data));
+                devices_[name]->pos = Point(msg.pose().position().x(),
+                                            msg.pose().position().y());
+                devices_[name]->angle = msg.pose().orientation().z();
                 count++;
             }
             else
@@ -99,17 +123,16 @@ namespace Enki
     int PhysicalObjectHandler::sendOutgoing(socket_t& socket)
     {
         int count = 0;
-        BOOST_FOREACH(const CasuMap::value_type& ca, casus_)
+        BOOST_FOREACH(const ObjectMap::value_type& ca, objects_)
         {
             std::string data;
             /* Publishing IR readings */
-            RangeArray ranges;
-            BOOST_FOREACH(IRSensor* ir, ca.second->range_sensors)
-            {
-                ranges.add_range(0.01*ir->getDist());                
-            }
-            ranges.SerializeToString(&data);
-            zmq::send_multipart(socket, ca.first, "ir", "ranges", data);
+            PoseStamped pose;
+            pose.mutable_pose()->mutable_position()->set_x(ca.second->pos.x);
+            pose.mutable_pose()->mutable_position()->set_y(ca.second->pos.y);
+            pose.mutable_pose()->mutable_orientation()->set_z(ca.second->angle);
+            pose.SerializeToString(&data);
+            zmq::send_multipart(socket, ca.first, "Pos", "Get", data);
 
             /* Publish other stuff as necessary ... */
 
