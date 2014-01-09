@@ -57,7 +57,7 @@ namespace Enki
 
     private:
         typedef std::map<std::string, PhysicalObject*> PhysicalObjectMap;
-        PhysicalObject objects_;
+        PhysicalObjectMap objects_;
     };
 }
 

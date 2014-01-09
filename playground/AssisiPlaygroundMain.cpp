@@ -2,6 +2,7 @@
 
 #include "WorldExt.h"
 #include "AssisiPlayground.h"
+#include "handlers/PhysicalObjectHandler.h"
 #include "handlers/EPuckHandler.h"
 #include "handlers/CasuHandler.h"
 #include "robots/Casu.h"
@@ -25,6 +26,9 @@ int main(int argc, char *argv[])
 
     CasuHandler *ch = new CasuHandler();
     world.addHandler("Casu", ch);
+
+    PhysicalObjectHandler *ph = new PhysicalObjectHandler();
+    world.addHandler("Object", ph);
 
     EnkiPlayground viewer(&world);	
 	viewer.show();

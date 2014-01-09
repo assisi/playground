@@ -32,6 +32,7 @@ set(test_ext_SOURCES WorldExt.cpp
                      ../robots/Casu.cpp
                      ../handlers/EPuckHandler.cpp
                      ../handlers/CasuHandler.cpp
+                     ../handlers/PhysicalObjectHandler.cpp
                      TestWorldExt.cpp
                      ${ProtoSources})
 
@@ -59,6 +60,7 @@ set(playground_SOURCES AssisiPlaygroundMain.cpp
                        ../robots/Casu.cpp
                        ../handlers/EPuckHandler.cpp
                        ../handlers/CasuHandler.cpp
+                       ../handlers/PhysicalObjectHandler.cpp
                        ${ProtoSources})
 
 # For MOC-ing
