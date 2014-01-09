@@ -4,6 +4,7 @@
 
 #include "WorldExt.h"
 #include "handlers/EPuckHandler.h"
+#include "handlers/CasuHandler.h"
 
 #include <unistd.h> // for usleep
 
@@ -18,9 +19,15 @@ int main(int argc, char *argv[])
     WorldExt world(r, pub_address, sub_address);
 
     // Add handlers
+
     EPuckHandler *eh = new EPuckHandler();
     world.addHandler("EPuck", eh);
     World* wp = &world;
+
+    CasuHandler *ch = new CasuHandler();
+    world.addHandler("Casu", ch);
+
+    
     while (1)
     {
         wp->step(10, 20);
