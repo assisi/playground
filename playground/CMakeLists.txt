@@ -67,12 +67,14 @@ set(playground_SOURCES AssisiPlaygroundMain.cpp
 set(playground_QT_HEADERS AssisiPlayground.h)
 
 qt4_wrap_cpp(playground_QT_HEADERS_MOC ${playground_QT_HEADERS})
+
+qt4_add_resources(playground_RCC_SOURCES playground-textures.qrc)
 	
 include_directories (${OPENGL_INCLUDE_DIR})    
 
 #link_directories (${enki_BINARY_DIR})   
 
-add_executable(assisi_playground ${playground_SOURCES} ${playground_QT_HEADERS_MOC})
+add_executable(assisi_playground ${playground_SOURCES} ${playground_QT_HEADERS_MOC} ${playground_RCC_SOURCES})
 
 target_link_libraries(assisi_playground ${enki_LIBRARIES}
                                         ${QT_LIBRARIES} 
