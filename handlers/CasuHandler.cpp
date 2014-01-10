@@ -104,7 +104,7 @@ namespace Enki
             RangeArray ranges;
             BOOST_FOREACH(IRSensor* ir, ca.second->range_sensors)
             {
-                ranges.add_range(0.01*ir->getDist());                
+                ranges.add_range(ir->getDist());                
             }
             ranges.SerializeToString(&data);
             zmq::send_multipart(socket, ca.first, "ir", "ranges", data);

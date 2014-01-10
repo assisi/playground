@@ -99,14 +99,14 @@ namespace Enki
             
             // Send IR data (convert cm->m)
             RangeArray ranges;
-            ranges.add_range(0.01*ep.second->infraredSensor0.getDist());
-            ranges.add_range(0.01*ep.second->infraredSensor1.getDist());
-            ranges.add_range(0.01*ep.second->infraredSensor2.getDist());
-            ranges.add_range(0.01*ep.second->infraredSensor3.getDist());
-            ranges.add_range(0.01*ep.second->infraredSensor4.getDist());
-            ranges.add_range(0.01*ep.second->infraredSensor5.getDist());
-            ranges.add_range(0.01*ep.second->infraredSensor6.getDist());
-            ranges.add_range(0.01*ep.second->infraredSensor7.getDist());
+            ranges.add_range(ep.second->infraredSensor0.getDist());
+            ranges.add_range(ep.second->infraredSensor1.getDist());
+            ranges.add_range(ep.second->infraredSensor2.getDist());
+            ranges.add_range(ep.second->infraredSensor3.getDist());
+            ranges.add_range(ep.second->infraredSensor4.getDist());
+            ranges.add_range(ep.second->infraredSensor5.getDist());
+            ranges.add_range(ep.second->infraredSensor6.getDist());
+            ranges.add_range(ep.second->infraredSensor7.getDist());
             
             std::string data;
             ranges.SerializeToString(&data);
