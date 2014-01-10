@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     world.addHandler("Casu", ch);
 
     PhysicalObjectHandler *ph = new PhysicalObjectHandler();
-    world.addHandler("Object", ph);
+    world.addHandler("Physical", ph);
 
     EnkiPlayground viewer(&world);	
 	viewer.show();

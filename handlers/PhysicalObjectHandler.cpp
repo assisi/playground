@@ -53,9 +53,9 @@ namespace Enki
             }
             if (msg.type() == "Cylinder")
             {
-                objects_[name]->setCylindric(msg.cylinder_shape().radius(),
-                                             msg.cylinder_shape().height(),
-                                             msg.cylinder_shape().mass());
+                objects_[name]->setCylindric(msg.cylinder().radius(),
+                                             msg.cylinder().height(),
+                                             msg.cylinder().mass());
                 world->addObject(objects_[name]);
             }
             else if (msg.type() == "Polygon")
@@ -63,8 +63,8 @@ namespace Enki
                 Polygone p;
                 for (int i = 0; i < msg.polygon().vertices_size(); i++)
                 {
-                    p.push_back(Point(msg.polygon().vertices(i).x()),
-                                Point(msg.polygon().vertices(i).y()));
+                    p.push_back(Point(msg.polygon().vertices(i).x(),
+                                      msg.polygon().vertices(i).y()));
                 }
                 PhysicalObject::Hull hull(PhysicalObject::Part(p, msg.polygon().height()));
                 objects_[name]->setCustomHull(hull, msg.polygon().mass());
@@ -99,9 +99,9 @@ namespace Enki
             {
                 PoseStamped msg;
                 assert(msg.ParseFromString(data));
-                devices_[name]->pos = Point(msg.pose().position().x(),
+                objects_[name]->pos = Point(msg.pose().position().x(),
                                             msg.pose().position().y());
-                devices_[name]->angle = msg.pose().orientation().z();
+                objects_[name]->angle = msg.pose().orientation().z();
                 count++;
             }
             else
