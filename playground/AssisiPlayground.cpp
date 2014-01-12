@@ -6,54 +6,30 @@
 
 namespace Enki
 {
-    EnkiPlayground::EnkiPlayground(World *world, QWidget *parent) :
-		ViewerWidget(world, parent),
-		subjectiveView(false)
+    AssisiPlayground::AssisiPlayground(World *world, QWidget *parent) :
+		ViewerWidget(world, parent)
 	{
 
 	}
     
-    // Inherited from viewer 
-    /* virtual */
-    void EnkiPlayground::timerEvent(QTimerEvent * event)
-	{
-		static int fireCounter = 0;
-		QMap<PhysicalObject*, int>::iterator i = bullets.begin();
-		while (i != bullets.end())
-		{
-			QMap<PhysicalObject*, int>::iterator oi = i;
-			++i;
-			if (oi.value())
-			{
-				oi.value()--;
-			}
-			else
-			{
-				PhysicalObject* o = oi.key();
-				world->removeObject(o);
-				bullets.erase(oi);
-				delete o;
-			}
-		}
-		ViewerWidget::timerEvent(event);
-	}
+    /* virtual */ 
+    void AssisiPlayground::renderObjectHook(PhysicalObject *object)
+    {
+        // Override the default direction arrow drawn over robots.
+        if (dynamic_cast<Robot*>(object))
+        {
+            glColor3d(0, 0, 0);
+            glBegin(GL_TRIANGLES);
+            glVertex3d(0.4, 0, object->getHeight() + 0.01);
+            glVertex3d(-0.4, 0.2, object->getHeight() + 0.01);
+            glVertex3d(-0.4, -0.2, object->getHeight() + 0.01);
+            glEnd();
+        }
+    }
 
-	/* virtual */
-    void EnkiPlayground::keyPressEvent ( QKeyEvent * event )
-	{
-		if (event->key() == Qt::Key_C)
-		{
-			subjectiveView = !subjectiveView;
-			if (subjectiveView)
-				pitch = M_PI/8;
-			event->accept();
-		}
-		else
-			ViewerWidget::keyPressEvent(event);
-	}
 
    	/* virtual */
-    void EnkiPlayground::sceneCompletedHook()
+    void AssisiPlayground::sceneCompletedHook()
 	{
 		glColor3d(0,0,0);
        	renderText(10, height()-50, tr("rotate camera by moving mouse while pressing ctrl+left mouse button"));

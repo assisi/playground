@@ -30,6 +30,7 @@ include_directories (${CMAKE_SOURCE_DIR}
 # Demo world "server" (no GUI)
 set(test_ext_SOURCES WorldExt.cpp
                      ../robots/Casu.cpp
+                     ../robots/Bee.cpp
                      ../handlers/EPuckHandler.cpp
                      ../handlers/CasuHandler.cpp
                      ../handlers/PhysicalObjectHandler.cpp
@@ -58,6 +59,7 @@ set(playground_SOURCES AssisiPlaygroundMain.cpp
                        AssisiPlayground.cpp
                        WorldExt.cpp
                        ../robots/Casu.cpp
+                       ../robots/Bee.cpp
                        ../handlers/EPuckHandler.cpp
                        ../handlers/CasuHandler.cpp
                        ../handlers/PhysicalObjectHandler.cpp

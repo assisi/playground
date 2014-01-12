@@ -3,10 +3,12 @@
 
 #include "WorldExt.h"
 #include "AssisiPlayground.h"
+
 #include "handlers/PhysicalObjectHandler.h"
 #include "handlers/EPuckHandler.h"
 #include "handlers/CasuHandler.h"
-#include "robots/Casu.h"
+
+#include "robots/Bee.h"
 
 #include <iostream>
 
@@ -39,7 +41,12 @@ int main(int argc, char *argv[])
     PhysicalObjectHandler *ph = new PhysicalObjectHandler();
     world.addHandler("Physical", ph);
 
-    EnkiPlayground viewer(&world);	
+    Bee *bee = new Bee();
+    bee->leftSpeed = 5;
+    bee->rightSpeed = 5;
+    world.addObject(bee);
+
+    AssisiPlayground viewer(&world);	
 	viewer.show();
 	
 	return app.exec();

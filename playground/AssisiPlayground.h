@@ -3,8 +3,8 @@
 
  */
 
-#ifndef PLAYGROUND_EXT_H
-#define PLAYGROUND_EXT_H
+#ifndef ASSISI_PLAYGROUND_H
+#define ASSISI_PLAYGROUND_H
 
 // Enki includes
 #include <Viewer.h>
@@ -23,30 +23,23 @@
 namespace Enki
 {
 
-class EnkiPlayground : public ViewerWidget
+class AssisiPlayground : public ViewerWidget
 {
 
     Q_OBJECT;
 
-protected:
-	bool subjectiveView;
-	QVector<EPuck*> epucks;
-	QMap<PhysicalObject*, int> bullets;
-
 public:
-    EnkiPlayground(World *world, QWidget *parent = 0);	
+    AssisiPlayground(World *world, QWidget *parent = 0);	
     void addEPuck(World *world, Point pos);
 
-	~EnkiPlayground()
+	~AssisiPlayground()
 	{
 
 	}
 	
     // Inherited from viewer 
-    virtual void timerEvent(QTimerEvent * event);
-    virtual void keyPressEvent ( QKeyEvent * event );	
     virtual void sceneCompletedHook();
-
+    virtual void renderObjectHook(PhysicalObject *object);
 };
 
 } // namespace Enki
