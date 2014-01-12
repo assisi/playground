@@ -7,8 +7,8 @@
 #include "handlers/PhysicalObjectHandler.h"
 #include "handlers/EPuckHandler.h"
 #include "handlers/CasuHandler.h"
+#include "handlers/BeeHandler.h"
 
-#include "robots/Bee.h"
 
 #include <iostream>
 
@@ -41,10 +41,8 @@ int main(int argc, char *argv[])
     PhysicalObjectHandler *ph = new PhysicalObjectHandler();
     world.addHandler("Physical", ph);
 
-    Bee *bee = new Bee();
-    bee->leftSpeed = 5;
-    bee->rightSpeed = 5;
-    world.addObject(bee);
+    BeeHandler *bh = new BeeHandler();
+    world.addHandler("Bee", bh);
 
     AssisiPlayground viewer(&world);	
 	viewer.show();
