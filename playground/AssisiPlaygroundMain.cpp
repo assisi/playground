@@ -21,9 +21,11 @@ int main(int argc, char *argv[])
 	
 	// Create the world and the viewer
     double r = 40; // World radius (in cm?)
-    string pub_address("tcp://127.0.0.1:5555"); 
-    string sub_address("tcp://127.0.0.1:5556");
-    
+    //string pub_address("tcp://127.0.0.1:5555"); 
+    //string sub_address("tcp://127.0.0.1:5556");
+    string pub_address("tcp://*:5555"); 
+    string sub_address("tcp://*:5556");
+
     //QImage texture("playground/world.png");
     QImage texture(QString(":/textures/ground_grayscale.png"));
     texture = texture.convertToFormat(QImage::Format_ARGB32);    texture.invertPixels(QImage::InvertRgba);

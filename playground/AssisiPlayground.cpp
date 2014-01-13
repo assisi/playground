@@ -9,7 +9,9 @@ namespace Enki
     AssisiPlayground::AssisiPlayground(World *world, QWidget *parent) :
 		ViewerWidget(world, parent)
 	{
-
+        //ViewerWidget::pos = QPointF(-world->w*5, -world->h * 2);
+        ViewerWidget::pitch = M_PI/2;
+        ViewerWidget::altitude = 80;
 	}
     
     /* virtual */ 
