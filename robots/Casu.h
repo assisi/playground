@@ -32,7 +32,7 @@ namespace Enki
         typedef std::vector<IRSensor*> IRSensorVector;
         IRSensorVector range_sensors;
         
-        DiagnosticLed top_led;
+        DiagnosticLed* top_led;
     };
 }
 

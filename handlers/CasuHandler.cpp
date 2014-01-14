@@ -67,7 +67,7 @@ namespace Enki
             {
                 ColorStamped color_msg;
                 assert(color_msg.ParseFromString(data));
-                casus_[name]->top_led.on( Enki::Color(color_msg.color().red(),
+                casus_[name]->top_led->on( Enki::Color(color_msg.color().red(),
                                                       color_msg.color().green(),
                                                       color_msg.color().blue(),
                                                       color_msg.color().alpha() ) );
@@ -75,7 +75,7 @@ namespace Enki
             }
             else if (command == "Off")
             {
-                casus_[name]->top_led.off( );
+                casus_[name]->top_led->off( );
                 count++;
             }
             else

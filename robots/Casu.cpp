@@ -16,8 +16,7 @@ const double pi = boost::math::constants::pi<double>();
 namespace Enki
 {
     Casu::Casu(void) :
-        range_sensors(6),
-        top_led(this)
+        range_sensors(6)
     {
       
         // Set physical properties
@@ -51,6 +50,9 @@ namespace Enki
         {
             addLocalInteraction(p);
         }
+
+        // Add diagnostic led
+        top_led = new DiagnosticLed(this);
         
     }
 
@@ -60,6 +62,8 @@ namespace Enki
         {
             delete p;
         }
+
+        delete top_led;
     }
 
 }
