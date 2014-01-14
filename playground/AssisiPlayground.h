@@ -7,7 +7,7 @@
 #define ASSISI_PLAYGROUND_H
 
 // Enki includes
-#include <Viewer.h>
+#include <viewer/Viewer.h>
 #include <PhysicalEngine.h>
 #include <robots/e-puck/EPuck.h>
 
