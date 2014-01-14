@@ -1,3 +1,3 @@
 [submodule "msg"]
 	path = msg
-	url = git@github.com:larics/assisi-msg
+	url = https://github.com/larics/assisi-msg.git
