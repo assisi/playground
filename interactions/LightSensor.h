@@ -8,7 +8,7 @@
 #ifndef __LIGHTSENSOR_H
 #define __LIGHTSENSOR_H
 
-#include "../Interaction.h"
+#include <enki/Interaction.h>
 #include "../Component.h"
 
 namespace Enki
@@ -32,8 +32,15 @@ namespace Enki
 		 */
 		const double wavelength;
 	public:
-		LightSensor (double range, Enki::Robot* owner, Enki::Vector relativePosition, double wavelength);
+		/**
+		 * Construct a light sensor that reacts maximally to the given wavelength.
+		 */
+		LightSensor (double range, Enki::Robot* owner, Enki::Vector relativePosition, double orientation, double wavelength);
+		/**
+		 * Copy constructor.
+		 */
 		LightSensor (const LightSensor& orig);
+
 		virtual ~LightSensor ();
 		/**
 		 *  Reset light intensity.  Called every {@code w->step()}.
@@ -58,3 +65,9 @@ namespace Enki
 
 #endif	/* __LIGHTSENSOR_H */
 
+
+// Local Variables: 
+// mode: c++-mode
+// mode: flyspell-prog
+// ispell-local-dictionary: "british"
+// End: 

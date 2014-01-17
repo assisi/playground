@@ -14,7 +14,8 @@ namespace Enki {
 
 	/**
 	 * A light source that emits from above and is not obscured by objects
-	 * in the world.  The light model is defined in http://larics.rasip.fer.hr/assisiwiki/doku.php?id=software:simulators
+	 * in the world.  The light model is defined in
+	 * http://larics.rasip.fer.hr/assisiwiki/doku.php?id=software:simulators
 	 */
 	class LightSourceFromAbove:
 		public LightSource
@@ -40,11 +41,23 @@ namespace Enki {
 		 */
 		const double sigma;
 	public:
-		LightSourceFromAbove (double range, Robot* owner, Vector relativePosition,
+		/**
+		 * Construct a light source from above with the given parameters.
+		 */
+		LightSourceFromAbove (double range, Robot* owner, Vector relativePosition, double orientation,
 			double k, double radius, double peakWavelength, double maxIntensity,
 			double sigma);
+		/**
+		 * Copy constructor.
+		 */
 		LightSourceFromAbove (const LightSourceFromAbove& orig);
+
 		virtual ~LightSourceFromAbove ();
+
+		/**
+		 * Update absolute position of this component.
+		 */
+		virtual void init (double dt, Enki::World* w);
 
 		virtual double getIntensityAt (const Point& position, double wavelength) const;
 	private:
@@ -55,3 +68,9 @@ namespace Enki {
 
 #endif	/* LIGHTSOURCEFROMABOVE_H */
 
+
+// Local Variables: 
+// mode: c++-mode
+// mode: flyspell-prog
+// ispell-local-dictionary: "british"
+// End: 

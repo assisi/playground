@@ -5,20 +5,22 @@
  * Created on 7 de Janeiro de 2014, 16:41
  */
 
+#include <iostream>
+
 #include "LightSensor.h"
 #include "LightSource.h"
 
 using namespace Enki;
 
-LightSensor::LightSensor (double range, Enki::Robot* owner, Enki::Vector relativePosition, double wavelength):
+LightSensor::LightSensor (double range, Enki::Robot* owner, Enki::Vector relativePosition, double orientation, double wavelength):
 	LocalInteraction (range, owner),
-	Component (owner, relativePosition),
+	Component (owner, relativePosition, orientation),
 	wavelength (wavelength)
 {
 }
 
 LightSensor::LightSensor (const LightSensor& orig):
-	LocalInteraction (orig.r, orig.LocalInteraction::owner),
+	LocalInteraction (orig.LocalInteraction::r, orig.LocalInteraction::owner),
 	Component (orig),
 	wavelength (orig.wavelength)
 {
@@ -38,12 +40,15 @@ init (double dt, Enki::World* w)
 void LightSensor::
 objectStep (double dt, Enki::World* w, Enki::PhysicalObject *po)
 {
+
 	LightSource *lightSource = dynamic_cast<LightSource *>(po);
 	if (lightSource == NULL) {
 		return ;
 	}
+	std::cout << "light sensor interaction 2\n";
 	if (lightSource->Component::owner == this->Component::owner) {
 		return ;
 	}
+	std::cout << "light sensor interaction 3\n";
 	this->intensity += lightSource->getIntensityAt (this->absolutePosition, this->wavelength);
 }

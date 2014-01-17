@@ -9,10 +9,12 @@
 
 using namespace Enki;
 
-LightSourceFromAbove::LightSourceFromAbove (double range, Robot* owner, Vector relativePosition,
-	double k, double radius, double peakWavelength, double maxIntensity, double sigma)
+LightSourceFromAbove::LightSourceFromAbove
+	(double range, Robot* owner,
+	 Vector relativePosition, double orientation,
+	 double k, double radius, double peakWavelength, double maxIntensity, double sigma)
 	:
-	LightSource (range, owner, relativePosition),
+	LightSource (range, owner, relativePosition, orientation),
 	k (k),
 	radius (radius),
 	peakWavelength (peakWavelength),
@@ -22,12 +24,27 @@ LightSourceFromAbove::LightSourceFromAbove (double range, Robot* owner, Vector r
 }
 
 LightSourceFromAbove::LightSourceFromAbove (const LightSourceFromAbove& orig):
-	LightSourceFromAbove (orig.r, orig.LocalInteraction::owner, orig.relativePosition, orig.k, orig.radius, orig.peakWavelength, orig.maxIntensity, orig.sigma)
+	LightSource (orig),
+	k (orig.k),
+	radius (orig.radius),
+	peakWavelength (orig.peakWavelength),
+	maxIntensity (orig.maxIntensity),
+	sigma (orig.sigma)
+	// C11 feature
+	// LightSourceFromAbove (orig.r, orig.LocalInteraction::owner,
+	// 	orig.relativePosition,
+	// 	orig.k, orig.radius, orig.peakWavelength, orig.maxIntensity, orig.sigma)
 {
 }
 
 LightSourceFromAbove::~LightSourceFromAbove ()
 {
+}
+
+void LightSourceFromAbove::
+init (double dt, Enki::World* w)
+{
+	Component::init ();
 }
 
 double LightSourceFromAbove::

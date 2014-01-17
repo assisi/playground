@@ -7,8 +7,8 @@
 #ifndef __COMPONENT__
 #define __COMPONENT__
 
-#include "PhysicalEngine.h"
-#include "Interaction.h"
+#include <enki/PhysicalEngine.h>
+#include <enki/Interaction.h>
 
 namespace Enki
 {
@@ -27,24 +27,41 @@ namespace Enki
 		 */
 		const PhysicalObject *owner;
 		/**
-		 * Position of this component relative to the centre of mass of the object.
+		 * Position of this component relative to the centre of mass of the
+		 * owner object.
 		 */
 		const Vector relativePosition;
+		/**
+		 * Orientation of this component relative to the orientation of the
+		 * owner object.
+		 */
+		const double relativeOrientation;
 		/**
 		 * Position of this component in world coordinates.  Updated every {@code w->step()}.
 		 */
 		Vector absolutePosition;
+		/**
+		 * Orientation of this component in world coordinates.  Updated every {@code w->step()}.
+		 */
+		double absoluteOrientation;
 	public:
 		/**
 		 * Construct a robot component at the given relative position.
 		 */
-		Component (const PhysicalObject *owner, Vector relativePosition):
+		Component (const PhysicalObject *owner, Vector relativePosition, double relativeOrientation):
 			owner(owner),
-			relativePosition (relativePosition)
+			relativePosition (relativePosition),
+			relativeOrientation (relativeOrientation)
 		{
 		}
+		/**
+		 * Copy constructor.
+		 */
 		Component (const Component& orig):
-			Component (orig.owner, orig.relativePosition)
+			owner (orig.owner),
+			relativePosition (orig.relativePosition),
+			relativeOrientation (orig.relativeOrientation)
+			// Component (orig.owner, orig.relativePosition, orig.relativeOrientation) // C++11 feature
 		{
 		}
 		/**
@@ -55,12 +72,20 @@ namespace Enki
 			return this->relativePosition;
 		}
 		/**
+		 * Get the relative orientation of this robot component.
+		 */
+		double getRelativeOrientation () const
+		{
+			return this->relativeOrientation;
+		}	
+		/**
 		 *  Reset absolute position of this component.  Called every {@code w->step()}.
 		 */
 		void init ()
 		{
 			Matrix22 rot (this->owner->angle);
 			this->absolutePosition = this->owner->pos + rot * this->relativePosition;
+			this->absoluteOrientation = this->owner->angle + this->relativeOrientation;
 		}
 		/**
 		 * Get the absolute position of this component.
@@ -70,3 +95,9 @@ namespace Enki
 }
 
 #endif
+
+// Local Variables: 
+// mode: c++-mode
+// mode: flyspell-prog
+// ispell-local-dictionary: "british"
+// End: 

@@ -8,7 +8,7 @@
 #ifndef __LIGHTSOURCE_HPP
 #define	__LIGHTSOURCE_HPP
 
-#include "../Interaction.h"
+#include <enki/Interaction.h>
 #include "../Component.h"
 
 namespace Enki {
@@ -21,10 +21,15 @@ namespace Enki {
 	 */
 	class LightSource:
 		public LocalInteraction,
-		public Component
+		public Component,
+		public PhysicalObject
 	{
 	protected:
-		LightSource (double range, Robot* owner, Vector relativePosition);
+		LightSource (double range, Robot* owner, Vector relativePosition, double orientation);
+		/**
+		 * Copy constructor.
+		 */
+		LightSource (const LightSource &orig);
 	public:
 		/**
 		 * Get the wavelength intensity of this light source at the given
@@ -36,3 +41,9 @@ namespace Enki {
 
 #endif	/* LIGHTSOURCE_HPP */
 
+
+// Local Variables: 
+// mode: c++-mode
+// mode: flyspell-prog
+// ispell-local-dictionary: "british"
+// End: 
