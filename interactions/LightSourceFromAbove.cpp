@@ -52,5 +52,7 @@ getIntensityAt (const Point& position, double wavelength) const
 {
 	double distance = (absolutePosition - position).norm ();
 	double wavelengthDiff = peakWavelength - wavelength;
-	return maxIntensity * tanh (k * distance - radius) * exp (-wavelengthDiff * wavelengthDiff / 2 / sigma / sigma);
+	return maxIntensity
+		* (-tanh (k * distance - radius) + 1) / 2
+		* exp (-wavelengthDiff * wavelengthDiff / 2 / sigma / sigma);
 }
