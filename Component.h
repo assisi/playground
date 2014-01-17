@@ -39,7 +39,7 @@ namespace Enki
 		/**
 		 * Position of this component in world coordinates.  Updated every {@code w->step()}.
 		 */
-		Vector absolutePosition;
+		Point absolutePosition;
 		/**
 		 * Orientation of this component in world coordinates.  Updated every {@code w->step()}.
 		 */
@@ -90,14 +90,24 @@ namespace Enki
 		/**
 		 * Get the absolute position of this component.
 		 */
-		Point getAbsolutePosition () { return absolutePosition; }
+		const Point &getAbsolutePosition () const
+		{
+			return absolutePosition;
+		}
+		/**
+		 * Get the absolute orientation of this component.
+		 */
+		double getAbsoluteOrientation () const
+		{
+			return absoluteOrientation;
+		}
 	};
 }
 
 #endif
 
 // Local Variables: 
-// mode: c++-mode
+// mode: c++
 // mode: flyspell-prog
 // ispell-local-dictionary: "british"
 // End: 
