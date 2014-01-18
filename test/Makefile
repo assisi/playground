@@ -4,3 +4,6 @@
 
 run: ./test_light
 	./test_light
+
+clean:
+	rm -f *~ test_light
