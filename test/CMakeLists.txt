@@ -1,5 +1,5 @@
-set(enki_INCLUDE_DIR /home/pedro/local/include)
-set(enki_LIBRARIES /home/pedro/local/lib/libenki.a)
+set(enki_INCLUDE_DIR /usr/local/include)
+set(enki_LIBRARIES /usr/local/lib/libenki.a)
 
 set(test_light_SOURCES
   ./test_light.cpp
