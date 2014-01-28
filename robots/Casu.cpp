@@ -59,7 +59,7 @@ namespace Enki
         //       and make them static symbolic constants!
         double light_radius = 5.0; // 5cm
         double light_k = 1;            // Corresponds to k = 100 for lengths in meters
-        double I_max = 1.0;        // TODO: Figure out correct value
+        double I_max = 0.0;        // TODO: Figure out correct values
         double light_sigma = 1.0;
         this->light_source_blue = new LightSourceFromAbove(2*light_radius, this, Vector(0,0), 0,
                                                       light_k, light_radius, Light::Blue, 

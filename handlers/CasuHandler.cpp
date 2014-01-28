@@ -90,16 +90,12 @@ namespace Enki
             {
                 ColorStamped color_msg;
                 assert(color_msg.ParseFromString(data));
-                /*
-                casus_[name]->top_led->on( Enki::Color(color_msg.color().red(),
-                                                      color_msg.color().green(),
-                                                      color_msg.color().blue(),
-                                                      color_msg.color().alpha() ) );
-                */
+                casus_[name]->light_source_blue->on( color_msg.color().blue());
                 count++;
             }
             else if (command == "Off")
             {
+                casus_[name]->light_source_blue->off( );
                 count++;
             }
             else

@@ -33,9 +33,9 @@ namespace Enki {
 		 */
 		const double peakWavelength;
 		/**
-		 * Maximum intensity of this light source.
+		 * Current maximum intensity of this light source.
 		 */
-		const double maxIntensity;
+		double maxIntensity;
 		/**
 		 * Shaping coefficient of the Gaussian model.
 		 */
@@ -65,9 +65,9 @@ namespace Enki {
         /*!
 
          */
-        virtual void on( void )
+        virtual void on( double intensity )
         {
-            on_ = true;
+            maxIntensity = intensity;
         }
 
         //! Turn the light source off.
@@ -76,12 +76,11 @@ namespace Enki {
          */
         virtual void off( void )
         {
-            on_ = false;
+            maxIntensity = 0;
         }
         
 	private:
-        // Whether the source is turned on or off.
-        bool on_;
+
 	};
 	
 }

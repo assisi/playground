@@ -19,8 +19,7 @@ LightSourceFromAbove::LightSourceFromAbove
 	radius (radius),
 	peakWavelength (peakWavelength),
 	maxIntensity (maxIntensity),
-	sigma (sigma),
-    on_ (false)
+	sigma (sigma)
 {
 }
 
@@ -30,8 +29,7 @@ LightSourceFromAbove::LightSourceFromAbove (const LightSourceFromAbove& orig):
 	radius (orig.radius),
 	peakWavelength (orig.peakWavelength),
 	maxIntensity (orig.maxIntensity),
-	sigma (orig.sigma),
-    on_ (orig.on_)
+	sigma (orig.sigma)
 	// C11 feature
 	// LightSourceFromAbove (orig.r, orig.LocalInteraction::owner,
 	// 	orig.relativePosition,
@@ -52,16 +50,9 @@ init (double dt, Enki::World* w)
 double LightSourceFromAbove::
 getIntensityAt (const Point& position, double wavelength) const
 {
-    if (on_)
-    {
-        double distance = (absolutePosition - position).norm ();
-        double wavelengthDiff = peakWavelength - wavelength;
-        return maxIntensity
-            * (-tanh (k * distance - radius) + 1) / 2
-            * exp (-wavelengthDiff * wavelengthDiff / 2 / sigma / sigma);
-    }
-    else
-    {
-        return 0;
-    }
+    double distance = (absolutePosition - position).norm ();
+    double wavelengthDiff = peakWavelength - wavelength;
+    return maxIntensity
+        * (-tanh (k * distance - radius) + 1) / 2
+        * exp (-wavelengthDiff * wavelengthDiff / 2 / sigma / sigma);
 }
