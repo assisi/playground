@@ -35,6 +35,10 @@ set(test_ext_SOURCES WorldExt.cpp
                      ../handlers/CasuHandler.cpp
                      ../handlers/PhysicalObjectHandler.cpp
                      ../handlers/BeeHandler.cpp
+                     ../interactions/LightConstants.cpp
+                     ../interactions/LightSource.cpp
+                     ../interactions/LightSourceFromAbove.cpp
+                     ../interactions/LightSensor.cpp
                      TestWorldExt.cpp
                      ${ProtoSources})
 

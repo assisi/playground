@@ -19,7 +19,7 @@ const double pi = boost::math::constants::pi<double>();
 
 namespace Enki
 {
-    Casu::Casu(void) :
+    Casu::Casu(World* world) :
         range_sensors(6)
     {
       

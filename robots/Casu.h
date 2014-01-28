@@ -8,24 +8,20 @@
 
 #include <vector>
 
-//#include <PhysicalEngine.h>
+#include <PhysicalEngine.h>
 
-//#include <interactions/IRSensor.h>
-//#include "interactions/DiagnosticLed.h"
+#include <interactions/IRSensor.h>
+#include "interactions/DiagnosticLed.h"
+#include "interactions/LightSourceFromAbove.h"
 
 namespace Enki
 {
-    // Forward declarations
-    class Robot;
-    class IRSensor;
-    class LightSourceFromAbove;
-    class DiagnosticLed;
 
     class Casu : public Robot
     {
     public:
         //! Create a CASU
-        Casu(void);
+        Casu(World* world);
 
         //! Destructor
         ~Casu();
