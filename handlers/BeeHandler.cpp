@@ -109,11 +109,21 @@ namespace Enki
             drive.set_vel_left(ca.second->leftEncoder);
             drive.set_vel_right(ca.second->rightEncoder);
             send_multipart(socket, ca.first, "base", "enc", data);
-
-            /* Publish other stuff as necessary ... */
-
             count++;
+
+            /* Publish light sensor data */
+            ColorStamped light;
+            light.mutable_color()->set_red(0);
+            light.mutable_color()->set_green(0);
+            light.mutable_color()->set_blue(ca.second->light_sensor_blue->getIntensity());
+            
+            light.SerializeToString(&data);
+            send_multipart(socket, ca.first, "Light", "Readings", data);
+            count++;
+            
+            /* Publish other stuff as necessary */
         }
+
         return count;
     }
 // -----------------------------------------------------------------------------

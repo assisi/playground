@@ -45,10 +45,10 @@ objectStep (double dt, Enki::World* w, Enki::PhysicalObject *po)
 	if (lightSource == NULL) {
 		return ;
 	}
-	std::cout << "light sensor interaction 2\n";
+
 	if (lightSource->Component::owner == this->Component::owner) {
 		return ;
 	}
-	std::cout << "light sensor interaction 3\n";
+
 	this->intensity += lightSource->getIntensityAt (this->absolutePosition, this->wavelength);
 }
