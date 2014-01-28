@@ -11,6 +11,7 @@
 
 #include "robots/Casu.h"
 #include "handlers/CasuHandler.h"
+#include "interactions/LightConstants.h"
 
 // Protobuf message headers
 #include "base_msgs.pb.h"
@@ -92,12 +93,12 @@ namespace Enki
                 assert(color_msg.ParseFromString(data));
                 casus_[name]->light_source_blue->on( color_msg.color().blue());
                 count++;
-            }
+             }
             else if (command == "Off")
             {
                 casus_[name]->light_source_blue->off( );
                 count++;
-            }
+             }
             else
             {
                 cerr << "Unknown command " << command << " for " << name << "/" << device << endl;
