@@ -7,6 +7,7 @@
 #include <enki/robots/DifferentialWheeled.h>
 #include <enki/interactions/IRSensor.h>
 
+#include "interactions/LightSensor.h"
 	
 namespace Enki
 {
@@ -29,13 +30,19 @@ namespace Enki
         //! destructor
         virtual ~Bee();
 
+        /* Sensors */
+
         typedef std::vector<IRSensor*> IRSensorVector;
+        //! IR proximity sensors.
         IRSensorVector range_sensors;
 
-		  /**
-			* Update the position of this bee.  
-			*/
-		  void step (int dt, const World *);
+        //! Light sensor.
+        LightSensor* light_sensor_blue;
+
+        /**
+         * Update the position of this bee.  
+         */
+        void step (int dt, const World *);
 	};
 }
 

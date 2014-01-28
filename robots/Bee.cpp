@@ -10,6 +10,7 @@
 #include <PhysicalEngine.h>
 
 #include "Bee.h"
+#include "interactions/LightConstants.h"
 
 const double pi = boost::math::constants::pi<double>();
 
@@ -58,6 +59,11 @@ namespace Enki
                                             0, a, 10, 3731, 0, 0.7, 0);
             addLocalInteraction(range_sensors[i]);
         }
+
+        double light_sensor_range = 10.0;
+        light_sensor_blue = new LightSensor(light_sensor_range, this,
+                                            Vector(0,0), 0.0, Light::Blue);
+        addLocalInteraction(light_sensor_blue);
     }
 
     /* virtual */
@@ -67,5 +73,6 @@ namespace Enki
         {
             delete p;
         }
+        delete light_sensor_blue;
     }
 }
