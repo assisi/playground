@@ -60,17 +60,31 @@ namespace Enki {
 		virtual void init (double dt, Enki::World* w);
 
 		virtual double getIntensityAt (const Point& position, double wavelength) const;
-	private:
 
+        //! Turn the light source on.
+        /*!
+
+         */
+        virtual void on( void )
+        {
+            on_ = true;
+        }
+
+        //! Turn the light source off.
+        /*!
+
+         */
+        virtual void off( void )
+        {
+            on_ = false;
+        }
+        
+	private:
+        // Whether the source is turned on or off.
+        bool on_;
 	};
 	
 }
 
 #endif	/* LIGHTSOURCEFROMABOVE_H */
 
-
-// Local Variables: 
-// mode: c++
-// mode: flyspell-prog
-// ispell-local-dictionary: "british"
-// End: 
