@@ -21,7 +21,7 @@ namespace Enki
 	 * \ingroup robot */
 	class Bee : public DifferentialWheeled
 	{
-		const 
+
 	public:
         //! Create a Bee
         Bee(void);
