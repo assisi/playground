@@ -126,7 +126,7 @@ namespace Enki
         BOOST_FOREACH(const ObjectMap::value_type& ca, objects_)
         {
             std::string data;
-            /* Publishing IR readings */
+
             PoseStamped pose;
             pose.mutable_pose()->mutable_position()->set_x(ca.second->pos.x);
             pose.mutable_pose()->mutable_position()->set_y(ca.second->pos.y);
@@ -140,6 +140,21 @@ namespace Enki
         }
         return count;
     }
+// -----------------------------------------------------------------------------
+
+    /* virtual */
+    PhysicalObject* PhysicalObjectHandler::getObject(const std::string& name)
+    {
+        if (objects_.count(name) > 0)
+        {
+            return objects_[name];
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
 // -----------------------------------------------------------------------------
 
 }

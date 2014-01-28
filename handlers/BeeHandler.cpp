@@ -61,9 +61,9 @@ namespace Enki
                                     const std::string& data)
     {
         int count = 0;
-        if (device == "base")
+        if (device == "Base")
         {
-            if (command == "vel")
+            if (command == "Vel")
             {
                 DiffDrive drive;
                 assert(drive.ParseFromString(data));
@@ -134,6 +134,21 @@ namespace Enki
 
         return count;
     }
+// -----------------------------------------------------------------------------
+
+    /* virtual */
+    PhysicalObject* BeeHandler::getObject(const std::string& name)
+    {
+        if (bees_.count(name) > 0)
+        {
+            return bees_[name];
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
 // -----------------------------------------------------------------------------
 
 }

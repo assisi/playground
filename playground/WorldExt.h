@@ -67,7 +67,7 @@ it must be created on the heap and should not be deleted!
             \param data   AssisiMsg::Spawn message, serialized to string
          */
         bool handleSim_(const std::string& device,
-                        const std::string& robot_type,
+                        const std::string& command,
                         const std::string& data);
 
         typedef std::map<std::string, ObjectHandler*> HandlerMap;

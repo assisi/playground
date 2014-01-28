@@ -5,6 +5,7 @@
 #include "WorldExt.h"
 #include "handlers/EPuckHandler.h"
 #include "handlers/CasuHandler.h"
+#include "handlers/BeeHandler.h"
 
 #include <unistd.h> // for usleep
 
@@ -27,6 +28,8 @@ int main(int argc, char *argv[])
     CasuHandler *ch = new CasuHandler();
     world.addHandler("Casu", ch);
 
+    BeeHandler *bh = new BeeHandler();
+    world.addHandler("Bee", bh);
     
     while (1)
     {

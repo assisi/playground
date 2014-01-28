@@ -127,7 +127,7 @@ namespace Enki
                 ranges.add_range(ir->getDist());                
             }
             ranges.SerializeToString(&data);
-            zmq::send_multipart(socket, ca.first, "ir", "ranges", data);
+            zmq::send_multipart(socket, ca.first, "IR", "Ranges", data);
 
             /* Publish other stuff as necessary ... */
 
@@ -135,6 +135,21 @@ namespace Enki
         }
         return count;
     }
+// -----------------------------------------------------------------------------
+
+    /* virtual */
+    PhysicalObject* CasuHandler::getObject(const std::string& name)
+    {
+        if (casus_.count(name) > 0)
+        {
+            return casus_[name];
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
 // -----------------------------------------------------------------------------
 
 }
