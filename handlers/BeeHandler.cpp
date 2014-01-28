@@ -101,14 +101,14 @@ namespace Enki
                 ranges.add_range(ir->getDist());                
             }
             ranges.SerializeToString(&data);
-            send_multipart(socket, ca.first, "ir", "ranges", data);
+            send_multipart(socket, ca.first, "IR", "Ranges", data);
             count++;
 
             /* Publish velocities */
             DiffDrive drive;
             drive.set_vel_left(ca.second->leftEncoder);
             drive.set_vel_right(ca.second->rightEncoder);
-            send_multipart(socket, ca.first, "base", "enc", data);
+            send_multipart(socket, ca.first, "Base", "Enc", data);
             count++;
 
             /* Publish light sensor data */
@@ -120,6 +120,14 @@ namespace Enki
             light.SerializeToString(&data);
             send_multipart(socket, ca.first, "Light", "Readings", data);
             count++;
+
+            /* Publish ground truth */
+            PoseStamped pose;
+            pose.mutable_pose()->mutable_position()->set_x(ca.second->pos.x);
+            pose.mutable_pose()->mutable_position()->set_y(ca.second->pos.y);
+            pose.mutable_pose()->mutable_orientation()->set_z(ca.second->angle);
+            pose.SerializeToString(&data);
+            send_multipart(socket, ca.first, "Base", "GroundTruth", data);
             
             /* Publish other stuff as necessary */
         }
