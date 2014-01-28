@@ -1,3 +1,4 @@
+
 /*
 
  */
@@ -81,8 +82,30 @@ namespace Enki
             else
             {
                 cerr << "Unknown command for " << name << "/" << device << endl;
-                return 0;
             }         
+        }
+        else if (device == "Light")
+        {
+            if (command == "On")
+            {
+                ColorStamped color_msg;
+                assert(color_msg.ParseFromString(data));
+                /*
+                casus_[name]->top_led->on( Enki::Color(color_msg.color().red(),
+                                                      color_msg.color().green(),
+                                                      color_msg.color().blue(),
+                                                      color_msg.color().alpha() ) );
+                */
+                count++;
+            }
+            else if (command == "Off")
+            {
+                count++;
+            }
+            else
+            {
+                cerr << "Unknown command " << command << " for " << name << "/" << device << endl;
+            }
         }
         else
         {
