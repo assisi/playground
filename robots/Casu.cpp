@@ -8,8 +8,12 @@
 #include <boost/math/constants/constants.hpp>
 
 #include <PhysicalEngine.h>
+#include <interactions/IRSensor.h>
 
 #include "Casu.h"
+#include "interactions/LightSourceFromAbove.h"
+#include "interactions/LightConstants.h"
+#include "interactions/DiagnosticLed.h"
 
 const double pi = boost::math::constants::pi<double>();
 
@@ -50,6 +54,21 @@ namespace Enki
         {
             addLocalInteraction(p);
         }
+
+        // TODO: Move these definitions to the Casu declaration
+        //       and make them static symbolic constants!
+        double light_radius = 5.0; // 5cm
+        double light_k = 1;            // Corresponds to k = 100 for lengths in meters
+        double I_max = 1.0;        // TODO: Figure out correct value
+        double light_sigma = 1.0;
+        this->light_source_blue = new LightSourceFromAbove(2*light_radius, this, Vector(0,0), 0,
+                                                      light_k, light_radius, Light::Blue, 
+                                                      I_max, light_sigma);
+        
+        this->light_source_blue->setCylindric(0, 0, -1); // Set to point object
+        world->addObject(this->light_source_blue);
+                                                    
+        
 
         // Add diagnostic led
         top_led = new DiagnosticLed(this);

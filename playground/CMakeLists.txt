@@ -65,6 +65,10 @@ set(playground_SOURCES AssisiPlaygroundMain.cpp
                        ../handlers/CasuHandler.cpp
                        ../handlers/PhysicalObjectHandler.cpp
                        ../handlers/BeeHandler.cpp
+                       ../interactions/LightConstants.cpp
+                       ../interactions/LightSource.cpp
+                       ../interactions/LightSourceFromAbove.cpp
+                       ../interactions/LightSensor.cpp
                        ${ProtoSources})
 
 # For MOC-ing

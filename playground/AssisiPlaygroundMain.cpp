@@ -33,10 +33,6 @@ int main(int argc, char *argv[])
                    Color::gray, texture.width(),
                    texture.height(), (uint32_t*) texture.bits() );
 
-    // Add handlers
-    EPuckHandler *eh = new EPuckHandler();
-    world.addHandler("EPuck", eh);
-
     CasuHandler *ch = new CasuHandler();
     world.addHandler("Casu", ch);
 
