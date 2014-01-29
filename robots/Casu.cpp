@@ -20,6 +20,7 @@ const double pi = boost::math::constants::pi<double>();
 namespace Enki
 {
     Casu::Casu(World* world) :
+        world_(world),
         range_sensors(6)
     {
       
@@ -66,7 +67,7 @@ namespace Enki
                                                       I_max, light_sigma);
         
         this->light_source_blue->setCylindric(0, 0, -1); // Set to point object
-        world->addObject(this->light_source_blue);
+        world_->addObject(this->light_source_blue);
                                                     
         
 
@@ -75,6 +76,8 @@ namespace Enki
         
     }
 
+// -----------------------------------------------------------------------------
+
     Casu::~Casu()
     {
         BOOST_FOREACH(IRSensor* p, range_sensors)
@@ -82,7 +85,11 @@ namespace Enki
             delete p;
         }
 
+        world_->removeObject(this->light_source_blue);
+
         delete top_led;
     }
+
+// -----------------------------------------------------------------------------
 
 }

@@ -39,6 +39,9 @@ namespace Enki
 
         //! Diagnostic LED
         DiagnosticLed* top_led;
+
+    private:
+        World* world_;
         
     };
 }

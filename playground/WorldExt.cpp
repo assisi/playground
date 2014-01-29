@@ -44,6 +44,8 @@ namespace Enki
         subscriber_ = new socket_t(*context_, ZMQ_SUB);
 
         publisher_->bind(pub_address_.c_str());
+        //int buff_size = 1;
+        //publisher_->setsockopt(ZMQ_SNDHWM, &buff_size, sizeof(int));
         subscriber_->bind(sub_address_.c_str());
         subscriber_->setsockopt(ZMQ_SUBSCRIBE, "Sim", 3);
     }
