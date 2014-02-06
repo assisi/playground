@@ -93,6 +93,8 @@ namespace Enki
                                     const std::string& data)
     {
         int count = 0;
+        /*
+        // This functionality has been moved to the Simulaiton interface (Teleport command).
         if (device == "Pos")
         {
             if (command == "Set")
@@ -114,6 +116,7 @@ namespace Enki
         {
             cerr << "Unknown device " << device << endl;
         }
+        */
         return count;
     }
 
