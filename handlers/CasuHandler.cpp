@@ -120,12 +120,21 @@ namespace Enki
         BOOST_FOREACH(const CasuMap::value_type& ca, casus_)
         {
             std::string data;
+            
             /* Publishing IR readings */
             RangeArray ranges;
             BOOST_FOREACH(IRSensor* ir, ca.second->range_sensors)
             {
                 ranges.add_range(ir->getDist());                
+                ranges.add_raw_value(ir->getValue());
             }
+            // Add an additional (fake) reading for the top sensor which isn't modeled
+            // TODO: Do this in a smarter way, e.g., if more than half of the
+            //       sensors are detecting objects, assume this one is also detecting
+            //       and object. Right now, the top sensor is never detecting anything.
+            ranges.add_range(10000);
+            ranges.add_raw_value(0);
+            
             ranges.SerializeToString(&data);
             zmq::send_multipart(socket, ca.first, "IR", "Ranges", data);
 
