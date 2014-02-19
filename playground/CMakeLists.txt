@@ -9,6 +9,7 @@ find_package(ZeroMQ REQUIRED)
 
 # boost::for_each is used within WorldExt
 find_package(Boost REQUIRED)
+find_package(Boost COMPONENTS program_options REQUIRED)
 
 # Set up compilation of protobuffer files
 find_package(Protobuf REQUIRED)
@@ -43,7 +44,7 @@ set(test_ext_SOURCES WorldExt.cpp
                      ${ProtoSources})
 
 add_executable(test_ext ${test_ext_SOURCES})
-target_link_libraries(test_ext ${enki_LIBRARIES} ${ZeroMQ_LIBRARY} ${PROTOBUF_LIBRARY})
+target_link_libraries(test_ext ${enki_LIBRARIES} ${ZeroMQ_LIBRARY} ${PROTOBUF_LIBRARY} ${Boost_LIBRARIES})
 
 # Demo EPuck wander behavior ("client")
 #set(wander_demo_SOURCES wander_demo.cpp
@@ -92,5 +93,6 @@ target_link_libraries(assisi_playground ${enki_LIBRARIES}
                                         ${QT_LIBRARIES} 
                                         ${OPENGL_LIBRARIES} 
                                         ${ZeroMQ_LIBRARY}
-                                        ${PROTOBUF_LIBRARY})
+                                        ${PROTOBUF_LIBRARY}
+                                        ${Boost_LIBRARIES})
 

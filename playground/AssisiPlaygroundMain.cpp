@@ -1,6 +1,8 @@
 #include <QApplication>
 #include <QImage>
 
+#include <boost/program_options.hpp>
+
 #include "WorldExt.h"
 #include "AssisiPlayground.h"
 
@@ -15,12 +17,32 @@
 using namespace std;
 using namespace Enki;
 
+namespace po = boost::program_options;
+
 int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
 	
+    // Parse command line options
+    po::options_description desc("Recognized options");
+    int r;
+    desc.add_options()
+        ("help", "produce help message")
+        ("r", po::value<int>(&r)->default_value(40), "playground radius, in cm");
+
+    po::variables_map vm;
+    po::store(po::parse_command_line(argc, argv, desc), vm);
+    po::notify(vm);
+
+    if (vm.count("help"))
+    {
+        cout << desc << endl;
+        return 1;
+    }
+
+    
 	// Create the world and the viewer
-    double r = 40; // World radius (in cm?)
+    //double r = 40; // World radius (in cm?)
     //string pub_address("tcp://127.0.0.1:5555"); 
     //string sub_address("tcp://127.0.0.1:5556");
     string pub_address("tcp://*:5555"); 
