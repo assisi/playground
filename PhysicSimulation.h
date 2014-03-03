@@ -14,7 +14,10 @@
 namespace Enki
 {
 	class ExtendedWorld;
-
+	/**
+	 * Base class of physic simulation.  This allows extending Enki with
+	 * other physical simulation besides collision detection.
+	 */
 	class PhysicSimulation {
 	public:
 		PhysicSimulation ();
@@ -29,19 +32,10 @@ namespace Enki
 		 * interaction.
 		 */
 		virtual void initStateComputing (double deltaTime) = 0;
-		// /**
-		//  * Handles the action of the given physical object in this physic
-		//  * interaction.
-		//  */
-		// virtual void handleObjectAction (const PhysicalObject *po) = 0;
 		/**
 		 * Computes the next state of this physic interaction.
 		 */
 		virtual void computeNextState (double deltaTime) = 0;
-		// /**
-		//  * Updates the physical sensors of the given object.
-		//  */
-		// virtual void handleObjectSense (PhysicalObject *po) = 0;
 	private:
 
 	};
