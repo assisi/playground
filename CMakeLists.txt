@@ -7,3 +7,4 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
                       "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
 add_subdirectory(playground)
+add_subdirectory(test)
