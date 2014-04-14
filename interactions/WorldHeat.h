@@ -20,6 +20,7 @@ namespace Enki
 	class WorldHeat :
 		public PhysicSimulation
 	{
+	public:
 		/**
 		 * Normal environmental heat used to compute heat at world borders.
 		 */
@@ -28,16 +29,36 @@ namespace Enki
 		 * Length in world coordinates of a grid point.
 		 */
 		const double gridScale;
+	private:
 		/**
 		 * Distance between world limits and environment.
 		 */
 		const double borderSize;
+		/**
+		 * Cellular automaton size.
+		 */
 		Enki::Vector size;
+		/**
+		 * Smallest world coordinates of cell (0,0) in the cellular automaton.
+		 */
 		Enki::Vector origin;
+		/**
+		 * Heat cellular automata.  One contains the heat in the current
+		 * iteration while the other is used to computed the next state.
+		 */
 		std::vector<std::vector<double> > heat [2];
+		/**
+		 * Index to the current cellular automaton in field {@code heat}.
+		 */
 		int adtIndex;
 	public:
 		static const double THERMAL_DIFFUSIVITY_AIR;
+		/**
+		 * If two heat values are less than this value, they are considered
+		 * equivalent.  This constant is used to see if we have reached the
+		 * steady state.
+		 */
+		static const double HEAT_EPSILON;
 
 		WorldHeat (double normalHeat, double gridScale, double borderSize);
 		virtual ~WorldHeat () {}
@@ -71,6 +92,18 @@ namespace Enki
 		void dumpState (std::ostream &os);
 
 	private:
+
+		/**
+		 * What this instance is doing during a sequence of {@code
+		 * computeNextState(double)} calls.  Either we are checking if we
+		 * have reached steady state and in method {@code
+		 * setHeat(Vector,double)} we only set the corresponding cell heat,
+		 * or we use cached values and do not update the values of {@code
+		 * heat} matrix and in method {@code setHeat()} we change state if
+		 * the difference is higher than {@code HEAT_EPSILON}.
+		 */
+		enum {CHECKING_STEADY_STATE, USING_CACHED_VALUES} timeState;
+
 		void toIndex (const Enki::Vector& position, int &x, int &y) const;
 	};
 }
