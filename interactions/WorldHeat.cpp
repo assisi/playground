@@ -106,7 +106,12 @@ computeNextState (double deltaTime)
 					+ this->heat [this->adtIndex][x + 1][y]
 					+ this->heat [this->adtIndex][x - 1][y]
 					- 4 * this->heat [this->adtIndex][x][y]
-					) * WorldHeat::THERMAL_DIFFUSIVITY_AIR * deltaTime / this->gridScale;
+					)
+				* WorldHeat::THERMAL_DIFFUSIVITY_AIR
+				* deltaTime
+				/ this->gridScale
+				/ 4.0
+				;
 		}
 	}
 	this->adtIndex = nextAdtIndex;
@@ -124,8 +129,10 @@ computeNextState (double deltaTime)
 void WorldHeat::
 toIndex (const Enki::Vector& position, int &x, int &y) const
 {
-	x = (position.x - this->origin.x) / this->gridScale;
-	y = (position.y - this->origin.y) / this->gridScale;
+	// x = (position.x - this->origin.x) / this->gridScale;
+	// y = (position.y - this->origin.y) / this->gridScale;
+	x = round ((position.x - this->origin.x) / this->gridScale);
+	y = round ((position.y - this->origin.y) / this->gridScale);
 }
 
 void WorldHeat::
