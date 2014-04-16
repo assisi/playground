@@ -21,11 +21,20 @@ namespace Enki
 	/**
 	 * An extended robot that is capable of physical interactions besides
 	 * collisions.
+	 *
+	 * <p> This class provides three methods similar to local and global
+	 * interactions that handle physical interactions.  These methods
+	 * initialise, perform the actual computation and finish the physical
+	 * interaction.  These methods are called in class {@code
+	 * ExtendedWorld}.
 	 */
 	class ExtendedRobot:
 		public Robot
 	{
 	protected:
+		/**
+		 * Physical interactions that this robot is capable of.
+		 */
 		std::vector<PhysicInteraction *> physicInteractions;
 	public:
 		ExtendedRobot ();

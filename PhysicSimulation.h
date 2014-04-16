@@ -8,7 +8,6 @@
 #ifndef __PHYSIC_SIMULATION_H
 #define __PHYSIC_SIMULATION_H
 
-#include <enki/PhysicalEngine.h>
 #include "ExtendedWorld.h"
 
 namespace Enki
@@ -20,9 +19,9 @@ namespace Enki
 	 */
 	class PhysicSimulation {
 	public:
-		PhysicSimulation ();
-		PhysicSimulation (const PhysicSimulation& orig);
-		virtual ~PhysicSimulation ();
+		PhysicSimulation () {}
+		PhysicSimulation (const PhysicSimulation& orig) {}
+		virtual ~PhysicSimulation () {}
 		/**
 		 * Initialise this physic interaction with the given world.
 		 */

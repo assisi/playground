@@ -8,6 +8,8 @@
 #ifndef __PHYSIC_INTERACTION_H
 #define __PHYSIC_INTERACTION_H
 
+#include <enki/PhysicalEngine.h>
+
 #include "ExtendedWorld.h"
 #include "PhysicSimulation.h"
 

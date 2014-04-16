@@ -9,13 +9,19 @@
 
 using namespace Enki;
 
-ExtendedRobot::ExtendedRobot() {
+ExtendedRobot::
+ExtendedRobot ()
+{
 }
 
-ExtendedRobot::ExtendedRobot(const ExtendedRobot& orig) {
+ExtendedRobot::
+ExtendedRobot (const ExtendedRobot& orig)
+{
 }
 
-ExtendedRobot::~ExtendedRobot() {
+ExtendedRobot::
+~ExtendedRobot ()
+{
 }
 
 void ExtendedRobot::

@@ -50,9 +50,9 @@ void ExtendedWorld::step (double dt, unsigned physicsOversampling)
 		for (PhysicSimulationsIterator pi = physicSimulations.begin (); pi != physicSimulations.end (); ++pi) {
 			(*pi)->initStateComputing (overSampledDt);
 			for (ExtendedRobotsIterator eri = extendedRobots.begin (); eri != extendedRobots.end (); ++eri) {
-				(*eri)->initPhysicInteractions (dt, *pi);
-				(*eri)->doPhysicInteractions (dt, *pi);
-				(*eri)->finalizePhysicInteractions (dt, *pi);
+				(*eri)->initPhysicInteractions (overSampledDt, *pi);
+				(*eri)->doPhysicInteractions (overSampledDt, *pi);
+				(*eri)->finalizePhysicInteractions (overSampledDt, *pi);
 			}
 			(*pi)->computeNextState (overSampledDt);
 		}

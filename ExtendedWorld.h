@@ -10,6 +10,8 @@
 #ifndef __EXTENDED_WORLD_H
 #define __EXTENDED_WORLD_H
 
+#include <enki/PhysicalEngine.h>
+
 #include "PhysicSimulation.h"
 #include "ExtendedRobot.h"
 
