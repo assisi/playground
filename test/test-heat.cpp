@@ -51,6 +51,7 @@ double maxHeat;
 
 double currentTime = 0;
 bool displayGradient = true;
+bool blackFlag = false;
 
 void readConfigFile ()
 {
@@ -110,7 +111,26 @@ void printText_Viewport (int x, int y, const char *String)
 	glPopMatrix ();
 }
 
-
+void heat2color (double heat)
+{
+	double colour = std::max (-1.0, std::min ((heat - normalHeat) / maxHeat, 1.0));
+	if (blackFlag) {
+		if (colour < 0) {
+			glColor3f (0, 0, -colour);
+		}
+		else {
+			glColor3f (colour, 0, 0);
+		}
+	}
+	else {
+		if (colour < 0) {
+			glColor3f (1 + colour, 1 + colour, 1);
+		}
+		else {
+			glColor3f (1, 1 - colour, 1 - colour);
+		}
+	}
+}
 
 void displayCallBack ()
 {
@@ -133,27 +153,13 @@ void displayCallBack ()
 				glBegin (GL_QUADS); {
 					for (int i = 0; i < 4; i++) {
 						Point where = pos + delta [i];
-						double heat = worldHeat->getHeatAt (where);
-						double colour = std::max (-1.0, std::min((heat - normalHeat) / maxHeat, 1.0));
-						if (colour < 0) {
-							glColor3f (0, 0, -colour);
-						}
-						else {
-							glColor3f (colour, 0, 0);
-						}
+						heat2color (worldHeat->getHeatAt (where));
 						glVertex2f (where.x, where.y);
 					}
 				} glEnd ();
 			}
 			else {
-				double heat = worldHeat->getHeatAt (pos);
-				double colour = std::max (-1.0, std::min((heat - normalHeat) / maxHeat, 1.0));
-				if (colour < 0) {
-					glColor3f (0, 0, -colour);
-				}
-				else {
-					glColor3f (colour, 0, 0);
-				}
+				heat2color (worldHeat->getHeatAt (pos));
 				glBegin (GL_QUADS); {
 					glVertex2f (pos.x - gridScale / 2, pos.y - gridScale / 2);
 					glVertex2f (pos.x + gridScale / 2, pos.y - gridScale / 2);
@@ -166,11 +172,17 @@ void displayCallBack ()
 		pos.x += gridScale;
 	} while (pos.x < world->w);
 
-	glColor3f (1, 1, 1);
+	if (blackFlag) {
+		glColor3f (1, 1, 1);
+	}
+	else {
+		glColor3f (0, 0, 0);
+	}
 	for (size_t i = 0; i < heatingRobots.size (); i++) {
 		glBegin (GL_LINE_LOOP); {
-			for (double t = 0; t < 2 * M_PI; t += M_PI / 6) //<-- Change this Value
+			for (double t = 0; t < 2 * M_PI; t += M_PI / 6) { //<-- Change this Value
 				glVertex3f (heatingRobots [i]->pos.x + cos (t) * RADIUS, heatingRobots [i]->pos.y + sin (t) * RADIUS, 0.0);
+			}
 		} glEnd ();
 		if (heatingRobots [i]->heatActuator->isSwitchedOn ()) {
 		}
@@ -234,6 +246,9 @@ void keyboardCallBack (unsigned char key, int x, int y)
 	case 'g':
 		displayGradient = !displayGradient;
 		break;
+	case 'b':
+		blackFlag = !blackFlag;
+		break;
 	case '1':
 	case '2':
 	case '3':
@@ -247,6 +262,20 @@ void keyboardCallBack (unsigned char key, int x, int y)
 int main (int argc, char *argv[])
 {
 	readConfigFile ();
+
+	if (argc == 4 && strcmp (argv [1], "dump-state") == 0) {
+		ofstream ofs (argv [2]);
+		int iterations = atoi (argv [3]);
+		while (iterations > 0) {
+			world->step (deltaTime);
+			currentTime += deltaTime;
+			ofs << currentTime;
+			worldHeat->dumpState (ofs);
+			iterations--;
+		}
+		ofs.close ();
+	}
+
 
 	// if (argc == 2 && strcmp (argv [1], "steady-state") == 0)  {
 	// 	unsigned long iterations = 0;
@@ -264,6 +293,7 @@ int main (int argc, char *argv[])
 	// 	} while (worldHeat->getTimeState () != WorldHeat::USING_CACHED_VALUES);
 	// 	cout << "Second steady state reached after " << iterations << " iterations\n"; 
 	// }
+
    /* Initialize GLUT */
 
    glutInit( &argc, argv );

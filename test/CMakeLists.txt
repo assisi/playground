@@ -6,11 +6,9 @@ set(test_heat_SOURCES
 ../interactions/WorldHeat.cpp
 ../interactions/HeatSensor.cpp
 ../interactions/HeatActuator.cpp
-#../PhysicInteraction.cpp
 ../Component.cpp
 ../ExtendedRobot.cpp
 ../ExtendedWorld.cpp
-../PhysicSimulation.cpp
 )
 
 
