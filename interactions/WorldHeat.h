@@ -4,8 +4,9 @@
 #include <vector>
 #include <iostream>
 
-#include "../ExtendedWorld.h"
-#include "../PhysicSimulation.h"
+#include "ExtendedWorld.h"
+#include "PhysicSimulation.h"
+#include "interactions/AbstractGridSimulation.h"
 
 namespace Enki
 {
@@ -18,7 +19,7 @@ namespace Enki
 	 * Moore neighbours.
 	 */
 	class WorldHeat :
-		public PhysicSimulation
+		public AbstractGridSimulation<double>
 	{
 	public:
 		/**
@@ -26,46 +27,23 @@ namespace Enki
 		 */
 		const double normalHeat;
 		/**
-		 * Length in world coordinates of a grid point.
+		 * Heat in enki diffuses through air.
 		 */
-		const double gridScale;
-	private:
-		/**
-		 * Distance between world limits and environment.
-		 */
-		const double borderSize;
-		/**
-		 * Cellular automaton size.
-		 */
-		Enki::Vector size;
-		/**
-		 * Smallest world coordinates of cell (0,0) in the cellular automaton.
-		 */
-		Enki::Vector origin;
-		/**
-		 * Heat cellular automata.  One contains the heat in the current
-		 * iteration while the other is used to computed the next state.
-		 */
-		std::vector<std::vector<double> > heat [2];
-		/**
-		 * Index to the current cellular automaton in field {@code heat}.
-		 */
-		int adtIndex;
-	public:
 		static const double THERMAL_DIFFUSIVITY_AIR;
-		/**
-		 * If two heat values are less than this value, they are considered
-		 * equivalent.  This constant is used to see if we have reached the
-		 * steady state.
-		 */
-		static const double HEAT_EPSILON;
 
+	public:
 		WorldHeat (double normalHeat, double gridScale, double borderSize);
 		virtual ~WorldHeat () {}
 
 		double getHeatAt (Vector &pos) const;
 		void setHeatAt (Vector &pos, double value);
-
+		/**
+		 * When a heat actuator turns off, we have to recompute the heat
+		 * distribution in the world.  We do this for a certain number of
+		 * iterations and then we start checking if we have reached a steady
+		 * state.
+		 */
+		virtual void computeHeatDistribution () {}
 		/**
 		 * Initialise this physic interaction with the given world.
 		 */
@@ -91,20 +69,12 @@ namespace Enki
 
 		void dumpState (std::ostream &os);
 
-	private:
-
+	protected:
 		/**
-		 * What this instance is doing during a sequence of {@code
-		 * computeNextState(double)} calls.  Either we are checking if we
-		 * have reached steady state and in method {@code
-		 * setHeat(Vector,double)} we only set the corresponding cell heat,
-		 * or we use cached values and do not update the values of {@code
-		 * heat} matrix and in method {@code setHeat()} we change state if
-		 * the difference is higher than {@code HEAT_EPSILON}.
+		 * Update the heat grid and return the largest difference between two
+		 * adjacent grid cells.
 		 */
-		enum {CHECKING_STEADY_STATE, USING_CACHED_VALUES} timeState;
-
-		void toIndex (const Enki::Vector& position, int &x, int &y) const;
+		double updateGrid (double deltaTime);
 	};
 }
 

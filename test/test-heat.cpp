@@ -34,7 +34,7 @@ public:
 	}
 	void toogleHeat ()
 	{
-		this->heatActuator->switchedOn = !this->heatActuator->switchedOn;
+		this->heatActuator->toogleSwitchedOn ();
 	}
 };
 
@@ -50,6 +50,7 @@ unsigned int simulationSpeed = 100;
 double maxHeat;
 
 double currentTime = 0;
+bool displayGradient = true;
 
 void readConfigFile ()
 {
@@ -74,11 +75,11 @@ void readConfigFile ()
 	ifs.close ();
 }
 
-void usage (int error)
-{
-	fprintf (stderr, "Usage:\ntest-heat WIDTH HEIGHT GRIDSCALE HEATING_ROBOT_1_POS_X HEATING_ROBOT_1_POS_Y HEATING_ROBOT_1_HEAT...\n");
-	exit (error);
-}
+// void usage (int error)
+// {
+// 	fprintf (stderr, "Usage:\ntest-heat WIDTH HEIGHT GRIDSCALE HEATING_ROBOT_1_POS_X HEATING_ROBOT_1_POS_Y HEATING_ROBOT_1_HEAT...\n");
+// 	exit (error);
+// }
 
 
 /*
@@ -122,43 +123,44 @@ void displayCallBack ()
 	do {
 		pos.y = gridScale;
 		do {
-			Point delta[] = {
-				Point (0, 0),
-				Point (-gridScale, 0),
-				Point (-gridScale, -gridScale),
-				Point (0, -gridScale)
-			};
-			glBegin (GL_QUADS); {
-				for (int i = 0; i < 4; i++) {
-					Point where = pos + delta [i];
-					double heat = worldHeat->getHeatAt (where);
-					double colour = std::max (-1.0, std::min((heat - normalHeat) / maxHeat, 1.0));
-					if (colour < 0) {
-						glColor3f (0, 0, -colour);
+			if (displayGradient) {
+				Point delta[] = {
+					Point (0, 0),
+					Point (-gridScale, 0),
+					Point (-gridScale, -gridScale),
+					Point (0, -gridScale)
+				};
+				glBegin (GL_QUADS); {
+					for (int i = 0; i < 4; i++) {
+						Point where = pos + delta [i];
+						double heat = worldHeat->getHeatAt (where);
+						double colour = std::max (-1.0, std::min((heat - normalHeat) / maxHeat, 1.0));
+						if (colour < 0) {
+							glColor3f (0, 0, -colour);
+						}
+						else {
+							glColor3f (colour, 0, 0);
+						}
+						glVertex2f (where.x, where.y);
 					}
-					else {
-						glColor3f (colour, 0, 0);
-					}
-					glVertex2f (where.x, where.y);
+				} glEnd ();
+			}
+			else {
+				double heat = worldHeat->getHeatAt (pos);
+				double colour = std::max (-1.0, std::min((heat - normalHeat) / maxHeat, 1.0));
+				if (colour < 0) {
+					glColor3f (0, 0, -colour);
 				}
-			} glEnd ();
-
-
-			// double heat = worldHeat->getHeatAt (pos);
-			// double colour = std::max (-1.0, std::min((heat - normalHeat) / maxHeat, 1.0));
-			// if (colour < 0) {
-			// 	glColor3f (0, 0, -colour);
-			// }
-			// else {
-			// 	glColor3f (colour, 0, 0);
-			// }
-			// glBegin (GL_QUADS); {
-			// 	glVertex2f (pos.x - gridScale / 2, pos.y - gridScale / 2);
-			// 	glVertex2f (pos.x + gridScale / 2, pos.y - gridScale / 2);
-			// 	glVertex2f (pos.x + gridScale / 2, pos.y + gridScale / 2);
-			// 	glVertex2f (pos.x - gridScale / 2, pos.y + gridScale / 2);
-			// } glEnd ();
-
+				else {
+					glColor3f (colour, 0, 0);
+				}
+				glBegin (GL_QUADS); {
+					glVertex2f (pos.x - gridScale / 2, pos.y - gridScale / 2);
+					glVertex2f (pos.x + gridScale / 2, pos.y - gridScale / 2);
+					glVertex2f (pos.x + gridScale / 2, pos.y + gridScale / 2);
+					glVertex2f (pos.x - gridScale / 2, pos.y + gridScale / 2);
+				} glEnd ();
+			}
 			pos.y += gridScale;
 		} while (pos.y < world->h);
 		pos.x += gridScale;
@@ -170,7 +172,7 @@ void displayCallBack ()
 			for (double t = 0; t < 2 * M_PI; t += M_PI / 6) //<-- Change this Value
 				glVertex3f (heatingRobots [i]->pos.x + cos (t) * RADIUS, heatingRobots [i]->pos.y + sin (t) * RADIUS, 0.0);
 		} glEnd ();
-		if (heatingRobots [i]->heatActuator->switchedOn) {
+		if (heatingRobots [i]->heatActuator->isSwitchedOn ()) {
 		}
 		else {
 			glBegin (GL_LINE_LOOP); {
@@ -229,6 +231,9 @@ void keyboardCallBack (unsigned char key, int x, int y)
 			deltaTime = 0;
 		}
 		break;
+	case 'g':
+		displayGradient = !displayGradient;
+		break;
 	case '1':
 	case '2':
 	case '3':
@@ -243,7 +248,22 @@ int main (int argc, char *argv[])
 {
 	readConfigFile ();
 
-
+	// if (argc == 2 && strcmp (argv [1], "steady-state") == 0)  {
+	// 	unsigned long iterations = 0;
+	// 	do {
+	// 		world->step (deltaTime);
+	// 		iterations++;
+	// 	} while (worldHeat->getTimeState () != WorldHeat::USING_CACHED_VALUES);
+	// 	cout << "First steady state reached after " << iterations << " iterations\n"; 
+	// 	heatingRobots [0]->toogleHeat ();
+	// 	world->step (deltaTime);
+	// 	iterations = 0;
+	// 	do {
+	// 		world->step (deltaTime);
+	// 		iterations++;
+	// 	} while (worldHeat->getTimeState () != WorldHeat::USING_CACHED_VALUES);
+	// 	cout << "Second steady state reached after " << iterations << " iterations\n"; 
+	// }
    /* Initialize GLUT */
 
    glutInit( &argc, argv );
