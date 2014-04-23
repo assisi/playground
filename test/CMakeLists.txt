@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 set(enki_INCLUDE_DIR /usr/local/include)
 set(enki_LIBRARIES /usr/local/lib/libenki.a)
 
@@ -14,7 +14,7 @@ include_directories( ${enki_INCLUDE_DIR})
 add_executable(test_light ${test_light_SOURCES})
 
 target_link_libraries(test_light ${enki_LIBRARIES})
-=======
+
 set(enki_INCLUDE_DIR /usr/local/include /usr/local/include/enki . )
 set(enki_LIBRARIES /usr/local/lib/libenki.a)
 
@@ -70,5 +70,5 @@ target_link_libraries(test-heat
   ${GLUT_LIBRARY}
   )
 
->>>>>>> 1e78c01e4fb4f4a35e83f5257962093c2c1a038d
+
 
