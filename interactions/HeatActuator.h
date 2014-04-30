@@ -4,8 +4,8 @@
 #include <enki/PhysicalEngine.h>
 #include <enki/Geometry.h>
 
-#include "../Component.h"
-#include "../PhysicInteraction.h"
+#include "extensions/Component.h"
+#include "extensions/PhysicInteraction.h"
 
 namespace Enki
 {
