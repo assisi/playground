@@ -7,8 +7,8 @@
 #include <cmath>
 #include <string.h> 
 
-#include "ExtendedWorld.h"
-#include "ExtendedRobot.h"
+#include "extensions/ExtendedWorld.h"
+#include "extensions/ExtendedRobot.h"
 #include "interactions/HeatActuator.h"
 #include "interactions/WorldHeat.h"
 
@@ -275,6 +275,7 @@ int main (int argc, char *argv[])
 		}
 		ofs.close ();
 	}
+	else {
 
 
 	// if (argc == 2 && strcmp (argv [1], "steady-state") == 0)  {
@@ -294,25 +295,27 @@ int main (int argc, char *argv[])
 	// 	cout << "Second steady state reached after " << iterations << " iterations\n"; 
 	// }
 
-   /* Initialize GLUT */
+	   /* Initialize GLUT */
 
-   glutInit( &argc, argv );
+		glutInit( &argc, argv );
 
-   /* window in the screen */
+		/* window in the screen */
 
-   glutInitWindowSize( 800, 800 );
-	glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB);
-   glutInitWindowPosition( 100, 100 );
+		glutInitWindowSize( 800, 800 );
+		glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB);
+		glutInitWindowPosition( 100, 100 );
 
-   glutCreateWindow( "heat simulation" );
+		glutCreateWindow( "heat simulation" );
 
-   /*  "callback function" */
-   glutDisplayFunc ( displayCallBack );
-	glutReshapeFunc (reshapeCallBack);
-	glutKeyboardFunc (keyboardCallBack);
-	glutTimerFunc (simulationSpeed, timerCallBack, 0);
+		/*  "callback function" */
+		glutDisplayFunc ( displayCallBack );
+		glutReshapeFunc (reshapeCallBack);
+		glutKeyboardFunc (keyboardCallBack);
+		glutTimerFunc (simulationSpeed, timerCallBack, 0);
 
-   /* waiting events */
-   glutMainLoop();
+		/* waiting events */
+		glutMainLoop();
+	}
+
 	return 0;
 }

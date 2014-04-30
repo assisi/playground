@@ -6,13 +6,13 @@ set(test_heat_SOURCES
 ../interactions/WorldHeat.cpp
 ../interactions/HeatSensor.cpp
 ../interactions/HeatActuator.cpp
-../Component.cpp
-../ExtendedRobot.cpp
-../ExtendedWorld.cpp
+../extensions/Component.cpp
+../extensions/ExtendedRobot.cpp
+../extensions/ExtendedWorld.cpp
 )
 
 
-set(GLUT_Xmu_LIBRARY /usr/lib/i386-linux-gnu/libglut.so  )
+#set(GLUT_Xmu_LIBRARY /usr/lib/i386-linux-gnu/libglut.so  )
 
 find_package(GLUT REQUIRED)
 include_directories(${GLUT_INCLUDE_DIRS})
