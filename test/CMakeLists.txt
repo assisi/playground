@@ -9,7 +9,10 @@ set(test_light_SOURCES
   ../interactions/LightSourceFromAbove.cpp
   )
 
-include_directories( ${enki_INCLUDE_DIR})
+include_directories (${CMAKE_SOURCE_DIR}
+                     ${CMAKE_SOURCE_DIR}/extensions
+                     ${CMAKE_SOURCE_DIR}/interactions
+                     ${enki_INCLUDE_DIR})
 
 add_executable(test_light ${test_light_SOURCES})
 

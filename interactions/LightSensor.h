@@ -9,7 +9,7 @@
 #define __LIGHTSENSOR_H
 
 #include <enki/Interaction.h>
-#include "../Component.h"
+#include "Component.h"
 
 namespace Enki
 {

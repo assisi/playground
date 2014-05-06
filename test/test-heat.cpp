@@ -7,10 +7,10 @@
 #include <cmath>
 #include <string.h> 
 
-#include "extensions/ExtendedWorld.h"
-#include "extensions/ExtendedRobot.h"
-#include "interactions/HeatActuator.h"
-#include "interactions/WorldHeat.h"
+#include "ExtendedWorld.h"
+#include "ExtendedRobot.h"
+#include "HeatActuator.h"
+#include "WorldHeat.h"
 
 using namespace Enki;
 using namespace std;
