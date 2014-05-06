@@ -73,5 +73,8 @@ target_link_libraries(test-heat
   ${GLUT_LIBRARY}
   )
 
+# Copy config files to binary dir
+configure_file(config-heat.txt config-heat.txt COPYONLY)
+
 
 
