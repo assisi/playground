@@ -1,9 +1,12 @@
 # Find dependencies
 
 # TODO: Make a FindEnki.cmake module
-set(enki_INCLUDE_DIR /usr/local/include/enki)
-set(enki_LIBRARIES /usr/local/lib/libenki.a
-                   /usr/local/lib/libenkiviewer.a)
+find_path(enki_INCLUDE_DIR enki)
+set(enki_INCLUDE_DIR ${enki_INCLUDE_DIR}/enki)
+find_library(enki_LIBRARY enki)
+find_library(enkiviewer_LIBRARY enkiviewer)
+set(enki_LIBRARIES ${enki_LIBRARY} ${enkiviewer_LIBRARY})
+
 
 find_package(ZeroMQ REQUIRED)
 
@@ -46,13 +49,6 @@ set(test_ext_SOURCES WorldExt.cpp
 
 add_executable(test_ext ${test_ext_SOURCES})
 target_link_libraries(test_ext ${enki_LIBRARIES} ${ZeroMQ_LIBRARY} ${PROTOBUF_LIBRARY} ${Boost_LIBRARIES})
-
-# Demo EPuck wander behavior ("client")
-#set(wander_demo_SOURCES wander_demo.cpp
-#                        ${ProtoSources})
-
-#add_executable(wander_demo ${wander_demo_SOURCES})
-#target_link_libraries(wander_demo ${ZeroMQ_LIBRARY} ${PROTOBUF_LIBRARY})
 
 find_package(Qt4 REQUIRED)
 find_package(OpenGL REQUIRED)

@@ -1,6 +1,6 @@
 
-set(enki_INCLUDE_DIR /usr/local/include)
-set(enki_LIBRARIES /usr/local/lib/libenki.a)
+find_path(enki_INCLUDE_DIR enki)
+find_library(enki_LIBRARIES enki)
 
 set(test_light_SOURCES
   ./test_light.cpp
@@ -18,9 +18,6 @@ add_executable(test_light ${test_light_SOURCES})
 
 target_link_libraries(test_light ${enki_LIBRARIES})
 
-set(enki_INCLUDE_DIR /usr/local/include /usr/local/include/enki . )
-set(enki_LIBRARIES /usr/local/lib/libenki.a)
-
 set(test_heat_SOURCES
 ./test-heat.cpp
 ../interactions/WorldHeat.cpp
@@ -31,8 +28,7 @@ set(test_heat_SOURCES
 ../extensions/ExtendedWorld.cpp
 )
 
-
-#set(GLUT_Xmu_LIBRARY /usr/lib/i386-linux-gnu/libglut.so  )
+#find_library(GLUT_Xmu_LIBRARY libglut)
 
 find_package(GLUT REQUIRED)
 include_directories(${GLUT_INCLUDE_DIRS})
@@ -60,9 +56,6 @@ include_directories(
 include_directories(
   ${CMAKE_SOURCE_DIR}/..
   )
-
-#include_directories (${OPENGL_INCLUDE_DIR})    
-
 
 add_executable(test-heat ${test_heat_SOURCES})
 
