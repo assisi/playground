@@ -22,6 +22,7 @@ set(PROTOBUF_IMPORT_DIRS ${PROTOBUF_IMPORT_DIRS}
 PROTOBUF_GENERATE_CPP(ProtoSources ProtoHeaders ${Proto_FILES})
 
 include_directories (${CMAKE_SOURCE_DIR}
+                     ${CMAKE_SOURCE_DIR}/extensions
                      ${CMAKE_BINARY_DIR}/playground
                      ${enki_INCLUDE_DIR}
                      ${ZeroMQ_INCLUDE_DIR})
