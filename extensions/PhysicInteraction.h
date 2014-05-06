@@ -10,7 +10,7 @@
 
 #include <enki/PhysicalEngine.h>
 
-#include "ExtendedWorld.h"
+#include "extensions/ExtendedWorld.h"
 #include "PhysicSimulation.h"
 
 namespace Enki

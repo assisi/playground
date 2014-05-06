@@ -5,8 +5,8 @@
 #include <iostream>
 #include <limits>
 
-#include "ExtendedWorld.h"
-#include "PhysicSimulation.h"
+#include "extensions/ExtendedWorld.h"
+#include "extensions/PhysicSimulation.h"
 
 namespace Enki
 {

@@ -4,8 +4,8 @@
 #include <vector>
 #include <iostream>
 
-#include "ExtendedWorld.h"
-#include "PhysicSimulation.h"
+#include "extensions/ExtendedWorld.h"
+#include "extensions/PhysicSimulation.h"
 #include "interactions/AbstractGridSimulation.h"
 
 namespace Enki
@@ -21,6 +21,10 @@ namespace Enki
 	class WorldHeat :
 		public AbstractGridSimulation<double>
 	{
+		/**
+		 * Maximum admissible delta time when computing the next state.
+		 */
+		const double maxDeltaTime;
 	public:
 		/**
 		 * Normal environmental heat used to compute heat at world borders.
@@ -30,6 +34,10 @@ namespace Enki
 		 * Heat in enki diffuses through air.
 		 */
 		static const double THERMAL_DIFFUSIVITY_AIR;
+		/**
+		 * Heat in enki can diffuse through copper connections between CASUs.
+		 */
+		static const double THERMAL_DIFFUSIVITY_COPPER;
 
 	public:
 		WorldHeat (double normalHeat, double gridScale, double borderSize);

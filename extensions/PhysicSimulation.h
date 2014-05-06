@@ -8,7 +8,7 @@
 #ifndef __PHYSIC_SIMULATION_H
 #define __PHYSIC_SIMULATION_H
 
-#include "ExtendedWorld.h"
+#include "extensions/ExtendedWorld.h"
 
 namespace Enki
 {
