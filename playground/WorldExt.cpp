@@ -34,7 +34,7 @@ namespace Enki
                        unsigned texWidth, 
                        unsigned texHeight, 
                        const uint32_t* texData)
-        : World(r, wallsColor, texWidth, texHeight, texData),
+        : ExtendedWorld(r, wallsColor, texWidth, texHeight, texData),
           pub_address_(pub_address), sub_address_(sub_address)
     {
         GOOGLE_PROTOBUF_VERIFY_VERSION;

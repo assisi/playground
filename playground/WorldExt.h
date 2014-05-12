@@ -12,7 +12,8 @@
 
 #include <zmq.hpp>
 
-#include "PhysicalEngine.h"
+#include "ExtendedWorld.h"
+//#include "PhysicalEngine.h"
 
 #include "handlers/ObjectHandler.h"
 
@@ -23,7 +24,7 @@ namespace Enki
     /*!
 
      */
-    class WorldExt : public World
+    class WorldExt : public ExtendedWorld
     {
         
     public:
