@@ -6,6 +6,9 @@
 #include "WorldExt.h"
 #include "AssisiPlayground.h"
 
+#include "extensions/ExtendedWorld.h"
+#include "interactions/WorldHeat.h"
+
 #include "handlers/PhysicalObjectHandler.h"
 #include "handlers/EPuckHandler.h"
 #include "handlers/CasuHandler.h"
@@ -71,6 +74,9 @@ int main(int argc, char *argv[])
     WorldExt world(r, pub_address, sub_address,
                    Color::gray, texture.width(),
                    texture.height(), (uint32_t*) texture.bits() );
+
+    WorldHeat *heatModel = new WorldHeat(env_temp, heat_scale, heat_border_size);
+    world.addPhysicSimulation(heatModel);
 
     CasuHandler *ch = new CasuHandler();
     world.addHandler("Casu", ch);

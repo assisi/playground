@@ -64,6 +64,14 @@ namespace Enki
         light_sensor_blue = new LightSensor(light_sensor_range, this,
                                             Vector(0,0), 0.0, Light::Blue);
         addLocalInteraction(light_sensor_blue);
+
+        // Check in the model why is this necessary
+        double minMeasurableHeat = 0.0;
+        double maxMeasurableHeat = 100.0;
+        heat_sensor = new HeatSensor(this, Vector(0,0),
+                                     minMeasurableHeat,
+                                     maxMeasurableHeat);
+        addPhysicInteraction(heat_sensor);
     }
 
     /* virtual */
