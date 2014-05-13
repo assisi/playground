@@ -13,6 +13,7 @@
 
 
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 using namespace Enki;
@@ -23,15 +24,35 @@ int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
 	
-    // Parse command line options
+    /** Parse command line options **/
+    
     po::options_description desc("Recognized options");
+    
+    // Variables to store the options
     int r;
+    string config_file_name("Playground.cfg");
+    double env_temp;
+    double heat_scale;
+    int heat_border_size;
+
     desc.add_options()
-        ("help", "produce help message")
-        ("r", po::value<int>(&r)->default_value(40), "playground radius, in cm");
+        ("help,h", "produce help message")
+        ("config_file,c", 
+         po::value<string>(&config_file_name)->default_value("Playground.cfg"),
+         "configuration file name")
+        ("Arena.radius,r", po::value<int>(&r), 
+         "playground radius, in cm")
+        ("Heat.env_temp,t", po::value<double>(&env_temp), 
+         "environment temperature, in C")
+        ("Heat.scale", po::value<double>(&heat_scale), 
+         "heat model scale")
+        ("Heat.border_size", po::value<int>(&heat_border_size), "playground radius, in cm");
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
+    ifstream config_file(config_file_name.c_str(), std::ifstream::in);
+    po::store(po::parse_config_file(config_file, desc), vm);
+    config_file.close();
     po::notify(vm);
 
     if (vm.count("help"))
@@ -40,11 +61,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    
 	// Create the world and the viewer
-    //double r = 40; // World radius (in cm?)
-    //string pub_address("tcp://127.0.0.1:5555"); 
-    //string sub_address("tcp://127.0.0.1:5556");
     string pub_address("tcp://*:5555"); 
     string sub_address("tcp://*:5556");
 
@@ -68,6 +85,6 @@ int main(int argc, char *argv[])
 	viewer.show();
 	
 	return app.exec();
-    
+
 }
 

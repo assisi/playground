@@ -105,3 +105,5 @@ target_link_libraries(assisi_playground ${enki_LIBRARIES}
                                         ${PROTOBUF_LIBRARY}
                                         ${Boost_LIBRARIES})
 
+# Copy config files to binary dir
+configure_file(Playground.cfg Playground.cfg COPYONLY)
