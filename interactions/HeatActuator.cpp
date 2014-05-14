@@ -20,6 +20,16 @@ void HeatActuator::
 init (double dt, PhysicSimulation *ps)
 {
 	Component::init ();
+    // Never called???
+    WorldHeat* wh = dynamic_cast<WorldHeat*>(ps);
+    if (wh)
+    {
+        std::cout << "We got a heat model!" << std::endl;
+    }
+    else
+    {
+        std::cout << "Corak!" << std::endl;
+    }
 }
 
 void HeatActuator::

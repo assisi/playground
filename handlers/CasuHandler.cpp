@@ -98,10 +98,26 @@ namespace Enki
             {
                 casus_[name]->light_source_blue->off( );
                 count++;
-             }
+            }
             else
             {
                 cerr << "Unknown command " << command << " for " << name << "/" << device << endl;
+            }
+        }
+        else if (device == "Peltier")
+        {
+            if (command == "temp")
+            {
+                Temperature temp_msg;
+                assert(temp_msg.ParseFromString(data));
+                casus_[name]->peltier->setHeat(temp_msg.temp());
+                casus_[name]->peltier->setSwitchedOn(true);
+                count++;
+            }
+            else if (command == "Off")
+            {
+                casus_[name]->peltier->setSwitchedOn(false);
+                count++;
             }
         }
         else
