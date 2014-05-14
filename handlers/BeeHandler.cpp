@@ -21,6 +21,7 @@ using namespace zmq;
 using std::string;
 using std::cerr;
 using std::endl;
+using std::cout;
 
 using namespace AssisiMsg;
 
@@ -128,6 +129,12 @@ namespace Enki
             pose.mutable_pose()->mutable_orientation()->set_z(ca.second->angle);
             pose.SerializeToString(&data);
             send_multipart(socket, ca.first, "Base", "GroundTruth", data);
+
+            /* Publish temperature sensor data */
+            TemperatureArray temps;
+            temps.add_temp(ca.second->heat_sensor->getMeasuredHeat());
+            temps.SerializeToString(&data);
+            send_multipart(socket, ca.first, "Temp", "Temperatures", data);
             
             /* Publish other stuff as necessary */
         }

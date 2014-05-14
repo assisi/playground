@@ -70,11 +70,15 @@ int main(int argc, char *argv[])
 
     //QImage texture("playground/world.png");
     QImage texture(QString(":/textures/ground_grayscale.png"));
-    texture = texture.convertToFormat(QImage::Format_ARGB32);    texture.invertPixels(QImage::InvertRgba);
+    texture = QGLWidget::convertToGLFormat(texture);    
+    //texture.invertPixels(QImage::InvertRgba);
+    
     WorldExt world(r, pub_address, sub_address,
-                   Color::gray, texture.width(),
-                   texture.height(), (uint32_t*) texture.bits() );
-
+                   Color::gray, 
+                   World::GroundTexture(texture.width(),
+                                        texture.height(), 
+                                        (const uint32_t*) texture.constBits()) );
+    
     WorldHeat *heatModel = new WorldHeat(env_temp, heat_scale, heat_border_size);
     world.addPhysicSimulation(heatModel);
 

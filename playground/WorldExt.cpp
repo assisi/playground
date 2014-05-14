@@ -31,10 +31,8 @@ namespace Enki
                        const string& pub_address, 
                        const string& sub_address,
                        const Color& wallsColor, 
-                       unsigned texWidth, 
-                       unsigned texHeight, 
-                       const uint32_t* texData)
-        : ExtendedWorld(r, wallsColor, texWidth, texHeight, texData),
+                       const World::GroundTexture& groundTexture)
+        : ExtendedWorld(r, wallsColor, groundTexture),
           pub_address_(pub_address), sub_address_(sub_address)
     {
         GOOGLE_PROTOBUF_VERIFY_VERSION;
