@@ -55,6 +55,8 @@ namespace Enki
          */
         virtual int sendOutgoing(zmq::socket_t& socket);
 
+        virtual PhysicalObject* getObject(const std::string& name);
+
     private:
         typedef std::map<std::string, PhysicalObject*> ObjectMap;
         ObjectMap objects_;

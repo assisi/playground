@@ -1,3 +1,4 @@
+
 /*
 
  */
@@ -10,6 +11,7 @@
 
 #include "robots/Casu.h"
 #include "handlers/CasuHandler.h"
+#include "interactions/LightConstants.h"
 
 // Protobuf message headers
 #include "base_msgs.pb.h"
@@ -40,7 +42,7 @@ namespace Enki
             Point pos(spawn_msg.pose().position().x(),
                       spawn_msg.pose().position().y());
             double yaw(spawn_msg.pose().orientation().z());
-            casus_[name] = new Casu;
+            casus_[name] = new Casu(world);
             casus_[name]->pos = pos;
             casus_[name]->angle = yaw;
             world->addObject(casus_[name]);
@@ -81,8 +83,26 @@ namespace Enki
             else
             {
                 cerr << "Unknown command for " << name << "/" << device << endl;
-                return 0;
             }         
+        }
+        else if (device == "Light")
+        {
+            if (command == "On")
+            {
+                ColorStamped color_msg;
+                assert(color_msg.ParseFromString(data));
+                casus_[name]->light_source_blue->on( color_msg.color().blue());
+                count++;
+             }
+            else if (command == "Off")
+            {
+                casus_[name]->light_source_blue->off( );
+                count++;
+             }
+            else
+            {
+                cerr << "Unknown command " << command << " for " << name << "/" << device << endl;
+            }
         }
         else
         {
@@ -100,14 +120,23 @@ namespace Enki
         BOOST_FOREACH(const CasuMap::value_type& ca, casus_)
         {
             std::string data;
+            
             /* Publishing IR readings */
             RangeArray ranges;
             BOOST_FOREACH(IRSensor* ir, ca.second->range_sensors)
             {
                 ranges.add_range(ir->getDist());                
+                ranges.add_raw_value(ir->getValue());
             }
+            // Add an additional (fake) reading for the top sensor which isn't modeled
+            // TODO: Do this in a smarter way, e.g., if more than half of the
+            //       sensors are detecting objects, assume this one is also detecting
+            //       and object. Right now, the top sensor is never detecting anything.
+            ranges.add_range(10000);
+            ranges.add_raw_value(0);
+            
             ranges.SerializeToString(&data);
-            zmq::send_multipart(socket, ca.first, "ir", "ranges", data);
+            zmq::send_multipart(socket, ca.first, "IR", "Ranges", data);
 
             /* Publish other stuff as necessary ... */
 
@@ -115,6 +144,21 @@ namespace Enki
         }
         return count;
     }
+// -----------------------------------------------------------------------------
+
+    /* virtual */
+    PhysicalObject* CasuHandler::getObject(const std::string& name)
+    {
+        if (casus_.count(name) > 0)
+        {
+            return casus_[name];
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
 // -----------------------------------------------------------------------------
 
 }

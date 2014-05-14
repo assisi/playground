@@ -61,9 +61,9 @@ namespace Enki
                                     const std::string& data)
     {
         int count = 0;
-        if (device == "base")
+        if (device == "Base")
         {
-            if (command == "vel")
+            if (command == "Vel")
             {
                 DiffDrive drive;
                 assert(drive.ParseFromString(data));
@@ -101,21 +101,54 @@ namespace Enki
                 ranges.add_range(ir->getDist());                
             }
             ranges.SerializeToString(&data);
-            send_multipart(socket, ca.first, "ir", "ranges", data);
+            send_multipart(socket, ca.first, "IR", "Ranges", data);
             count++;
 
             /* Publish velocities */
             DiffDrive drive;
             drive.set_vel_left(ca.second->leftEncoder);
             drive.set_vel_right(ca.second->rightEncoder);
-            send_multipart(socket, ca.first, "base", "enc", data);
-
-            /* Publish other stuff as necessary ... */
-
+            send_multipart(socket, ca.first, "Base", "Enc", data);
             count++;
+
+            /* Publish light sensor data */
+            ColorStamped light;
+            light.mutable_color()->set_red(0);
+            light.mutable_color()->set_green(0);
+            light.mutable_color()->set_blue(ca.second->light_sensor_blue->getIntensity());
+            
+            light.SerializeToString(&data);
+            send_multipart(socket, ca.first, "Light", "Readings", data);
+            count++;
+
+            /* Publish ground truth */
+            PoseStamped pose;
+            pose.mutable_pose()->mutable_position()->set_x(ca.second->pos.x);
+            pose.mutable_pose()->mutable_position()->set_y(ca.second->pos.y);
+            pose.mutable_pose()->mutable_orientation()->set_z(ca.second->angle);
+            pose.SerializeToString(&data);
+            send_multipart(socket, ca.first, "Base", "GroundTruth", data);
+            
+            /* Publish other stuff as necessary */
         }
+
         return count;
     }
+// -----------------------------------------------------------------------------
+
+    /* virtual */
+    PhysicalObject* BeeHandler::getObject(const std::string& name)
+    {
+        if (bees_.count(name) > 0)
+        {
+            return bees_[name];
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
 // -----------------------------------------------------------------------------
 
 }

@@ -57,6 +57,12 @@ namespace Enki
             
          */
         virtual int sendOutgoing(zmq::socket_t& socket) = 0;
+
+        //! Get object by name.
+        /*! Returns pointer to the handled object "name", if it exists.
+            Returns 0 otherwise.
+         */
+        virtual PhysicalObject* getObject(const std::string& name) = 0;
     };
 
 }

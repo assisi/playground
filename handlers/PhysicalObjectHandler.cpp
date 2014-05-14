@@ -93,27 +93,7 @@ namespace Enki
                                     const std::string& data)
     {
         int count = 0;
-        if (device == "Pos")
-        {
-            if (command == "Set")
-            {
-                PoseStamped msg;
-                assert(msg.ParseFromString(data));
-                objects_[name]->pos = Point(msg.pose().position().x(),
-                                            msg.pose().position().y());
-                objects_[name]->angle = msg.pose().orientation().z();
-                count++;
-            }
-            else
-            {
-                cerr << "Unknown command for " << name << "/" << device << endl;
-                return 0;
-            }         
-        }
-        else
-        {
-            cerr << "Unknown device " << device << endl;
-        }
+
         return count;
     }
 
@@ -126,7 +106,7 @@ namespace Enki
         BOOST_FOREACH(const ObjectMap::value_type& ca, objects_)
         {
             std::string data;
-            /* Publishing IR readings */
+
             PoseStamped pose;
             pose.mutable_pose()->mutable_position()->set_x(ca.second->pos.x);
             pose.mutable_pose()->mutable_position()->set_y(ca.second->pos.y);
@@ -140,6 +120,21 @@ namespace Enki
         }
         return count;
     }
+// -----------------------------------------------------------------------------
+
+    /* virtual */
+    PhysicalObject* PhysicalObjectHandler::getObject(const std::string& name)
+    {
+        if (objects_.count(name) > 0)
+        {
+            return objects_[name];
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
 // -----------------------------------------------------------------------------
 
 }

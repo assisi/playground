@@ -10,6 +10,8 @@
 #include <zmq.hpp>
 #include "playground/zmq_helpers.hpp"
 
+#include <PhysicalEngine.h>
+
 #include "robots/e-puck/EPuck.h"
 #include "handlers/EPuckHandler.h"
 
@@ -117,4 +119,24 @@ namespace Enki
         }
         return count;
     }
+
+// -----------------------------------------------------------------------------
+
+    /* virtual */
+    PhysicalObject* EPuckHandler::getObject(const std::string& name)
+    {
+        if (epucks_.count(name) > 0)
+        {
+            return epucks_[name];
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+// -----------------------------------------------------------------------------
+
 }
+
+

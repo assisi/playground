@@ -8,31 +8,41 @@
 
 #include <vector>
 
-//#include <PhysicalEngine.h>
+#include <PhysicalEngine.h>
 
 #include <interactions/IRSensor.h>
 #include "interactions/DiagnosticLed.h"
+#include "interactions/LightSourceFromAbove.h"
 
 namespace Enki
 {
-    // Forward declarations
-    class Robot;
-    class IRSensor;
-    
+
     class Casu : public Robot
     {
     public:
         //! Create a CASU
-        Casu(void);
+        Casu(World* world);
 
         //! Destructor
         ~Casu();
 
-        //! Range
+        /* Sensors */
+
         typedef std::vector<IRSensor*> IRSensorVector;
-        IRSensorVector range_sensors;
+        //! Proximity sensors.
+        IRSensorVector range_sensors;                
         
+        /* Actuators */
+
+        //! Light source
+        LightSourceFromAbove* light_source_blue;
+
+        //! Diagnostic LED
         DiagnosticLed* top_led;
+
+    private:
+        World* world_;
+        
     };
 }
 
