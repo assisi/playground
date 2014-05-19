@@ -12,7 +12,8 @@
 
 #include <zmq.hpp>
 
-#include "PhysicalEngine.h"
+#include "ExtendedWorld.h"
+//#include "PhysicalEngine.h"
 
 #include "handlers/ObjectHandler.h"
 
@@ -23,7 +24,7 @@ namespace Enki
     /*!
 
      */
-    class WorldExt : public World
+    class WorldExt : public ExtendedWorld
     {
         
     public:
@@ -39,9 +40,7 @@ namespace Enki
                  const std::string& pub_address,
                  const std::string& sub_address,
                  const Color& wallsColor = Color::gray,
-                 unsigned texWdith = 0,
-                 unsigned texHeight = 0,
-                 const uint32_t* texData = 0);
+                 const World::GroundTexture& groundTexture = World::GroundTexture());
 
         //! Destructor
         virtual ~WorldExt();
