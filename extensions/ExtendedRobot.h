@@ -28,8 +28,7 @@ namespace Enki
 	 * interaction.  These methods are called in class {@code
 	 * ExtendedWorld}.
 	 */
-	class ExtendedRobot:
-		public Robot
+	class ExtendedRobot: public virtual Robot
 	{
 	protected:
 		/**
