@@ -4,11 +4,18 @@
 #include <enki/PhysicalEngine.h>
 
 #include "interactions/VibrationSensor.h"
+#include "interactions/VibrationSource.h"
 #include "interactions/QuadraticVibrationSource.h"
+#include "interactions/DecayVibration.h"
 
-#include "robots/FCULBee.h"
+//#include "robots/FCULBee.h"
 
 using namespace Enki;
+
+typedef enum {
+	QUADRATIC_VIBRATION_SOURCE,
+	DECAY_VIBRATION
+} VibrationModel;
 
 class Test:
 	public Robot
@@ -16,20 +23,32 @@ class Test:
 public:
 	VibrationSensor *vibrationSensor;
 
-	QuadraticVibrationSource *vibrationSource;
+	//QuadraticVibrationSource *vibrationSource;
+	VibrationSource *vibrationSource;
 
-	Test (Enki::Vector location, Enki::World *world, double amplitude, double frequency)
+	Test (Enki::Vector location, Enki::World *world, double amplitude, double frequency, VibrationModel vibrationModel)
 	{
 		this->pos = location;
 		this->vibrationSensor = new VibrationSensor
 			(20, this,
 			 Enki::Vector (0, 1), Component::OMNIDIRECTIONAL,
 			 amplitude, frequency, 1.0, 1.0);
-		this->vibrationSource = new QuadraticVibrationSource
-			(20.0, this, Enki::Vector (0, -1),
-			 1.0);   // a
-		this->vibrationSource->amplitude = amplitude;
-
+		switch (vibrationModel) {
+		case 	QUADRATIC_VIBRATION_SOURCE: {
+			QuadraticVibrationSource *qvs = new QuadraticVibrationSource
+				(20.0, this, Enki::Vector (0, -1),
+				 1.0);   // a
+			qvs->amplitude = amplitude;
+			this->vibrationSource = qvs;
+			break;
+		}
+		case DECAY_VIBRATION: {
+			DecayVibration *dv = new DecayVibration (20.0, this, Enki::Vector (0, -1), 1.0);
+			dv->frequency = frequency;
+			this->vibrationSource = dv;
+			break;
+		}
+		}
 		// turn the actuators to point objects so that they don't move
 		this->vibrationSource->setCylindric (0, 0, -1);
 
@@ -53,8 +72,8 @@ int main (int argc, char *argv[])
 	// Create the world
 	Enki::World world (50, 50);
 
-	test[0] = new Test (Vector (10, 10), &world, 0.1, 2);
-	test[1] = new Test (Vector (15, 10), &world, 0.05, 3);
+	test[0] = new Test (Vector (10, 10), &world, 0.1,  2, DECAY_VIBRATION);
+	test[1] = new Test (Vector (15, 10), &world, 0.05, 3, DECAY_VIBRATION);
 
 	world.addObject (test[0]);
 	world.addObject (test[1]);
@@ -96,7 +115,6 @@ void debug (int time)
 		std::cout << '\t' << test [i]->pos;
 		std::cout << '\t' << test [i]->vibrationSensor->getAmplitude ();
 		std::cout << '\t' << test [i]->vibrationSource->pos;
-		std::cout << '\t' << test [i]->vibrationSource->amplitude;
 	}
 
 	std::cout << '\n';

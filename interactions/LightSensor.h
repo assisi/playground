@@ -35,7 +35,8 @@ namespace Enki
 		/**
 		 * Construct a light sensor that reacts maximally to the given wavelength.
 
-           @param range Currently not implemented (the sensor checks only the light intensity at it's own position).
+		 * @param range Currently not implemented (the sensor checks only the
+       * light intensity at it's own position).
 
 		 */
 		LightSensor (double range, Enki::Robot* owner, Enki::Vector relativePosition, double orientation, double wavelength);
@@ -70,7 +71,7 @@ namespace Enki
 
 
 // Local Variables: 
-// mode: c++-mode
+// mode: c++
 // mode: flyspell-prog
 // ispell-local-dictionary: "british"
 // End: 

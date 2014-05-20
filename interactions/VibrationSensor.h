@@ -12,7 +12,7 @@
 
 #include <enki/Interaction.h>
 
-#include "../Component.h"
+#include "extensions/Component.h"
 
 namespace Enki
 {
@@ -30,9 +30,9 @@ namespace Enki
 		 */
 		const double maxMeasurableAmplitude;
 		/**
-		 * Maximum measurable frequency of this sensor.
+		 * Maximum measurable intensity of this sensor.
 		 */
-		const double maxMeasurableFrequency;
+		const double maxMeasurableIntensity;
 		/**
 		 * Standard deviation of the Gaussian noise that is applied to each
 		 * perceived vibration amplitude.
@@ -40,9 +40,9 @@ namespace Enki
 		const double amplitudeStandardDeviationGaussianNoise;
 		/**
 		 * Standard deviation of the Gaussian noise that is applied to each
-		 * perceived vibration frequency.
+		 * perceived vibration intensity.
 		 */
-		const double frequencyStandardDeviationGaussianNoise;
+		const double intensityStandardDeviationGaussianNoise;
 		/**
 		 * Measured amplitude in the current simulation iteration.
 		 *
@@ -53,19 +53,19 @@ namespace Enki
 		 */
 		double amplitude;
 		/**
-		 * Measured frequency in the current simulation iteration.
+		 * Measured intensity in the current simulation iteration.
 		 *
 		 * <p> This field is set to zero at the beginning of each time step.
 		 * For each object that is a vibration actuator we update this
 		 * attribute with the sensed vibration according to the vibration
 		 * model.
 		 */
-		double frequency;
+		double intensity;
 	public:
 		VibrationSensor (
 			double range, Enki::Robot* owner,
 			Enki::Vector relativePosition, double orientation,
-			 double maxMeasurableAmplitude, double maxMeasurableFrequency, double amplitudeStandardDeviationGaussianNoise, double frequencyStandardDeviationGaussianNoise);
+			 double maxMeasurableAmplitude, double maxMeasurableIntensity, double amplitudeStandardDeviationGaussianNoise, double intensityStandardDeviationGaussianNoise);
 		/**
 		 * Copy constructor.
 		 */
@@ -80,14 +80,14 @@ namespace Enki
 			return this->amplitude;
 		}
 		/**
-		 * Return the frequency of the vibration sensed by this sensor.
+		 * Return the intensity of the vibration sensed by this sensor.
 		 */
-		double getFrequency () const
+		double getIntensity () const
 		{
-			return this->frequency;
+			return this->intensity;
 		}
 		/**
-		 * Initialise the measured amplitude and frequency in the current
+		 * Initialise the measured amplitude and intensity in the current
 		 * iteration step.
 		 *
 		 * @param dt time step.
@@ -96,7 +96,7 @@ namespace Enki
 		 */
 		virtual void init (double dt, Enki::World* w);
 		/**
-		 * Update the measured amplitude and frequency if the object is a
+		 * Update the measured amplitude and intensity if the object is a
 		 * vibration actuator.
 		 *
 		 * @param dt time step.
