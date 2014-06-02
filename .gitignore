@@ -18,3 +18,14 @@
 
 # Build folders
 build*/
+
+# CMake Files
+./playground/CMakeFiles/
+./test/vibration/CMakeFiles/
+./test/CMakeFiles/
+./CMakeFiles/
+
+./playground/CMakeCache.txt
+./test/CMakeCache.txt
+./test/vibration/CMakeCache.txt
+./CMakeCache.txt
