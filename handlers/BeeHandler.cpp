@@ -8,6 +8,7 @@
 #include <zmq.hpp>
 #include "playground/zmq_helpers.hpp"
 
+#include "playground/WorldExt.h"
 #include "robots/Bee.h"
 #include "handlers/BeeHandler.h"
 
@@ -21,6 +22,7 @@ using namespace zmq;
 using std::string;
 using std::cerr;
 using std::endl;
+using std::cout;
 
 using namespace AssisiMsg;
 
@@ -29,7 +31,7 @@ namespace Enki
 
     /* virtual */
     string BeeHandler::createObject(const std::string& data, 
-                                     World* world)
+                                     WorldExt* world)
     {
         string name = "";
         Spawn spawn_msg;     
@@ -128,6 +130,12 @@ namespace Enki
             pose.mutable_pose()->mutable_orientation()->set_z(ca.second->angle);
             pose.SerializeToString(&data);
             send_multipart(socket, ca.first, "Base", "GroundTruth", data);
+
+            /* Publish temperature sensor data */
+            TemperatureArray temps;
+            temps.add_temp(ca.second->heat_sensor->getMeasuredHeat());
+            temps.SerializeToString(&data);
+            send_multipart(socket, ca.first, "Temp", "Temperatures", data);
             
             /* Publish other stuff as necessary */
         }
