@@ -63,6 +63,11 @@ namespace Enki
         delete context_;
      }
 
+    void WorldExt::addObject(PhysicalObject *po)
+    {
+        ExtendedWorld::addObject(po);
+    }
+
 // -----------------------------------------------------------------------------
 
     bool WorldExt::addHandler(string type, ObjectHandler* handler)

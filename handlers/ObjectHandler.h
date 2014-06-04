@@ -14,7 +14,7 @@ namespace zmq
 
 namespace Enki
 {
-    class World;
+    class WorldExt;
     class PhysicalObject;
     
     //! Abstract base class, defines the message-handling interface for Enki
@@ -33,7 +33,7 @@ namespace Enki
 
          */
         virtual std::string createObject(const std::string& data,
-                                         World* world) = 0;
+                                         WorldExt* world) = 0;
 
         //! Handle incoming message
         /*! Override this method to handle incoming messages

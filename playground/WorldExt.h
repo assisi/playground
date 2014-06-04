@@ -54,6 +54,9 @@ it must be created on the heap and should not be deleted!
          */
         bool addHandler(std::string type, ObjectHandler* handler);
 
+        //! Add an object to the WorldExt
+        void addObject(PhysicalObject *po);
+
     protected:
         virtual void controlStep(double dt);
 
