@@ -9,13 +9,16 @@
 
 using namespace Enki;
 
-ExtendedWorld::ExtendedWorld (double width, double height, const Color& wallsColor, unsigned texWidth, unsigned texHeight, const uint32_t* texData):
-	World (width, height, wallsColor, texWidth, texHeight, texData)
+ExtendedWorld::ExtendedWorld (double width, double height, 
+                              const Color& wallsColor, 
+                              const World::GroundTexture& groundTexture):
+	World (width, height, wallsColor, groundTexture)
 {
 }
 
-ExtendedWorld::ExtendedWorld (double r, const Color& wallsColor, unsigned texWidth, unsigned texHeight, const uint32_t* texData):
-	World (r, wallsColor, texWidth, texHeight, texData)
+ExtendedWorld::ExtendedWorld (double r, const Color& wallsColor,
+                              const World::GroundTexture& groundTexture):
+	World (r, wallsColor, groundTexture)
 {
 }
 

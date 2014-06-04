@@ -41,12 +41,12 @@ namespace Enki
 		/**
 		 * Construct a world with square walls, takes width and height of the
 		 * world arena in cm. */
-		ExtendedWorld (double width, double height, const Color& wallsColor = Color::gray, unsigned texWidth = 0, unsigned texHeight = 0, const uint32_t* texData = 0);
+		ExtendedWorld (double width, double height, const Color& wallsColor = Color::gray, const World::GroundTexture& groundTexture = World::GroundTexture());
 		/**
 		 * Construct a world with circle walls, takes radius of the world
 		 * arena in cm.
 		 */
-		ExtendedWorld (double r, const Color& wallsColor = Color::gray, unsigned texWidth = 0, unsigned texHeight = 0, const uint32_t* texData = 0);
+		ExtendedWorld (double r, const Color& wallsColor = Color::gray, const World::GroundTexture& groundTexture = World::GroundTexture());
 		/**
 		 * Construct a world with no walls. */
 		ExtendedWorld ();

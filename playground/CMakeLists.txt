@@ -44,6 +44,12 @@ set(test_ext_SOURCES WorldExt.cpp
                      ../interactions/LightSource.cpp
                      ../interactions/LightSourceFromAbove.cpp
                      ../interactions/LightSensor.cpp
+                     ../interactions/WorldHeat.cpp
+                     ../interactions/HeatSensor.cpp
+                     ../interactions/HeatActuator.cpp
+                     ../extensions/Component.cpp
+                     ../extensions/ExtendedRobot.cpp
+                     ../extensions/ExtendedWorld.cpp
                      TestWorldExt.cpp
                      ${ProtoSources})
 
@@ -71,6 +77,12 @@ set(playground_SOURCES AssisiPlaygroundMain.cpp
                        ../interactions/LightSource.cpp
                        ../interactions/LightSourceFromAbove.cpp
                        ../interactions/LightSensor.cpp
+                       ../interactions/WorldHeat.cpp
+                       ../interactions/HeatSensor.cpp
+                       ../interactions/HeatActuator.cpp
+                       ../extensions/Component.cpp
+                       ../extensions/ExtendedRobot.cpp
+                       ../extensions/ExtendedWorld.cpp
                        ${ProtoSources})
 
 # For MOC-ing
@@ -93,3 +105,5 @@ target_link_libraries(assisi_playground ${enki_LIBRARIES}
                                         ${PROTOBUF_LIBRARY}
                                         ${Boost_LIBRARIES})
 
+# Copy config files to binary dir
+configure_file(Playground.cfg Playground.cfg COPYONLY)
