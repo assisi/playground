@@ -62,7 +62,10 @@ namespace Enki
 
 		Point dataSize;
 		std::vector<std::vector<std::vector<float> > > dataColour;
-
+		/**
+		 * Whether to show a help message or not.
+		 */
+		bool showHelp;
 		/**
 		 * The world that is shown in this widget.
 		 */
