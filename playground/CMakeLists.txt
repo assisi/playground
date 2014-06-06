@@ -1,9 +1,12 @@
 # Find dependencies
 
 # TODO: Make a FindEnki.cmake module
-set(enki_INCLUDE_DIR /usr/local/include/enki)
-set(enki_LIBRARIES /usr/local/lib/libenki.a
-                   /usr/local/lib/libenkiviewer.a)
+find_path(enki_INCLUDE_DIR enki)
+set(enki_INCLUDE_DIR ${enki_INCLUDE_DIR}/enki)
+find_library(enki_LIBRARY enki)
+find_library(enkiviewer_LIBRARY enkiviewer)
+set(enki_LIBRARIES ${enki_LIBRARY} ${enkiviewer_LIBRARY})
+
 
 find_package(ZeroMQ REQUIRED)
 
@@ -22,6 +25,7 @@ set(PROTOBUF_IMPORT_DIRS ${PROTOBUF_IMPORT_DIRS}
 PROTOBUF_GENERATE_CPP(ProtoSources ProtoHeaders ${Proto_FILES})
 
 include_directories (${CMAKE_SOURCE_DIR}
+                     ${CMAKE_SOURCE_DIR}/extensions
                      ${CMAKE_BINARY_DIR}/playground
                      ${enki_INCLUDE_DIR}
                      ${ZeroMQ_INCLUDE_DIR})
@@ -40,18 +44,17 @@ set(test_ext_SOURCES WorldExt.cpp
                      ../interactions/LightSource.cpp
                      ../interactions/LightSourceFromAbove.cpp
                      ../interactions/LightSensor.cpp
+                     ../interactions/WorldHeat.cpp
+                     ../interactions/HeatSensor.cpp
+                     ../interactions/HeatActuator.cpp
+                     ../extensions/Component.cpp
+                     ../extensions/ExtendedRobot.cpp
+                     ../extensions/ExtendedWorld.cpp
                      TestWorldExt.cpp
                      ${ProtoSources})
 
 add_executable(test_ext ${test_ext_SOURCES})
 target_link_libraries(test_ext ${enki_LIBRARIES} ${ZeroMQ_LIBRARY} ${PROTOBUF_LIBRARY} ${Boost_LIBRARIES})
-
-# Demo EPuck wander behavior ("client")
-#set(wander_demo_SOURCES wander_demo.cpp
-#                        ${ProtoSources})
-
-#add_executable(wander_demo ${wander_demo_SOURCES})
-#target_link_libraries(wander_demo ${ZeroMQ_LIBRARY} ${PROTOBUF_LIBRARY})
 
 find_package(Qt4 REQUIRED)
 find_package(OpenGL REQUIRED)
@@ -74,6 +77,12 @@ set(playground_SOURCES AssisiPlaygroundMain.cpp
                        ../interactions/LightSource.cpp
                        ../interactions/LightSourceFromAbove.cpp
                        ../interactions/LightSensor.cpp
+                       ../interactions/WorldHeat.cpp
+                       ../interactions/HeatSensor.cpp
+                       ../interactions/HeatActuator.cpp
+                       ../extensions/Component.cpp
+                       ../extensions/ExtendedRobot.cpp
+                       ../extensions/ExtendedWorld.cpp
                        ${ProtoSources})
 
 # For MOC-ing
@@ -96,3 +105,5 @@ target_link_libraries(assisi_playground ${enki_LIBRARIES}
                                         ${PROTOBUF_LIBRARY}
                                         ${Boost_LIBRARIES})
 
+# Copy config files to binary dir
+configure_file(Playground.cfg Playground.cfg COPYONLY)

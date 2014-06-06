@@ -18,7 +18,7 @@ namespace Enki
 {
 
     class PhysicalObject;
-    class World;
+    class WorldExt;
 
     //! Handling of PhysicalObjects
     /*!
@@ -38,7 +38,7 @@ namespace Enki
 
           \return Returns the name of the created object.
         */
-        virtual std::string createObject(const std::string& data, World* world);
+        virtual std::string createObject(const std::string& data, WorldExt* world);
 
         //! Handle incoming message
         /*! Handles casu actuator commands.

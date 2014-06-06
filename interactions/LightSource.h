@@ -9,7 +9,7 @@
 #define	__LIGHTSOURCE_HPP
 
 #include <enki/Interaction.h>
-#include "../Component.h"
+#include "Component.h"
 
 namespace Enki {
 
