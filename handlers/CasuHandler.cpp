@@ -9,6 +9,7 @@
 #include <zmq.hpp>
 #include "playground/zmq_helpers.hpp"
 
+#include "playground/WorldExt.h"
 #include "robots/Casu.h"
 #include "handlers/CasuHandler.h"
 #include "interactions/LightConstants.h"
@@ -31,7 +32,7 @@ namespace Enki
 
     /* virtual */
     string CasuHandler::createObject(const std::string& data, 
-                                     World* world)
+                                     WorldExt* world)
     {
         string name = "";
         Spawn spawn_msg;     

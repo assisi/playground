@@ -13,7 +13,7 @@ namespace Enki
 {
 
     class Bee;
-    class World;
+    class WorldExt;
 
     //! Handling of Bees
     /*!
@@ -33,7 +33,7 @@ namespace Enki
 
           \return Returns the name of the created robot.
         */
-        virtual std::string createObject(const std::string& data, World* world);
+        virtual std::string createObject(const std::string& data, WorldExt* world);
 
         //! Handle incoming message
         /*! Handles bee actuator commands.

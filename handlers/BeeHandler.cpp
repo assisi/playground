@@ -8,6 +8,7 @@
 #include <zmq.hpp>
 #include "playground/zmq_helpers.hpp"
 
+#include "playground/WorldExt.h"
 #include "robots/Bee.h"
 #include "handlers/BeeHandler.h"
 
@@ -30,7 +31,7 @@ namespace Enki
 
     /* virtual */
     string BeeHandler::createObject(const std::string& data, 
-                                     World* world)
+                                     WorldExt* world)
     {
         string name = "";
         Spawn spawn_msg;     
