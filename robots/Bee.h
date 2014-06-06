@@ -5,8 +5,9 @@
 #define ENKI_BEE_H
 
 #include <enki/robots/DifferentialWheeled.h>
+#include "extensions/ExtendedRobot.h"
 #include <enki/interactions/IRSensor.h>
-
+#include "interactions/HeatSensor.h"
 #include "interactions/LightSensor.h"
 	
 namespace Enki
@@ -15,12 +16,8 @@ namespace Enki
 	/**
 	 * A simplistic bee model.
 	 *
-	 * Bees react to temperature and vibration thresholds.  During each time
-	 * step, they sense temperature and vibration and depending on the
-	 * threshold they either move away or they 
-	 *
 	 * \ingroup robot */
-	class Bee : public DifferentialWheeled
+	class Bee : public DifferentialWheeled, public ExtendedRobot
 	{
 
 	public:
@@ -38,6 +35,9 @@ namespace Enki
 
         //! Light sensor.
         LightSensor* light_sensor_blue;
+
+        //! Heat sensor.
+        HeatSensor* heat_sensor;
 
         /**
          * Update the position of this bee.  

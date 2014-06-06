@@ -20,6 +20,7 @@ void HeatActuator::
 init (double dt, PhysicSimulation *ps)
 {
 	Component::init ();
+    WorldHeat* wh = dynamic_cast<WorldHeat*>(ps);
 }
 
 void HeatActuator::

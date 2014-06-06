@@ -13,11 +13,12 @@
 #include <interactions/IRSensor.h>
 #include "interactions/DiagnosticLed.h"
 #include "interactions/LightSourceFromAbove.h"
+#include "interactions/HeatActuator.h"
 
 namespace Enki
 {
 
-    class Casu : public Robot
+    class Casu : public ExtendedRobot
     {
     public:
         //! Create a CASU
@@ -39,6 +40,9 @@ namespace Enki
 
         //! Diagnostic LED
         DiagnosticLed* top_led;
+
+        //! Peltier heater
+        HeatActuator *peltier;
 
     private:
         World* world_;

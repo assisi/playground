@@ -8,6 +8,7 @@
 #include <zmq.hpp>
 #include "playground/zmq_helpers.hpp"
 
+#include "playground/WorldExt.h"
 #include "PhysicalEngine.h"
 #include "handlers/PhysicalObjectHandler.h"
 
@@ -31,7 +32,7 @@ namespace Enki
 
     /* virtual */
     string PhysicalObjectHandler::createObject(const std::string& data, 
-                                     World* world)
+                                     WorldExt* world)
     {
         string name = "";
         Spawn msg;     
