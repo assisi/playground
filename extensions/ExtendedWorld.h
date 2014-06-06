@@ -66,6 +66,17 @@ namespace Enki
 		 * run per step, as usual collisions require a more precise
 		 * simulation than the sensor-motor loop frequency. */
 		virtual void step (double dt, unsigned physicsOversampling = 1);
+
+		/**
+		 * Return the vibration amplitude sensed at the given position and
+		 * time.
+		 */
+		virtual double getVibrationAmplitudeAt (const Point &position, double time) const;
+		/**
+		 * Return the vibration intensity sensed at the given position and
+		 * time.
+		 */
+		virtual double getVibrationIntensityAt (const Point &position) const;
 	private:
 
 	};

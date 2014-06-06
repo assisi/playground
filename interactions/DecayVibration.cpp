@@ -28,15 +28,15 @@ DecayVibration::~DecayVibration ()
 
 double DecayVibration::getAmplitudeAt (const Point &position, double time) const
 {
+	throw new NotSimulated ();
+}
+
+double DecayVibration::getIntensityAt (const Point &position) const
+{
 	double squareDistance = (this->absolutePosition - position).norm2 ();
 	double result = this->amplitude - squareDistance * DecayVibration::DECAY_CONSTANT;
 	if (result < 0)
 		return 0;
 	else
 		return result;
-}
-
-double DecayVibration::getIntensityAt (const Point &position) const
-{
-	throw new NotSimulated ();
 }

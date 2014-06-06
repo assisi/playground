@@ -73,26 +73,26 @@ int main(int argc, char *argv[])
     texture = QGLWidget::convertToGLFormat(texture);    
     //texture.invertPixels(QImage::InvertRgba);
     
-    WorldExt world(r, pub_address, sub_address,
-                   Color::gray, 
-                   World::GroundTexture(texture.width(),
-                                        texture.height(), 
-                                        (const uint32_t*) texture.constBits()) );
+    WorldExt world (r, pub_address, sub_address,
+						  Color::gray, 
+						  World::GroundTexture (texture.width(),
+														texture.height(), 
+														(const uint32_t*) texture.constBits()) );
     
-    WorldHeat *heatModel = new WorldHeat(env_temp, heat_scale, heat_border_size);
-    world.addPhysicSimulation(heatModel);
+	WorldHeat *heatModel = new WorldHeat(env_temp, heat_scale, heat_border_size);
+	world.addPhysicSimulation(heatModel);
 
-    CasuHandler *ch = new CasuHandler();
-    world.addHandler("Casu", ch);
+	CasuHandler *ch = new CasuHandler();
+	world.addHandler("Casu", ch);
 
-    PhysicalObjectHandler *ph = new PhysicalObjectHandler();
-    world.addHandler("Physical", ph);
+	PhysicalObjectHandler *ph = new PhysicalObjectHandler();
+	world.addHandler("Physical", ph);
 
-    BeeHandler *bh = new BeeHandler();
-    world.addHandler("Bee", bh);
+	BeeHandler *bh = new BeeHandler();
+	world.addHandler("Bee", bh);
 
-    AssisiPlayground viewer(&world);	
-	viewer.show();
+	AssisiPlayground viewer (&world, heatModel);	
+	viewer.show ();
 	
 	return app.exec();
 
