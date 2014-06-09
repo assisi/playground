@@ -79,6 +79,13 @@ int main(int argc, char *argv[])
                                         texture.height(), 
                                         (const uint32_t*) texture.constBits()) );
     
+	// plsm
+	Casu *casu = new Casu (&world);
+	casu->peltier->setHeat (40);
+	world.addObject (casu);
+	Bee *bee = new Bee ();
+	world.addObject (bee);
+
     WorldHeat *heatModel = new WorldHeat(env_temp, heat_scale, heat_border_size);
     world.addPhysicSimulation(heatModel);
 
@@ -91,7 +98,7 @@ int main(int argc, char *argv[])
     BeeHandler *bh = new BeeHandler();
     world.addHandler("Bee", bh);
 
-    AssisiPlayground viewer(&world);	
+	AssisiPlayground viewer (&world, heatModel);	
 	viewer.show();
 	
 	return app.exec();

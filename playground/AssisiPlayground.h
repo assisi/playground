@@ -65,8 +65,8 @@ class AssisiPlayground : public ViewerWidget
 		 */
 		ExtendedWorld *extendedWorld;
 
-public:
-    AssisiPlayground(World *world, QWidget *parent = 0);	
+	public:
+		AssisiPlayground (ExtendedWorld *world, WorldHeat *worldHeat, QWidget *parent = 0);	
     void addEPuck(World *world, Point pos);
 
 	~AssisiPlayground()
@@ -77,6 +77,15 @@ public:
     // Inherited from viewer 
     virtual void sceneCompletedHook();
     virtual void renderObjectHook(PhysicalObject *object);
+
+		void keyPressEvent (QKeyEvent *event);
+	private:
+		void drawHeatLayer_Chequerboard ();
+		void drawHeatLayer_Gradient ();
+
+		void setDataToHeat ();
+		void drawDataAsGradient ();
+		void drawDataAsCheckerBoard ();
 };
 
 } // namespace Enki
