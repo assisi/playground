@@ -44,7 +44,7 @@ namespace Enki
 		virtual ~WorldHeat () {}
 
 		double getHeatAt (Vector &pos) const;
-		void setHeatAt (Vector &pos, double value);
+		void setHeatAt (const Vector &pos, double value);
 		/**
 		 * When a heat actuator turns off, we have to recompute the heat
 		 * distribution in the world.  We do this for a certain number of
