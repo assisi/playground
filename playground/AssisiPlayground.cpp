@@ -4,6 +4,8 @@
 
 #include "AssisiPlayground.h"
 
+const int DATA_Z_LAYER = 11;
+
 namespace Enki
 {
 	AssisiPlayground::AssisiPlayground (ExtendedWorld *world, WorldHeat *worldHeat, QWidget *parent) :
@@ -11,11 +13,11 @@ namespace Enki
 		extendedWorld (world),
 		worldHeat (worldHeat),
 		maxHeat (40),
-		maxVibration (10),
 		layerToDraw (NONE),
 		transparency (0.5),
 		useGradient (false),
 		dataSize (ceil (2 * world->r / worldHeat->gridScale), ceil (2 * world->r / worldHeat->gridScale)),
+		// dataSize (worldHeat->size),
 		dataColour (dataSize.x, std::vector<std::vector<float> > (dataSize.y, std::vector<float> (3, 0) ) ),
 		showHelp (true)
 	{

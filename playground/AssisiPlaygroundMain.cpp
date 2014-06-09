@@ -14,6 +14,9 @@
 #include "handlers/CasuHandler.h"
 #include "handlers/BeeHandler.h"
 
+#include "robots/Casu.h"
+#include "robots/Bee.h"
+
 
 #include <iostream>
 #include <fstream>

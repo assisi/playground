@@ -15,6 +15,7 @@
 //#include <QApplication>
 #include <QtGui>
 
+#include "interactions/WorldHeat.h"
 
 /*!	\file AssisiPlayground.h
 	\brief The ASSISI Simulator.
