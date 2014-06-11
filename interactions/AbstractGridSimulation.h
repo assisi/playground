@@ -117,7 +117,11 @@ namespace Enki
 			}
 			this->origin = min;
 #ifndef DEBUG
-			std::cout << "Abstract Grid Simulation\nmin: " << min << "\nmax: " << max << "\nsize: " << size << std::endl;
+			std::cout
+				<< "Abstract Grid Simulation\nmin: " << min
+				<< "\nmax: " << max
+				<< "\nsize: " << size
+				<< "\ngrid scale: " << gridScale << std::endl;
 #endif
 		}
 

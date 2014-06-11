@@ -9,12 +9,15 @@
 
 namespace Enki
 {
-	class HeatActuator :
-		// public PhysicalObject,
+	/**
+	 * Represents a heat point source.  The source is relative to the robot
+	 * that owns this actuator as specified by class {@code Component}.
+	 */
+	class HeatActuatorPointSource :
 		public PhysicInteraction,
 		public Component
 	{
-	private:
+	protected:
 		/**
 		 * Heat emitted by this actuator.
 		 */
@@ -28,7 +31,7 @@ namespace Enki
 		 */
 		bool recomputeHeatDistribution;
 	public:
-		HeatActuator (
+		HeatActuatorPointSource (
 			Enki::Robot* owner,
 			Enki::Vector relativePosition,
 			double heat);
