@@ -23,13 +23,10 @@ namespace Enki
 	{
 	public:
 		/**
-
-
 		 * Constant that represents a component without an orientation.
 		 */
 		static const double OMNIDIRECTIONAL;
 		/**
-
 		 * The owner of this component.
 		 */
 		const PhysicalObject *owner;

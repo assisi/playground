@@ -1,7 +1,6 @@
 #include <limits>
 
 #include "WorldHeat.h"
-#include "HeatActuator.h"
 
 using namespace Enki;
 using namespace std;
@@ -26,7 +25,7 @@ double WorldHeat::getHeatAt (Vector &pos) const
 }
 
 void WorldHeat::
-setHeatAt (Vector &pos, double value)
+setHeatAt (const Vector &pos, double value)
 {
 	int x, y;
 	toIndex (pos, x, y);

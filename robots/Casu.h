@@ -13,7 +13,7 @@
 #include <interactions/IRSensor.h>
 #include "interactions/DiagnosticLed.h"
 #include "interactions/LightSourceFromAbove.h"
-#include "interactions/HeatActuator.h"
+#include "interactions/HeatActuatorMesh.h"
 
 namespace Enki
 {
@@ -42,7 +42,7 @@ namespace Enki
         DiagnosticLed* top_led;
 
         //! Peltier heater
-        HeatActuator *peltier;
+        HeatActuatorMesh *peltier;
 
     private:
         World* world_;

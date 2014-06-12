@@ -74,7 +74,7 @@ Casu::Casu(World* world) :
     top_led = new DiagnosticLed(this);
 
     // Add peltier actuator
-    peltier = new HeatActuator(this, Vector(0,0), 23);
+    peltier = new HeatActuatorMesh (this, Vector(0,0), 23, 1.2, 1.6, 20);
     this->addPhysicInteraction(this->peltier);
 }
 
