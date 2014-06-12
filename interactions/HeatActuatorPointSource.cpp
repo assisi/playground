@@ -48,6 +48,7 @@ step (double dt, PhysicSimulation *ps)
 	WorldHeat *worldHeat = dynamic_cast<WorldHeat *> (ps);
 	if (worldHeat != NULL) {
 		if (this->switchedOn) {
+			// std::cout << "Heating " << this->heat << std::endl;
 			worldHeat->setHeatAt (this->absolutePosition, this->heat);
 		}
 		if (this->recomputeHeatDistribution) {

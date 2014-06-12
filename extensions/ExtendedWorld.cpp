@@ -7,6 +7,9 @@
 
 #include "ExtendedWorld.h"
 
+#include "interactions/VibrationSource.h"
+#include "interactions/NotSimulated.h"
+
 using namespace Enki;
 
 ExtendedWorld::ExtendedWorld (double width, double height, 
@@ -61,4 +64,38 @@ void ExtendedWorld::step (double dt, unsigned physicsOversampling)
 		}
 	}
 	World::step (dt, physicsOversampling);
+}
+
+double ExtendedWorld::getVibrationAmplitudeAt (const Point &position, double time) const
+{
+	double result = 0;
+	for (ObjectsIterator i = this->objects.begin (); i != this->objects.end (); ++i) {
+		PhysicalObject *po = (*i);
+		VibrationSource *vibrationSource = dynamic_cast<VibrationSource *> (po);
+		if (vibrationSource != NULL) {
+			try {
+				result += vibrationSource->getAmplitudeAt (position, time);
+			}
+			catch (NotSimulated *ns) {
+			}
+		}
+	}
+	return result;
+}
+
+double ExtendedWorld::getVibrationIntensityAt (const Point &position) const
+{
+	double result = 0;
+	for (ObjectsIterator i = this->objects.begin (); i != this->objects.end (); ++i) {
+		PhysicalObject *po = (*i);
+		VibrationSource *vibrationSource = dynamic_cast<VibrationSource *> (po);
+		if (vibrationSource != NULL) {
+			try {
+				result += vibrationSource->getIntensityAt (position);
+			}
+			catch (NotSimulated *ns) {
+			}
+		}
+	}
+	return result;
 }
