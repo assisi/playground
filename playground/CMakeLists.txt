@@ -48,6 +48,7 @@ set(test_ext_SOURCES WorldExt.cpp
                      ../interactions/HeatSensor.cpp
                      ../interactions/HeatActuatorMesh.cpp
                      ../interactions/HeatActuatorPointSource.cpp
+                     ../interactions/VibrationSource.cpp
                      ../extensions/Component.cpp
                      ../extensions/ExtendedRobot.cpp
                      ../extensions/ExtendedWorld.cpp
@@ -80,8 +81,9 @@ set(playground_SOURCES AssisiPlaygroundMain.cpp
                        ../interactions/LightSensor.cpp
                        ../interactions/WorldHeat.cpp
                        ../interactions/HeatSensor.cpp
-                     ../interactions/HeatActuatorMesh.cpp
-                     ../interactions/HeatActuatorPointSource.cpp
+			           ../interactions/VibrationSource.cpp
+                       ../interactions/HeatActuatorMesh.cpp
+                       ../interactions/HeatActuatorPointSource.cpp
                        ../extensions/Component.cpp
                        ../extensions/ExtendedRobot.cpp
                        ../extensions/ExtendedWorld.cpp

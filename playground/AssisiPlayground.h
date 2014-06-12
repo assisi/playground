@@ -15,7 +15,10 @@
 //#include <QApplication>
 #include <QtGui>
 
+#include <vector>
+
 #include "interactions/WorldHeat.h"
+#include "extensions/ExtendedWorld.h"
 
 /*!	\file AssisiPlayground.h
 	\brief The ASSISI Simulator.
@@ -24,10 +27,11 @@
 namespace Enki
 {
 
-class AssisiPlayground : public ViewerWidget
-{
+	class AssisiPlayground : public ViewerWidget
+	{
+		
+		Q_OBJECT;
 
-    Q_OBJECT;
 		/**
 		 * Data layers that can be drawn in the window.
 		 */
@@ -42,6 +46,10 @@ class AssisiPlayground : public ViewerWidget
 		 * shades of blue.
 		 */
 		const double maxHeat;
+		/**
+		 * Maximum presentable vibration intensity.
+		 */
+		const double maxVibration;
 		/**
 		 * The layer to drawn upon robots. 
 		 */
@@ -70,25 +78,35 @@ class AssisiPlayground : public ViewerWidget
 		AssisiPlayground (ExtendedWorld *world, WorldHeat *worldHeat, QWidget *parent = 0);	
     void addEPuck(World *world, Point pos);
 
-	~AssisiPlayground()
-	{
 
-	}
+		~AssisiPlayground()
+			{
+
+			}
 	
-    // Inherited from viewer 
     virtual void sceneCompletedHook();
     virtual void renderObjectHook(PhysicalObject *object);
 
 		void keyPressEvent (QKeyEvent *event);
 	private:
+		void drawVibrationLayer_Gradient ();
+		void drawVibrationLayer_Chequerboard ();
 		void drawHeatLayer_Chequerboard ();
 		void drawHeatLayer_Gradient ();
 
 		void setDataToHeat ();
+		void setDataToVibration ();
 		void drawDataAsGradient ();
 		void drawDataAsCheckerBoard ();
-};
+
+	};
 
 } // namespace Enki
 
 #endif
+
+// Local Variables: 
+// mode: c++
+// mode: flyspell-prog
+// ispell-local-dictionary: "british"
+// End: 

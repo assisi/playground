@@ -14,9 +14,8 @@
 #include "handlers/CasuHandler.h"
 #include "handlers/BeeHandler.h"
 
-#include "robots/Casu.h"
 #include "robots/Bee.h"
-
+#include "robots/Casu.h"
 
 #include <iostream>
 #include <fstream>
@@ -76,33 +75,26 @@ int main(int argc, char *argv[])
     texture = QGLWidget::convertToGLFormat(texture);    
     //texture.invertPixels(QImage::InvertRgba);
     
-    WorldExt world(r, pub_address, sub_address,
-                   Color::gray, 
-                   World::GroundTexture(texture.width(),
-                                        texture.height(), 
-                                        (const uint32_t*) texture.constBits()) );
+    WorldExt world (r, pub_address, sub_address,
+						  Color::gray, 
+						  World::GroundTexture (texture.width(),
+														texture.height(), 
+														(const uint32_t*) texture.constBits()) );
     
-	// plsm
-	Casu *casu = new Casu (&world);
-	casu->peltier->setHeat (40);
-	world.addObject (casu);
-	Bee *bee = new Bee ();
-	world.addObject (bee);
+	WorldHeat *heatModel = new WorldHeat(env_temp, heat_scale, heat_border_size);
+	world.addPhysicSimulation(heatModel);
 
-    WorldHeat *heatModel = new WorldHeat(env_temp, heat_scale, heat_border_size);
-    world.addPhysicSimulation(heatModel);
+	CasuHandler *ch = new CasuHandler();
+	world.addHandler("Casu", ch);
 
-    CasuHandler *ch = new CasuHandler();
-    world.addHandler("Casu", ch);
+	PhysicalObjectHandler *ph = new PhysicalObjectHandler();
+	world.addHandler("Physical", ph);
 
-    PhysicalObjectHandler *ph = new PhysicalObjectHandler();
-    world.addHandler("Physical", ph);
-
-    BeeHandler *bh = new BeeHandler();
-    world.addHandler("Bee", bh);
+	BeeHandler *bh = new BeeHandler();
+	world.addHandler("Bee", bh);
 
 	AssisiPlayground viewer (&world, heatModel);	
-	viewer.show();
+	viewer.show ();
 	
 	return app.exec();
 
