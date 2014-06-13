@@ -74,8 +74,13 @@ namespace Enki
 		 */
 		ExtendedWorld *extendedWorld;
 
+		/**
+		 * Z coordinate where the data layer is drawn.
+		 */
+		int dataLayerZ;
+
 	public:
-		AssisiPlayground (ExtendedWorld *world, WorldHeat *worldHeat, QWidget *parent = 0);	
+		AssisiPlayground (ExtendedWorld *world, WorldHeat *worldHeat, double maxHeat, double maxVibration, QWidget *parent = 0);	
     void addEPuck(World *world, Point pos);
 
 

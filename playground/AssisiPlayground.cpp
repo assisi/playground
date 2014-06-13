@@ -6,11 +6,9 @@
 
 #include "AssisiPlayground.h"
 
-static const int DATA_Z_LAYER = 11;
-
 namespace Enki
 {
-	AssisiPlayground::AssisiPlayground (ExtendedWorld *world, WorldHeat *worldHeat, QWidget *parent) :
+	AssisiPlayground::AssisiPlayground (ExtendedWorld *world, WorldHeat *worldHeat, double maxHeat, double maxVibration, QWidget *parent) :
 		ViewerWidget(world, parent),
 		extendedWorld (world),
 		worldHeat (worldHeat),
@@ -22,7 +20,8 @@ namespace Enki
 		dataSize (ceil (2 * world->r / worldHeat->gridScale), ceil (2 * world->r / worldHeat->gridScale)),
 		// dataSize (worldHeat->size),
 		dataColour (dataSize.x, std::vector<std::vector<float> > (dataSize.y, std::vector<float> (3, 0) ) ),
-		showHelp (true)
+		showHelp (true),
+		dataLayerZ (5)
 	{
 		//ViewerWidget::pos = QPointF(-world->w*5, -world->h * 2);
 		ViewerWidget::pitch = M_PI/2;
@@ -54,7 +53,7 @@ void AssisiPlayground::sceneCompletedHook()
 	glEnable (GL_BLEND);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glPushMatrix ();
-	glTranslated (-this->world->r, -this->world->r, DATA_Z_LAYER);
+	glTranslated (-this->world->r + this->worldHeat->gridScale, -this->world->r + this->worldHeat->gridScale, dataLayerZ);
 	switch (this->layerToDraw) {
 	case HEAT:
 		if (this->useGradient)
@@ -282,7 +281,7 @@ void AssisiPlayground::setDataToVibration ()
 
 void AssisiPlayground::drawDataAsGradient ()
 {
-	glTranslated (this->worldHeat->gridScale / 2.0, this->worldHeat->gridScale / 2.0, 0);
+	// glTranslated (this->worldHeat->gridScale / 2.0, this->worldHeat->gridScale / 2.0, 0);
 	glScaled (this->worldHeat->gridScale, this->worldHeat->gridScale, 1);
 	Point delta[] = {
 		Point (-1, -1),
@@ -307,7 +306,8 @@ void AssisiPlayground::drawDataAsGradient ()
 
 void AssisiPlayground::drawDataAsCheckerBoard ()
 {
-	glTranslated (this->worldHeat->gridScale, this->worldHeat->gridScale, 0);
+	// glTranslated (this->worldHeat->gridScale / 2.0, this->worldHeat->gridScale / 2.0, 0);
+	// glTranslated (this->worldHeat->gridScale, this->worldHeat->gridScale, 0);
 	glScaled (this->worldHeat->gridScale, this->worldHeat->gridScale, 1);
 	Point delta[] = {
 		Point (-0.5, -0.5),
@@ -333,6 +333,14 @@ void AssisiPlayground::drawDataAsCheckerBoard ()
 void AssisiPlayground::keyPressEvent (QKeyEvent *event)
 {
 	switch (event->key()) {
+	case Qt::Key_PageUp:
+		dataLayerZ = std::min (11, dataLayerZ + 1);
+		updateGL ();
+		break;
+	case Qt::Key_PageDown:
+		dataLayerZ = std::max (1, dataLayerZ - 1);
+		updateGL ();
+		break;
 	case Qt::Key_Plus:
 		transparency = std::min (1.0, transparency + 0.1);
 		qDebug () << "Transparency: " << transparency;

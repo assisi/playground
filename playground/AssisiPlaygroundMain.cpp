@@ -40,6 +40,9 @@ int main(int argc, char *argv[])
     double heat_scale;
     int heat_border_size;
 
+	 double maxHeat;
+	 double maxVibration;
+
     desc.add_options()
         ("help,h", "produce help message")
         ("config_file,c", 
@@ -51,7 +54,17 @@ int main(int argc, char *argv[])
          "environment temperature, in C")
         ("Heat.scale", po::value<double>(&heat_scale), 
          "heat model scale")
-        ("Heat.border_size", po::value<int>(&heat_border_size), "playground radius, in cm");
+        ("Heat.border_size", po::value<int>(&heat_border_size), "playground radius, in cm")
+		 (
+		  "Viewer.max_heat",
+		  po::value<double> (&maxHeat),
+		  "maximum displayed heat"
+		  )
+		 (
+		  "Viewer.max_vibration",
+		  po::value<double> (&maxVibration),
+		  "maximum displayed vibration intensity"
+		  );
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -93,7 +106,7 @@ int main(int argc, char *argv[])
 	BeeHandler *bh = new BeeHandler();
 	world.addHandler("Bee", bh);
 
-	AssisiPlayground viewer (&world, heatModel);	
+	AssisiPlayground viewer (&world, heatModel, maxHeat, maxVibration);	
 	viewer.show ();
 	
 	return app.exec();

@@ -71,3 +71,9 @@ namespace Enki
 
 #endif	/* HEATACTUATORMESH_H */
 
+
+// Local Variables: 
+// mode: c++
+// mode: flyspell-prog
+// ispell-local-dictionary: "british"
+// End: 
