@@ -96,7 +96,7 @@ namespace Enki
         {
             std::string data;
 
-            /* Publishing IR readings */
+            /* Publishing Object Sensor readings */
             ObjectArray objects;
             BOOST_FOREACH(ObjectSensor* obj, ca.second->object_sensors)
             {
