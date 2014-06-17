@@ -89,6 +89,9 @@ namespace Enki
 
 	void ObjectSensor::init(double dt, World* w)
 	{
+        // Initialize detected object type to None.
+        object_type = "None";
+
 		// fill initial values with very large value; will be replaced if smaller distance is found
 		std::fill(&rayDists[0], &rayDists[rayCount], range);
 		std::fill(&rayValues[0], &rayValues[rayCount], 0);
@@ -109,7 +112,8 @@ namespace Enki
 	// modified by yvan.bourquin@epfl.ch to take into account the exact bounding surface
 	void ObjectSensor::objectStep (double dt, World *w, PhysicalObject *po)
 	{
-		// if we see over the object get out of here
+		
+        // if we see over the object get out of here
 		if (height > po->getHeight())
 			return;
 		
