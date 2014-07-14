@@ -1,16 +1,16 @@
 
 #include <GL/glut.h>
 
-#include "stdio.h"
+#include <stdio.h>
 #include <iostream>
 #include <fstream>
 #include <cmath>
 #include <string.h> 
 
-#include "ExtendedWorld.h"
-#include "ExtendedRobot.h"
-#include "HeatActuator.h"
-#include "WorldHeat.h"
+#include "../../extensions/ExtendedWorld.h"
+#include "../../extensions/ExtendedRobot.h"
+#include "../../interactions/HeatActuatorMesh.h"
+#include "../../interactions/WorldHeat.h"
 
 using namespace Enki;
 using namespace std;
@@ -21,12 +21,12 @@ class HeatingRobot:
 	public ExtendedRobot
 {
 public:
-	HeatActuator *heatActuator;
+	HeatActuatorMesh *heatActuator;
 public:
 	HeatingRobot (Vector location, double heat)
 	{
 		this->pos = location;
-		this->heatActuator = new HeatActuator (this, Vector (0, 0), heat);
+		this->heatActuator = new HeatActuatorMesh (this, Vector (0, 0), heat, 1.2, 1.6, 10);
 		this->addPhysicInteraction (this->heatActuator);
 
 		PhysicalObject::dryFrictionCoefficient = 1000;
