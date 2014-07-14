@@ -16,9 +16,23 @@ namespace Enki
 {
 	/**
 	 * A vibration source that approximates the wave equation.  Vibration
-	 * amplitude and frequency decays quadratic with distance.
+	 * amplitude decays quadratic with distance.  It is given by equation:
 	 *
-	 * <p> The user can control the amplitude and frequency.
+	 * <code>A / (c d + 1)</code>
+	 *
+	 * where
+	 *
+	 * <ul>
+	 *
+	 * <li> <i>A</i> is the maximum amplitude; </li>
+	 *
+	 * <li><i>c</i> is the decaying constant;</li>
+	 *
+	 * <li><i>d</i> is the distance to the orign.</li>
+	 *
+	 * </ul>
+	 *
+	 * <p> The user can control the amplitude.
 	 */
 	class QuadraticVibrationSource:
 		public VibrationSource
@@ -26,7 +40,7 @@ namespace Enki
 		/**
 		 * Quadratic coefficient of the vibration model.
 		 */
-		const double a;
+		const double decayConstant;
 	public:
 		/**
 		 * Current vibration amplitude of this source.
@@ -38,15 +52,13 @@ namespace Enki
 		double frequency;
 	public:
 
-		QuadraticVibrationSource (double range, Robot* owner, Vector relativePosition, double a);
+		QuadraticVibrationSource (double range, Robot* owner, Vector relativePosition, double decayConstant, double amplitude);
 
 		QuadraticVibrationSource (const QuadraticVibrationSource& orig);
 
 		virtual ~QuadraticVibrationSource ();
 
-		virtual double getAmplitudeAt (const Point &position, double time) const;
-
-		virtual double getIntensityAt (const Point &position) const;
+		virtual double getWaveAt (const Point &position, double time) const;
 	private:
 
 	};
