@@ -23,7 +23,7 @@ namespace Enki
 	 *
 	 * <ul><li><i>A</i> is the maximum amplitude.</li>
 	 *
-	 * <li><i>d</i> is the distance to the orign.</li>
+	 * <li><i>d</i> is the distance to the origin.</li>
 	 *
 	 * <li><i>c</i> is the decaying constant.</li></ul>
 	 */
