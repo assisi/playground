@@ -44,6 +44,9 @@ namespace Enki
         //! Peltier heater
         HeatActuatorMesh *peltier;
 
+		  //! Vibration actuator
+		  WaveVibrationSource *vibration;
+
     private:
         World* world_;
         
