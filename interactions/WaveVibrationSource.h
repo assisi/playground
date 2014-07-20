@@ -49,9 +49,9 @@ namespace Enki
 		 */
 		double amplitude;
 		/**
-		 * Current vibration frequency of this source.
+		 * Wave speed propagation.
 		 */
-		double frequency;
+		double waveVelocity;
 	public:
 
 		QuadraticVibrationSource (double range, Robot* owner, Vector relativePosition, double amplitude, double frequency);
