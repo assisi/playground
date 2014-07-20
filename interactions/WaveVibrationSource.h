@@ -54,11 +54,11 @@ namespace Enki
 		double waveVelocity;
 	public:
 
-		QuadraticVibrationSource (double range, Robot* owner, Vector relativePosition, double amplitude, double frequency);
+		WaveVibrationSource (double range, Robot* owner, Vector relativePosition, double amplitude, double waveVelocity);
 
-		QuadraticVibrationSource (const QuadraticVibrationSource& orig);
+		WaveVibrationSource (const WaveVibrationSource& orig);
 
-		virtual ~QuadraticVibrationSource ();
+		virtual ~WaveVibrationSource ();
 
 		virtual double getWaveAt (const Point &position, double time) const;
 	private:
