@@ -14,6 +14,7 @@
 #include "interactions/DiagnosticLed.h"
 #include "interactions/LightSourceFromAbove.h"
 #include "interactions/HeatActuatorMesh.h"
+#include "interactions/WaveVibrationSource.h"
 
 namespace Enki
 {
@@ -43,6 +44,9 @@ namespace Enki
 
         //! Peltier heater
         HeatActuatorMesh *peltier;
+
+		  //! Vibration actuator
+		  WaveVibrationSource *vibration;
 
     private:
         World* world_;
