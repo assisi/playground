@@ -269,7 +269,7 @@ void AssisiPlayground::setDataToVibration ()
 		where.y = -this->world->r + this->worldHeat->gridScale;
 		for (pos.y = 0; pos.y < this->dataSize.y; pos.y++) {
 			double vibration = this->extendedWorld->getVibrationAmplitudeAt (where, time);
-			double colour = std::max (vibration / this->maxVibration, 1.0);
+			double colour = std::min (vibration / this->maxVibration, 1.0);
 			std::vector<float> &dc = this->dataColour [pos.x][pos.y];
 			dc [0] = 0;
 			dc [1] = colour;

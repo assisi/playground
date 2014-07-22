@@ -76,6 +76,14 @@ Casu::Casu(World* world) :
     // Add peltier actuator
     peltier = new HeatActuatorMesh (this, Vector(0,0), 23, 1.2, 1.6, 20);
     this->addPhysicInteraction(this->peltier);
+
+	 // Add vibration actuator
+	 const double VIBRATION_RADIUS = 100;
+	 const Vector VIBRATION_POISITION = Vector (0, 0);
+	 const double VIBRATION_AMPLITUDE = 8.5; // units??
+	 const double VIBRATION_WAVE_VELOCITY = 0;
+	 this->vibration = new WaveVibrationSource (VIBRATION_RADIUS, this, VIBRATION_POISITION, VIBRATION_AMPLITUDE, VIBRATION_WAVE_VELOCITY);
+	 world_->addObject (this->vibration);
 }
 
 // -----------------------------------------------------------------------------

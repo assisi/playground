@@ -1,4 +1,3 @@
-#include <boost/math/constants/constants.hpp>
 #include <math.h>
 
 #include "WaveVibrationSource.h"
@@ -33,8 +32,9 @@ WaveVibrationSource::~WaveVibrationSource()
 double WaveVibrationSource::getWaveAt (const Point &position, double time) const
 {
 	double distance = (this->absolutePosition - position).norm ();
+	double pii = M_PIl;
 	return
 		this->amplitude
-		* sin (2 * boost::math::double_constants::pi *
+		* std::sin (2 * pii *
 			(time - distance / this->waveVelocity));
 }
