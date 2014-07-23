@@ -20,6 +20,13 @@ const double pi = boost::math::constants::pi<double>();
 namespace Enki
 {
 
+	/*const*/ double Casu::VIBRATION_RANGE = 100;
+	/*const*/ Vector Casu::VIBRATION_POSITION = Vector (0, 0);
+	/*const*/ double Casu::VIBRATION_MAXIMUM_AMPLITUDE = 8.5; // units??
+	/*const*/ double Casu::VIBRATION_PERIOD = 1;
+	/*const*/ double Casu::VIBRATION_WAVE_VELOCITY = 0;
+	/*const*/ double Casu::VIBRATION_AMPLITUDE_QUADRATIC_DECAY = 2;
+
 Casu::Casu(World* world) :
     world_(world),
     range_sensors(6)
@@ -78,11 +85,10 @@ Casu::Casu(World* world) :
     this->addPhysicInteraction(this->peltier);
 
 	 // Add vibration actuator
-	 const double VIBRATION_RADIUS = 100;
-	 const Vector VIBRATION_POISITION = Vector (0, 0);
-	 const double VIBRATION_AMPLITUDE = 8.5; // units??
-	 const double VIBRATION_WAVE_VELOCITY = 0;
-	 this->vibration = new WaveVibrationSource (VIBRATION_RADIUS, this, VIBRATION_POISITION, VIBRATION_AMPLITUDE, VIBRATION_WAVE_VELOCITY);
+	 this->vibration = new WaveVibrationSource
+		(VIBRATION_RANGE, this, VIBRATION_POSITION,
+		 VIBRATION_MAXIMUM_AMPLITUDE, VIBRATION_PERIOD,
+		 VIBRATION_WAVE_VELOCITY, VIBRATION_AMPLITUDE_QUADRATIC_DECAY);
 	 world_->addObject (this->vibration);
 }
 

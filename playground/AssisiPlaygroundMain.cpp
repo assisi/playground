@@ -51,7 +51,23 @@ int main(int argc, char *argv[])
          "environment temperature, in C")
         ("Heat.scale", po::value<double>(&heat_scale), 
          "heat model scale")
-        ("Heat.border_size", po::value<int>(&heat_border_size), "playground radius, in cm");
+        ("Heat.border_size", po::value<int>(&heat_border_size), "playground radius, in cm")
+		 ("Vibration.range",
+		  po::value<double> (&Casu::VIBRATION_RANGE),
+		  "vibration range, in cm")
+		 ("Vibration.maximum_amplitude", 
+		  po::value<double> (&Casu::VIBRATION_MAXIMUM_AMPLITUDE),
+		  "maximum amplitude of vibration")
+		 ("Vibration.period", 
+		  po::value<double> (&Casu::VIBRATION_PERIOD),
+		  "vibration period")
+		 ("Vibration.wave_velocity", 
+		  po::value<double> (&Casu::VIBRATION_WAVE_VELOCITY),
+		  "velocity of vibration wave")
+		 ("Vibration.amplitude_quadratic_decay", 
+		  po::value<double> (&Casu::VIBRATION_AMPLITUDE_QUADRATIC_DECAY),
+		  "quadratic decay of vibration amplitude")
+		 ;
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);

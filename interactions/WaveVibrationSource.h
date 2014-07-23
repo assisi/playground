@@ -18,7 +18,7 @@ namespace Enki
 	 * A vibration source that approximates the wave equation.  Vibration
 	 * amplitude decays quadratic with distance.  It is given by equation:
 	 *
-	 * <code>A / (c d + 1)</code>
+	 * <code>A / (1 + c d^2) sin ( 2 pi / T (t - d / v) )</code>
 	 *
 	 * where
 	 *
@@ -37,24 +37,27 @@ namespace Enki
 	class WaveVibrationSource:
 		public VibrationSource
 	{
-		/**
-		 * How much time has passed.  The enki simulator does not store how
-		 * many time has passed.  The local interaction only receives delta
-		 * time.
-		 */
-		double totalElapsedTime;
 	public:
 		/**
 		 * Current vibration amplitude of this source.
 		 */
-		double amplitude;
+		double maximumAmplitude;
+		/**
+		 * Wave period.
+		 */
+		double period;
 		/**
 		 * Wave speed propagation.
 		 */
 		double waveVelocity;
+		/**
+		 * Quadratic constant used to compute amplitude decay.  Zero means no
+		 * decay.
+		 */
+		double amplitudeQuadraticDecay;
 	public:
 
-		WaveVibrationSource (double range, Robot* owner, Vector relativePosition, double amplitude, double waveVelocity);
+		WaveVibrationSource (double range, Robot* owner, Vector relativePosition, double maximumAmplitude, double period, double waveVelocity, double amplitudeQuadraticDecay);
 
 		WaveVibrationSource (const WaveVibrationSource& orig);
 

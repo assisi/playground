@@ -22,6 +22,14 @@ namespace Enki
     class Casu : public ExtendedRobot
     {
     public:
+       static /*const*/ double VIBRATION_RANGE;
+       static /*const*/ Vector VIBRATION_POSITION;
+       static /*const*/ double VIBRATION_MAXIMUM_AMPLITUDE;
+       static /*const*/ double VIBRATION_PERIOD;
+       static /*const*/ double VIBRATION_WAVE_VELOCITY;
+       static /*const*/ double VIBRATION_AMPLITUDE_QUADRATIC_DECAY;
+
+    public:
         //! Create a CASU
         Casu(World* world);
 
@@ -45,8 +53,8 @@ namespace Enki
         //! Peltier heater
         HeatActuatorMesh *peltier;
 
-		  //! Vibration actuator
-		  WaveVibrationSource *vibration;
+        //! Vibration actuator
+        WaveVibrationSource *vibration;
 
     private:
         World* world_;
