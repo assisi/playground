@@ -21,11 +21,13 @@ namespace Enki
 {
 
 	/*const*/ double Casu::VIBRATION_RANGE = 100;
-	/*const*/ Vector Casu::VIBRATION_POSITION = Vector (0, 0);
+	const Vector Casu::VIBRATION_POSITION = Vector (0, 0);
 	/*const*/ double Casu::VIBRATION_MAXIMUM_AMPLITUDE = 8.5; // units??
-	/*const*/ double Casu::VIBRATION_PERIOD = 1;
-	/*const*/ double Casu::VIBRATION_WAVE_VELOCITY = 0;
+	/*const*/ double Casu::VIBRATION_PHASE = 1;
+	/*const*/ double Casu::VIBRATION_FREQUENCY = 350;
+	const double Casu::VIBRATION_VELOCITY = 357000;  // sound speed in copper cm/s
 	/*const*/ double Casu::VIBRATION_AMPLITUDE_QUADRATIC_DECAY = 2;
+	/*const*/ double Casu::VIBRATION_NOISE = 1;
 
 Casu::Casu(World* world) :
     world_(world),
@@ -86,10 +88,17 @@ Casu::Casu(World* world) :
 
 	 // Add vibration actuator
 	 this->vibration = new WaveVibrationSource
-		(VIBRATION_RANGE, this, VIBRATION_POSITION,
-		 VIBRATION_MAXIMUM_AMPLITUDE, VIBRATION_PERIOD,
-		 VIBRATION_WAVE_VELOCITY, VIBRATION_AMPLITUDE_QUADRATIC_DECAY);
+		(Casu::VIBRATION_RANGE, this,
+		 Casu::VIBRATION_POSITION,
+		 Casu::VIBRATION_MAXIMUM_AMPLITUDE,
+		 Casu::VIBRATION_PHASE,
+		 Casu::VIBRATION_FREQUENCY,
+		 Casu::VIBRATION_VELOCITY,
+		 Casu::VIBRATION_AMPLITUDE_QUADRATIC_DECAY,
+		 Casu::VIBRATION_NOISE);
+	 this->vibration->setCylindric(0, 0, -1); // Set to point object
 	 world_->addObject (this->vibration);
+	 addLocalInteraction (this->vibration);
 }
 
 // -----------------------------------------------------------------------------

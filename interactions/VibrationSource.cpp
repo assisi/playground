@@ -7,7 +7,7 @@ VibrationSource::VibrationSource (double range, Robot* owner, Vector relativePos
 	Component (owner, relativePosition, orientation)
 {
 	Component::init ();
-	this->pos = Component::absolutePosition;
+	// this->pos = Component::absolutePosition;
 }
 
 VibrationSource::VibrationSource (const VibrationSource &orig):

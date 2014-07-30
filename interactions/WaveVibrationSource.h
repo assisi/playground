@@ -37,19 +37,28 @@ namespace Enki
 	class WaveVibrationSource:
 		public VibrationSource
 	{
+		/**
+		 * Wave frequency.
+		 */
+		double frequency;
+		/**
+		 * Noise used when setting the frequency.  The real frequency is
+		 * added an uniform number from the range [-n,+n].
+		 */
+		const double noise;
 	public:
 		/**
 		 * Current vibration amplitude of this source.
 		 */
 		double maximumAmplitude;
 		/**
-		 * Wave period.
-		 */
-		double period;
-		/**
 		 * Wave speed propagation.
 		 */
-		double waveVelocity;
+		double velocity;
+		/**
+		 * Wave phase
+		 */
+		double phase;
 		/**
 		 * Quadratic constant used to compute amplitude decay.  Zero means no
 		 * decay.
@@ -57,13 +66,21 @@ namespace Enki
 		double amplitudeQuadraticDecay;
 	public:
 
-		WaveVibrationSource (double range, Robot* owner, Vector relativePosition, double maximumAmplitude, double period, double waveVelocity, double amplitudeQuadraticDecay);
+		WaveVibrationSource (double range, Robot* owner, Vector relativePosition,
+			double maximumAmplitude, double phase, double frequency, double velocity,
+			double amplitudeQuadraticDecay, double noise);
 
 		WaveVibrationSource (const WaveVibrationSource& orig);
 
 		virtual ~WaveVibrationSource ();
 
 		virtual double getWaveAt (const Point &position, double time) const;
+
+		/**
+		 * Sets the frequency of this wave source.  The real frequency
+		 * depends on the random noise parameter.
+		 */
+		void setFrequency (double value);
 	private:
 
 	};

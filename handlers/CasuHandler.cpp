@@ -121,6 +121,16 @@ namespace Enki
                 count++;
             }
         }
+        else if (device == "Vibration")
+        {
+            if (command == "frequency")
+            {
+                Vibration freq_msg;
+                assert (freq_msg.ParseFromString (data));
+                casus_[name]->vibration->setFrequency (freq_msg.freq ());
+                count++;
+            }
+        }
         else
         {
             cerr << "Unknown device " << device << endl;

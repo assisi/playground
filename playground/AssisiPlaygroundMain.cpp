@@ -58,15 +58,18 @@ int main(int argc, char *argv[])
 		 ("Vibration.maximum_amplitude", 
 		  po::value<double> (&Casu::VIBRATION_MAXIMUM_AMPLITUDE),
 		  "maximum amplitude of vibration")
-		 ("Vibration.period", 
-		  po::value<double> (&Casu::VIBRATION_PERIOD),
-		  "vibration period")
-		 ("Vibration.wave_velocity", 
-		  po::value<double> (&Casu::VIBRATION_WAVE_VELOCITY),
-		  "velocity of vibration wave")
+		 ("Vibration.frequency", 
+		  po::value<double> (&Casu::VIBRATION_FREQUENCY),
+		  "vibration frequency")
+		 // ("Vibration.wave_velocity", 
+		 //  po::value<double> (&Casu::VIBRATION_VELOCITY),
+		 //  "velocity of vibration wave")
 		 ("Vibration.amplitude_quadratic_decay", 
 		  po::value<double> (&Casu::VIBRATION_AMPLITUDE_QUADRATIC_DECAY),
 		  "quadratic decay of vibration amplitude")
+		 ("Vibration.noise", 
+		  po::value<double> (&Casu::VIBRATION_NOISE),
+		  "vibration frequency noise")
 		 ;
 
     po::variables_map vm;
