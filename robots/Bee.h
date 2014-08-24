@@ -6,7 +6,7 @@
 
 #include <enki/robots/DifferentialWheeled.h>
 #include "extensions/ExtendedRobot.h"
-#include <enki/interactions/IRSensor.h>
+#include "interactions/ObjectSensor.h"
 #include "interactions/HeatSensor.h"
 #include "interactions/LightSensor.h"
 	
@@ -29,9 +29,9 @@ namespace Enki
 
         /* Sensors */
 
-        typedef std::vector<IRSensor*> IRSensorVector;
-        //! IR proximity sensors.
-        IRSensorVector range_sensors;
+        typedef std::vector<ObjectSensor*> ObjectSensorVector;
+        //! object proximity sensors.
+        ObjectSensorVector object_sensors;
 
         //! Light sensor.
         LightSensor* light_sensor_blue;

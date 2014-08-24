@@ -25,7 +25,7 @@ namespace Enki
 {
     Bee::Bee(void) :
         DifferentialWheeled(0.4, 2, 0.0),
-        range_sensors(5)
+        object_sensors(5)
     {
         // Set shape & color
 
@@ -54,10 +54,10 @@ namespace Enki
         int i = 0;
         for (double a = -pi/2; i < 5; i++, a += pi/4) 
         {
-            range_sensors[i] = new IRSensor(this, 
+            object_sensors[i] = new ObjectSensor(this, 
                                             Vector(len/2-sin(a)*w/2, sin(a)*w/2),
                                             0, a, 10, 3731, 0, 0.7, 0);
-            addLocalInteraction(range_sensors[i]);
+            addLocalInteraction(object_sensors[i]);
         }
 
         double light_sensor_range = 10.0;
@@ -77,7 +77,7 @@ namespace Enki
     /* virtual */
     Bee::~Bee()
     {
-        BOOST_FOREACH(IRSensor* p, range_sensors)
+        BOOST_FOREACH(ObjectSensor* p, object_sensors)
         {
             delete p;
         }
