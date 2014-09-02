@@ -12,8 +12,9 @@ using namespace Enki;
 
 const double DecayVibration::DECAY_CONSTANT = 4;
 
-DecayVibration::DecayVibration (double range, Robot* owner, Vector relativePosition, double a):
-	VibrationSource (range, owner, relativePosition, OMNIDIRECTIONAL)
+DecayVibration::DecayVibration (double range, Robot* owner, Vector relativePosition, double amplitude):
+	VibrationSource (range, owner, relativePosition, OMNIDIRECTIONAL),
+	amplitude (amplitude)
 {
 }
 
@@ -26,12 +27,7 @@ DecayVibration::~DecayVibration ()
 {
 }
 
-double DecayVibration::getAmplitudeAt (const Point &position, double time) const
-{
-	throw new NotSimulated ();
-}
-
-double DecayVibration::getIntensityAt (const Point &position) const
+double DecayVibration::getWaveAt (const Point &position, double time) const
 {
 	double squareDistance = (this->absolutePosition - position).norm2 ();
 	double result = this->amplitude - squareDistance * DecayVibration::DECAY_CONSTANT;

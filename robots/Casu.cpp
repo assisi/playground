@@ -20,6 +20,15 @@ const double pi = boost::math::constants::pi<double>();
 namespace Enki
 {
 
+	/*const*/ double Casu::VIBRATION_RANGE = 100;
+	const Vector Casu::VIBRATION_POSITION = Vector (0, 0);
+	/*const*/ double Casu::VIBRATION_MAXIMUM_AMPLITUDE = 8.5; // units??
+	/*const*/ double Casu::VIBRATION_PHASE = 1;
+	/*const*/ double Casu::VIBRATION_FREQUENCY = 350;
+	const double Casu::VIBRATION_VELOCITY = 357000;  // sound speed in copper cm/s
+	/*const*/ double Casu::VIBRATION_AMPLITUDE_QUADRATIC_DECAY = 2;
+	/*const*/ double Casu::VIBRATION_NOISE = 1;
+
 Casu::Casu(World* world) :
     world_(world),
     range_sensors(6)
@@ -76,6 +85,20 @@ Casu::Casu(World* world) :
     // Add peltier actuator
     peltier = new HeatActuatorMesh (this, Vector(0,0), 23, 1.2, 1.6, 20);
     this->addPhysicInteraction(this->peltier);
+
+	 // Add vibration actuator
+	 this->vibration = new WaveVibrationSource
+		(Casu::VIBRATION_RANGE, this,
+		 Casu::VIBRATION_POSITION,
+		 Casu::VIBRATION_MAXIMUM_AMPLITUDE,
+		 Casu::VIBRATION_PHASE,
+		 Casu::VIBRATION_FREQUENCY,
+		 Casu::VIBRATION_VELOCITY,
+		 Casu::VIBRATION_AMPLITUDE_QUADRATIC_DECAY,
+		 Casu::VIBRATION_NOISE);
+	 this->vibration->setCylindric(0, 0, -1); // Set to point object
+	 world_->addObject (this->vibration);
+	 addLocalInteraction (this->vibration);
 }
 
 // -----------------------------------------------------------------------------

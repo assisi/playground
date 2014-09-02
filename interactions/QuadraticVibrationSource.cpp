@@ -7,27 +7,24 @@
 
 #include "QuadraticVibrationSource.h"
 
-#include "NotSimulated.h"
-
 using namespace Enki;
 
 QuadraticVibrationSource::QuadraticVibrationSource
 	(double range, Robot* owner,
 	 Vector relativePosition,
-	 double a)
+	 double decayConstant,
+	 double amplitude)
 	:
 	VibrationSource (range, owner, relativePosition, OMNIDIRECTIONAL),
-	a (a),
-	amplitude (0),
-	frequency (0)
+	decayConstant (decayConstant),
+	amplitude (amplitude)
 {
 }
 
 QuadraticVibrationSource::QuadraticVibrationSource (const QuadraticVibrationSource& orig):
 	VibrationSource (orig),
-	a (orig.a),
-	amplitude (orig.amplitude),
-	frequency (orig.frequency)
+	decayConstant (orig.decayConstant),
+	amplitude (orig.amplitude)
 {
 }
 
@@ -35,13 +32,8 @@ QuadraticVibrationSource::~QuadraticVibrationSource()
 {
 }
 
-double QuadraticVibrationSource::getAmplitudeAt (const Point &position, double time) const
-{
-	throw new NotSimulated ();
-}
-
-double QuadraticVibrationSource::getIntensityAt (const Point &position) const
+double QuadraticVibrationSource::getWaveAt (const Point &position, double time) const
 {
 	double squareDistance = (this->absolutePosition - position).norm2 ();
-	return this->frequency / (this->a * squareDistance + 1);
+	return this->amplitude / (this->decayConstant * squareDistance + 1);
 }

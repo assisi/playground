@@ -26,6 +26,12 @@ namespace Enki
 		  public Component
 	{
 		/**
+		 * How much time has passed.  The enki simulator does not store how
+		 * many time has passed.  The local interaction only receives delta
+		 * time.
+		 */
+		double totalElapsedTime;
+		/**
 		 * Maximum measurable amplitude of this sensor.
 		 */
 		const double maxMeasurableAmplitude;

@@ -19,7 +19,8 @@ VibrationSensor
 	amplitudeStandardDeviationGaussianNoise (amplitudeStandardDeviationGaussianNoise),
 	intensityStandardDeviationGaussianNoise (intensityStandardDeviationGaussianNoise),
 	amplitude (0),
-	intensity (0)
+	intensity (0),
+	totalElapsedTime (0)
 {
 }
 
@@ -31,7 +32,8 @@ VibrationSensor::VibrationSensor (const VibrationSensor& orig):
 	amplitudeStandardDeviationGaussianNoise (orig.amplitudeStandardDeviationGaussianNoise),
 	intensityStandardDeviationGaussianNoise (orig.intensityStandardDeviationGaussianNoise),
 	amplitude (0),
-	intensity (0)
+	intensity (0),
+	totalElapsedTime (0)
 {
 }
 

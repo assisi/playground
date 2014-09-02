@@ -21,9 +21,9 @@ namespace Enki
 	 *
 	 * where
 	 *
-	 * <ul><li><i>A</i> is the amplitude.</li>
+	 * <ul><li><i>A</i> is the maximum amplitude.</li>
 	 *
-	 * <li><i>d</i> is the distance to the orign.</li>
+	 * <li><i>d</i> is the distance to the origin.</li>
 	 *
 	 * <li><i>c</i> is the decaying constant.</li></ul>
 	 */
@@ -40,18 +40,13 @@ namespace Enki
 		 * Current vibration amplitude of this source.
 		 */
 		double amplitude;
-		/**
-		 * Current vibration frequency of this source.
-		 */
-		double frequency;
 	public:
-		DecayVibration (double range, Robot* owner, Vector relativePosition, double a);
+		DecayVibration (double range, Robot* owner, Vector relativePosition, double amplitude);
 		DecayVibration (const DecayVibration& orig);
 		virtual ~DecayVibration ();
 
-		virtual double getAmplitudeAt (const Point &position, double time) const;
+		virtual double getWaveAt (const Point &position, double time) const;
 
-		virtual double getIntensityAt (const Point &position) const;
 	private:
 
 	};

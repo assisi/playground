@@ -20,8 +20,8 @@ namespace Enki
 {
 	/**
 	 * Abstract base class of all vibration sources.  Vibration sources must
-	 * implement methods that return vibration wave properties such as
-	 * amplitude and frequency.  This can be a class that implements the
+	 * implement a method that returns the value of the wave equation at a
+	 * given position and time.  This can be a class that implements the
 	 * wave equation or some approximation.
 	 *
 	 * @author Pedro Mariano
@@ -50,12 +50,7 @@ namespace Enki
 		 * Return the vibration amplitude produced by this source at the
 		 * given position and time.
 		 */
-		virtual double getAmplitudeAt (const Point &position, double time) const = 0;
-		/**
-		 * Return the vibration intensity produced by this source at the
-		 * given position and time.
-		 */
-		virtual double getIntensityAt (const Point &position) const = 0;
+		virtual double getWaveAt (const Point &position, double time) const = 0;
 	};
 }
 
