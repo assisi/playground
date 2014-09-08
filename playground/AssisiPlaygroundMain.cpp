@@ -40,10 +40,10 @@ int main(int argc, char *argv[])
     double heat_scale;
     int heat_border_size;
 
-	 double maxHeat;
-	 double maxVibration;
+	double maxHeat;
+	double maxVibration;
 
-	 bool saveState;
+	bool saveState;
 
 	desc.add_options
 		()
@@ -58,6 +58,32 @@ int main(int argc, char *argv[])
 		("Heat.scale", po::value<double>(&heat_scale), 
 		 "heat model scale")
 		("Heat.border_size", po::value<int>(&heat_border_size), "playground radius, in cm")
+
+		(
+		 "Vibration.range",
+		 po::value<double> (&Casu::VIBRATION_RANGE),
+		 "vibration range, in cm"
+		)
+		(
+		 "Vibration.maximum_amplitude", 
+		 po::value<double> (&Casu::VIBRATION_MAXIMUM_AMPLITUDE),
+		 "maximum amplitude of vibration"
+		)
+		(
+		 "Vibration.frequency", 
+		 po::value<double> (&Casu::VIBRATION_FREQUENCY),
+		 "vibration frequency"
+		)
+		(
+		 "Vibration.amplitude_quadratic_decay", 
+		 po::value<double> (&Casu::VIBRATION_AMPLITUDE_QUADRATIC_DECAY),
+		 "quadratic decay of vibration amplitude"
+		)
+		(
+		 "Vibration.noise", 
+		 po::value<double> (&Casu::VIBRATION_NOISE),
+		 "vibration frequency noise"
+		)
 		(
 		 "Viewer.max_heat",
 		 po::value<double> (&maxHeat),
@@ -97,10 +123,12 @@ int main(int argc, char *argv[])
     //texture.invertPixels(QImage::InvertRgba);
     
     WorldExt world (r, pub_address, sub_address,
-						  Color::gray, 
-						  World::GroundTexture (texture.width(),
-														texture.height(), 
-														(const uint32_t*) texture.constBits()) );
+		Color::gray, 
+		World::GroundTexture (
+			texture.width(),
+			texture.height(),
+			(const uint32_t*) texture.constBits ()));
+
 	if (saveState) {
 		world.saveStateTo ("state.txt");
 	}

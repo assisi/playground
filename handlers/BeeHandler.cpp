@@ -96,14 +96,15 @@ namespace Enki
         {
             std::string data;
 
-            /* Publishing IR readings */
-            RangeArray ranges;
-            BOOST_FOREACH(IRSensor* ir, ca.second->range_sensors)
+            /* Publishing Object Sensor readings */
+            ObjectArray objects;
+            BOOST_FOREACH(ObjectSensor* obj, ca.second->object_sensors)
             {
-                ranges.add_range(ir->getDist());                
+                objects.add_range(obj->getDist());                
+                objects.add_type(obj->getType());
             }
-            ranges.SerializeToString(&data);
-            send_multipart(socket, ca.first, "IR", "Ranges", data);
+            objects.SerializeToString(&data);
+            send_multipart(socket, ca.first, "Object", "Ranges", data);
             count++;
 
             /* Publish velocities */

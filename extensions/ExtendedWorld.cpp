@@ -17,20 +17,23 @@ ExtendedWorld::ExtendedWorld (double width, double height,
                               const Color& wallsColor, 
                               const World::GroundTexture& groundTexture):
 	World (width, height, wallsColor, groundTexture),
-	stateStream (NULL)
+	stateStream (NULL),
+	absoluteTime (0)
 {
 }
 
 ExtendedWorld::ExtendedWorld (double r, const Color& wallsColor,
                               const World::GroundTexture& groundTexture):
 	World (r, wallsColor, groundTexture),
-	stateStream (NULL)
+	stateStream (NULL),
+	absoluteTime (0)
 {
 }
 
 ExtendedWorld::ExtendedWorld ():
 	World (),
-	stateStream (NULL)
+	stateStream (NULL),
+	absoluteTime (0)
 {
 }
 
@@ -90,6 +93,7 @@ void ExtendedWorld::step (double dt, unsigned physicsOversampling)
 		}
 		// *(this->stateStream) << '\n';
 	}
+	absoluteTime += dt;
 }
 
 double ExtendedWorld::getVibrationAmplitudeAt (const Point &position, double time) const
@@ -100,24 +104,7 @@ double ExtendedWorld::getVibrationAmplitudeAt (const Point &position, double tim
 		VibrationSource *vibrationSource = dynamic_cast<VibrationSource *> (po);
 		if (vibrationSource != NULL) {
 			try {
-				result += vibrationSource->getAmplitudeAt (position, time);
-			}
-			catch (NotSimulated *ns) {
-			}
-		}
-	}
-	return result;
-}
-
-double ExtendedWorld::getVibrationIntensityAt (const Point &position) const
-{
-	double result = 0;
-	for (ObjectsIterator i = this->objects.begin (); i != this->objects.end (); ++i) {
-		PhysicalObject *po = (*i);
-		VibrationSource *vibrationSource = dynamic_cast<VibrationSource *> (po);
-		if (vibrationSource != NULL) {
-			try {
-				result += vibrationSource->getIntensityAt (position);
+				result += vibrationSource->getWaveAt (position, time);
 			}
 			catch (NotSimulated *ns) {
 			}

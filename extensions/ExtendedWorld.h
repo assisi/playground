@@ -45,6 +45,11 @@ namespace Enki
 		 * analysis.
 		 */
 		std::ofstream *stateStream;
+		/**
+		 * Holds the total absolute time which is a sum of all values of
+		 * parameter {@code dt} of method {@code step()}.
+		 */
+		double absoluteTime;
 	public:
 		/**
 		 * Construct a world with square walls, takes width and height of the
@@ -84,11 +89,16 @@ namespace Enki
 		 * time.
 		 */
 		virtual double getVibrationAmplitudeAt (const Point &position, double time) const;
-		/**
-		 * Return the vibration intensity sensed at the given position and
-		 * time.
-		 */
-		virtual double getVibrationIntensityAt (const Point &position) const;
+		// /**
+		//  * Return the vibration intensity sensed at the given position and
+		//  * time.
+		//  */
+		// virtual double getVibrationIntensityAt (const Point &position) const;
+
+		double getAbsoluteTime () const
+		{
+			return this->absoluteTime;
+		}
 	private:
 
 	};
