@@ -29,6 +29,14 @@ namespace Enki
 	/*const*/ double Casu::PELTIER_AMPLITUDE_QUADRATIC_DECAY = 2;
 	/*const*/ double Casu::PELTIER_NOISE = 1;
 
+
+	double Casu::VIBRATION_RANGE = 100;
+	const Vector Casu::VIBRATION_POSITION = Vector (0, 0);
+	/*const*/ double Casu::VIBRATION_MAX_MEASURABLE_AMPLITUDE = 8.5;
+	/*const*/ double Casu::VIBRATION_MAX_MEASURABLE_FREQUENCY = 500;
+	/*const*/ double Casu::VIBRATION_AMPLITUDE_STANDARD_DEVIATION_GAUSSIAN_NOISE = 0;
+	/*const*/ double Casu::VIBRATION_FREQUENCY_STANDARD_DEVIATION_GAUSSIAN_NOISE = 0;
+
 Casu::Casu(World* world) :
     world_(world),
     range_sensors(6)
@@ -101,9 +109,12 @@ Casu::Casu(World* world) :
 	 addLocalInteraction (this->vibration);
 
 	 this->sensor = new VibrationSensor
-		 (0, this,
-		  Vector (0, 0), 0,
-		  10, 500, 0, 0 );
+		 (VIBRATION_RANGE, this,
+		  VIBRATION_POSITION, 0,
+		  VIBRATION_MAX_MEASURABLE_AMPLITUDE, 
+		  VIBRATION_MAX_MEASURABLE_FREQUENCY,
+		  VIBRATION_AMPLITUDE_STANDARD_DEVIATION_GAUSSIAN_NOISE,
+		  VIBRATION_FREQUENCY_STANDARD_DEVIATION_GAUSSIAN_NOISE);
 }
 
 // -----------------------------------------------------------------------------
