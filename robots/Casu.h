@@ -15,6 +15,7 @@
 #include "interactions/LightSourceFromAbove.h"
 #include "interactions/HeatActuatorMesh.h"
 #include "interactions/WaveVibrationSource.h"
+#include "interactions/VibrationSensor.h"
 
 namespace Enki
 {
@@ -22,14 +23,14 @@ namespace Enki
     class Casu : public ExtendedRobot
     {
     public:
-       static /*const*/ double VIBRATION_RANGE;
-       static const Vector VIBRATION_POSITION;
-       static /*const*/ double VIBRATION_MAXIMUM_AMPLITUDE;
-       static /*const*/ double VIBRATION_PHASE;
-       static /*const*/ double VIBRATION_FREQUENCY;
-       static const double VIBRATION_VELOCITY;
-       static /*const*/ double VIBRATION_AMPLITUDE_QUADRATIC_DECAY;
-       static /*const*/ double VIBRATION_NOISE;
+       static /*const*/ double PELTIER_RANGE;
+       static const Vector PELTIER_POSITION;
+       static /*const*/ double PELTIER_MAXIMUM_AMPLITUDE;
+       static /*const*/ double PELTIER_PHASE;
+       static /*const*/ double PELTIER_FREQUENCY;
+       static const double PELTIER_VELOCITY;
+       static /*const*/ double PELTIER_AMPLITUDE_QUADRATIC_DECAY;
+       static /*const*/ double PELTIER_NOISE;
 
     public:
         //! Create a CASU
@@ -57,6 +58,8 @@ namespace Enki
 
         //! Vibration actuator
         WaveVibrationSource *vibration;
+
+		  VibrationSensor *sensor;
 
     private:
         World* world_;

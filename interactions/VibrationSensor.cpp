@@ -3,6 +3,7 @@
 
 #include "VibrationSensor.h"
 #include "VibrationSource.h"
+#include "WaveVibrationSource.h"
 
 using namespace Enki;
 
@@ -10,16 +11,16 @@ VibrationSensor::
 VibrationSensor
 	(double range, Robot* owner,
 	 Vector relativePosition, double orientation,
-	 double maxMeasurableAmplitude, double maxMeasurableIntensity, double amplitudeStandardDeviationGaussianNoise, double intensityStandardDeviationGaussianNoise)
+	 double maxMeasurableAmplitude, double maxMeasurableFrequency, double amplitudeStandardDeviationGaussianNoise, double frequencyStandardDeviationGaussianNoise)
 	:
 	LocalInteraction (range, owner),
 	Component (owner, relativePosition, orientation), 
 	maxMeasurableAmplitude (maxMeasurableAmplitude),
-	maxMeasurableIntensity (maxMeasurableIntensity),
+	maxMeasurableFrequency (maxMeasurableFrequency),
 	amplitudeStandardDeviationGaussianNoise (amplitudeStandardDeviationGaussianNoise),
-	intensityStandardDeviationGaussianNoise (intensityStandardDeviationGaussianNoise),
+	frequencyStandardDeviationGaussianNoise (frequencyStandardDeviationGaussianNoise),
 	amplitude (0),
-	intensity (0),
+	frequency (0),
 	totalElapsedTime (0)
 {
 }
@@ -28,11 +29,11 @@ VibrationSensor::VibrationSensor (const VibrationSensor& orig):
 	LocalInteraction (orig.LocalInteraction::r, orig.LocalInteraction::owner),
 	Component (orig),
 	maxMeasurableAmplitude (orig.maxMeasurableAmplitude),
-	maxMeasurableIntensity (orig.maxMeasurableIntensity),
+	maxMeasurableFrequency (orig.maxMeasurableFrequency),
 	amplitudeStandardDeviationGaussianNoise (orig.amplitudeStandardDeviationGaussianNoise),
-	intensityStandardDeviationGaussianNoise (orig.intensityStandardDeviationGaussianNoise),
+	frequencyStandardDeviationGaussianNoise (orig.frequencyStandardDeviationGaussianNoise),
 	amplitude (0),
-	intensity (0),
+	frequency (0),
 	totalElapsedTime (0)
 {
 }
@@ -45,7 +46,7 @@ void VibrationSensor::
 init (double dt, Enki::World* w)
 {
 	this->amplitude = 0;
-	this->intensity = 0;
+	this->frequency = 0;
 	Component::init ();
 	// std::cout << "initialisation step for vibration sensor " << this->value << '\n';
 }
@@ -78,12 +79,16 @@ objectStep (double dt, Enki::World* w, Enki::PhysicalObject *po)
 #endif
 
 	double value;
-	value = vibrationSource->getAmplitudeAt (this->absolutePosition, dt);
+	value = vibrationSource->getWaveAt (this->absolutePosition, dt);
 	value = gaussianRand (value, fabs (value * this->amplitudeStandardDeviationGaussianNoise));
 	this->amplitude += value;
-	value = vibrationSource->getIntensityAt (this->absolutePosition);
-	value = gaussianRand (value, value * this->intensityStandardDeviationGaussianNoise);
-	this->intensity += value;
+
+	WaveVibrationSource *waveVibrationSource = dynamic_cast<WaveVibrationSource *>(po);
+	if (waveVibrationSource != NULL) {
+		value = waveVibrationSource->getFrequency ();
+		value = gaussianRand (value, value * this->frequencyStandardDeviationGaussianNoise);
+		this->frequency += value;
+	}
 }
 
 void VibrationSensor::
@@ -92,7 +97,7 @@ finalize (double dt, Enki::World* w)
 	// this->amplitude = gaussianRand (this->amplitude, this->amplitudeStandardDeviationGaussianNoise);
 	this->amplitude = std::max (-this->maxMeasurableAmplitude, std::min (this->amplitude, this->maxMeasurableAmplitude));
 	// this->frequency = gaussianRand (this->frequency, this->frequencyStandardDeviationGaussianNoise);
-	this->intensity = std::max (0.0, std::min (this->intensity, this->maxMeasurableIntensity));
+	this->frequency = std::max (0.0, std::min (this->frequency, this->maxMeasurableFrequency));
 }
 
 

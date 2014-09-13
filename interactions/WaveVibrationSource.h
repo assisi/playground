@@ -81,6 +81,11 @@ namespace Enki
 		 * depends on the random noise parameter.
 		 */
 		void setFrequency (double value);
+
+		double getFrequency () const
+		{
+			return this->frequency;
+		}
 	private:
 
 	};
