@@ -33,6 +33,7 @@ namespace Enki
        static /*const*/ double VIBRATION_NOISE;
 
        /* Temperature sensors' parameters and configuration */
+       static const double TEMP_SENS_COUNT;
        static const double MIN_MEASURABLE_HEAT;
        static const double MAX_MEASURABLE_HEAT;
        static const Vector TEMP_SENS_CENTER_POS;

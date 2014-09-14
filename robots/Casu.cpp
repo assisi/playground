@@ -30,6 +30,7 @@ namespace Enki
 	/*const*/ double Casu::VIBRATION_NOISE = 1;
 
     // Temperature sensors configuration
+    const double Casu::TEMP_SENS_COUNT = 5;
     const double Casu::MIN_MEASURABLE_HEAT = 0.0;
     const double Casu::MAX_MEASURABLE_HEAT = 100.0;
     const Vector Casu::TEMP_SENS_CENTER_POS = Vector(0.0,0.0);
@@ -40,7 +41,8 @@ namespace Enki
 
 Casu::Casu(World* world) :
     world_(world),
-    range_sensors(6)
+    range_sensors(6),
+    temp_sensors(TEMP_SENS_COUNT)
 {
   
     // Set physical properties
