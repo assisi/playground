@@ -30,9 +30,20 @@ namespace Enki
 	/*const*/ double Casu::VIBRATION_AMPLITUDE_QUADRATIC_DECAY = 2;
 	/*const*/ double Casu::VIBRATION_NOISE = 1;
 
+    // Temperature sensors configuration
+    const double Casu::TEMP_SENS_COUNT = 5;
+    const double Casu::MIN_MEASURABLE_HEAT = 0.0;
+    const double Casu::MAX_MEASURABLE_HEAT = 100.0;
+    const Vector Casu::TEMP_SENS_NORTH_POS = (2.5,0.0);
+    const Vector Casu::TEMP_SENS_EAST_POS = (0.0,-2.5);
+    const Vector Casu::TEMP_SENS_SOUTH_POS = (-2.5,0.0);
+    const Vector Casu::TEMP_SENS_WEST_POS = (0.0,2.5);
+    const Vector Casu::TEMP_SENS_CENTER_POS = Vector(0.0,0.0);
+
 Casu::Casu(World* world) :
     world_(world),
-    range_sensors(6)
+    range_sensors(6),
+    temp_sensors(TEMP_SENS_COUNT)
 {
   
     // Set physical properties
@@ -61,10 +72,32 @@ Casu::Casu(World* world) :
                                     2, 3731, 0.3, 0.7, 0);
     range_sensors[5] = new IRSensor(this, Vector(0.43,-0.75), 0, -pi/3, 
                                     2, 3731, 0.3, 0.7, 0);
-            
+
     BOOST_FOREACH(IRSensor* p, range_sensors)
     {
         addLocalInteraction(p);
+    }
+
+    // Add temperature senosrs
+    temp_sensors[0] = new HeatSensor(this, TEMP_SENS_NORTH_POS,
+                                     MIN_MEASURABLE_HEAT,
+                                     MAX_MEASURABLE_HEAT);
+    temp_sensors[1] = new HeatSensor(this, TEMP_SENS_EAST_POS,
+                                     MIN_MEASURABLE_HEAT,
+                                     MAX_MEASURABLE_HEAT);
+    temp_sensors[2] = new HeatSensor(this, TEMP_SENS_SOUTH_POS,
+                                     MIN_MEASURABLE_HEAT,
+                                     MAX_MEASURABLE_HEAT);
+    temp_sensors[3] = new HeatSensor(this, TEMP_SENS_WEST_POS,
+                                     MIN_MEASURABLE_HEAT,
+                                     MAX_MEASURABLE_HEAT);
+    temp_sensors[4] = new HeatSensor(this, TEMP_SENS_CENTER_POS,
+                                     MIN_MEASURABLE_HEAT,
+                                     MAX_MEASURABLE_HEAT);
+
+    BOOST_FOREACH(HeatSensor* p, temp_sensors)
+    {
+        addPhysicInteraction(p);
     }
 
     // TODO: Move these definitions to the Casu declaration

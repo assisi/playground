@@ -136,7 +136,7 @@ namespace Enki
             cerr << "Unknown device " << device << endl;
         }
         return count;
-    }
+    }   
 
 // -----------------------------------------------------------------------------
 
@@ -164,6 +164,15 @@ namespace Enki
             
             ranges.SerializeToString(&data);
             zmq::send_multipart(socket, ca.first, "IR", "Ranges", data);
+
+            /* Publish temperature sensor readings. */
+            TemperatureArray temperatures;
+            BOOST_FOREACH(HeatSensor* h, ca.second->temp_sensors)
+            {
+                temperatures.add_temp(h->getMeasuredHeat());
+            }
+            temperatures.SerializeToString(&data);
+            zmq::send_multipart(socket, ca.first, "Temp", "Temperatures", data);
 
             /* Publish other stuff as necessary ... */
 
