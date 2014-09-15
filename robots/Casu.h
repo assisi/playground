@@ -23,21 +23,21 @@ namespace Enki
     class Casu : public ExtendedRobot
     {
     public:
-       static /*const*/ double PELTIER_RANGE;
-       static const Vector PELTIER_POSITION;
-       static /*const*/ double PELTIER_MAXIMUM_AMPLITUDE;
-       static /*const*/ double PELTIER_PHASE;
-       static /*const*/ double PELTIER_FREQUENCY;
-       static const double PELTIER_VELOCITY;
-       static /*const*/ double PELTIER_AMPLITUDE_QUADRATIC_DECAY;
-       static /*const*/ double PELTIER_NOISE;
+       static /*const*/ double VIBRATION_SOURCE_RANGE;
+       static const Vector VIBRATION_SOURCE_POSITION;
+       static /*const*/ double VIBRATION_SOURCE_MAXIMUM_AMPLITUDE;
+       static /*const*/ double VIBRATION_SOURCE_PHASE;
+       static /*const*/ double VIBRATION_SOURCE_FREQUENCY;
+       static const double VIBRATION_SOURCE_VELOCITY;
+       static /*const*/ double VIBRATION_SOURCE_AMPLITUDE_QUADRATIC_DECAY;
+       static /*const*/ double VIBRATION_SOURCE_NOISE;
 
-		 static double VIBRATION_RANGE;
-		 static const Vector VIBRATION_POSITION;
-		 static /*const*/ double VIBRATION_MAX_MEASURABLE_AMPLITUDE;
-		 static /*const*/ double VIBRATION_MAX_MEASURABLE_FREQUENCY;
-		 static /*const*/ double VIBRATION_AMPLITUDE_STANDARD_DEVIATION_GAUSSIAN_NOISE;
-		 static /*const*/ double VIBRATION_FREQUENCY_STANDARD_DEVIATION_GAUSSIAN_NOISE;
+		 static double VIBRATION_SENSOR_RANGE;
+		 static const Vector VIBRATION_SENSOR_POSITION;
+		 static /*const*/ double VIBRATION_SENSOR_MAX_MEASURABLE_AMPLITUDE;
+		 static /*const*/ double VIBRATION_SENSOR_MAX_MEASURABLE_FREQUENCY;
+		 static /*const*/ double VIBRATION_SENSOR_AMPLITUDE_STANDARD_DEVIATION_GAUSSIAN_NOISE;
+		 static /*const*/ double VIBRATION_SENSOR_FREQUENCY_STANDARD_DEVIATION_GAUSSIAN_NOISE;
     public:
         //! Create a CASU
         Casu(World* world);

@@ -82,6 +82,11 @@ namespace Enki
 		 */
 		void setFrequency (double value);
 
+		double getMaximumAmplitude () const
+		{
+			return this->maximumAmplitude;
+		}
+
 		double getFrequency () const
 		{
 			return this->frequency;

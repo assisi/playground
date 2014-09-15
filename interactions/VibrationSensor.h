@@ -9,6 +9,7 @@
 #define __VIBRATION_SENSOR__
 
 #include <iostream>
+#include <vector>
 
 #include <enki/Interaction.h>
 
@@ -31,10 +32,10 @@ namespace Enki
 		 * time.
 		 */
 		double totalElapsedTime;
-		/**
-		 * Maximum measurable amplitude of this sensor.
-		 */
-		const double maxMeasurableAmplitude;
+		// /**
+		//  * Maximum measurable amplitude of this sensor.
+		//  */
+		// const double maxMeasurableAmplitude;
 		/**
 		 * Maximum measurable frequency of this sensor.
 		 */
@@ -57,7 +58,7 @@ namespace Enki
 		 * attribute with the sensed vibration according to the vibration
 		 * model.
 		 */
-		double amplitude;
+		std::vector<double> amplitudeValues;
 		/**
 		 * Measured frequency in the current simulation iteration.
 		 *
@@ -66,12 +67,12 @@ namespace Enki
 		 * attribute with the sensed vibration according to the vibration
 		 * model.
 		 */
-		double frequency;
+		std::vector<double> frequencyValues;
 	public:
 		VibrationSensor (
 			double range, Enki::Robot* owner,
 			Enki::Vector relativePosition, double orientation,
-			 double maxMeasurableAmplitude, double maxMeasurableFrequency, double amplitudeStandardDeviationGaussianNoise, double frequencyStandardDeviationGaussianNoise);
+			 double maxMeasurableFrequency, double amplitudeStandardDeviationGaussianNoise, double frequencyStandardDeviationGaussianNoise);
 		/**
 		 * Copy constructor.
 		 */
@@ -81,16 +82,16 @@ namespace Enki
 		/**
 		 * Return the amplitude of the vibration sensed by this sensor.
 		 */
-		double getAmplitude () const
+		const std::vector<double> &getAmplitude () const
 		{
-			return this->amplitude;
+			return this->amplitudeValues;
 		}
 		/**
 		 * Return the frequency of the vibration sensed by this sensor.
 		 */
-		double getFrequency () const
+		const std::vector<double> &getFrequency () const
 		{
-			return this->frequency;
+			return this->frequencyValues;
 		}
 		/**
 		 * Initialise the measured amplitude and frequency in the current
