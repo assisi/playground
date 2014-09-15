@@ -91,6 +91,7 @@ set(playground_SOURCES AssisiPlaygroundMain.cpp
                        ../extensions/Component.cpp
                        ../extensions/ExtendedRobot.cpp
                        ../extensions/ExtendedWorld.cpp
+                       ../extensions/PointMesh.cpp
                        ${ProtoSources})
 
 # For MOC-ing

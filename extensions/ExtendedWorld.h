@@ -10,6 +10,8 @@
 #ifndef __EXTENDED_WORLD_H
 #define __EXTENDED_WORLD_H
 
+#include <fstream>
+
 #include <enki/PhysicalEngine.h>
 
 #include "PhysicSimulation.h"
@@ -39,6 +41,11 @@ namespace Enki
 		ExtendedRobots extendedRobots;
 
 		/**
+		 * The output stream where world state is saved for future replay,
+		 * analysis.
+		 */
+		std::ofstream *stateStream;
+		/**
 		 * Holds the total absolute time which is a sum of all values of
 		 * parameter {@code dt} of method {@code step()}.
 		 */
@@ -66,6 +73,10 @@ namespace Enki
 		 * Add a physic simulation.
 		 */
 		void addPhysicSimulation (PhysicSimulation *ps);
+		/**
+		 * Save world state to the following file.  The file is open in append mode.
+		 */
+		void saveStateTo (const char *filename);
 		/**
 		 * Simulate a timestep of dt. dt should be below 1 (typically
 		 * .02-.1); physicsOversampling is the amount of time the physics is

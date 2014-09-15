@@ -40,37 +40,65 @@ int main(int argc, char *argv[])
     double heat_scale;
     int heat_border_size;
 
-    desc.add_options()
-        ("help,h", "produce help message")
-        ("config_file,c", 
-         po::value<string>(&config_file_name)->default_value("Playground.cfg"),
-         "configuration file name")
-        ("Arena.radius,r", po::value<int>(&r), 
-         "playground radius, in cm")
-        ("Heat.env_temp,t", po::value<double>(&env_temp), 
-         "environment temperature, in C")
-        ("Heat.scale", po::value<double>(&heat_scale), 
-         "heat model scale")
-        ("Heat.border_size", po::value<int>(&heat_border_size), "playground radius, in cm")
-		 ("Vibration.range",
-		  po::value<double> (&Casu::VIBRATION_RANGE),
-		  "vibration range, in cm")
-		 ("Vibration.maximum_amplitude", 
-		  po::value<double> (&Casu::VIBRATION_MAXIMUM_AMPLITUDE),
-		  "maximum amplitude of vibration")
-		 ("Vibration.frequency", 
-		  po::value<double> (&Casu::VIBRATION_FREQUENCY),
-		  "vibration frequency")
-		 // ("Vibration.wave_velocity", 
-		 //  po::value<double> (&Casu::VIBRATION_VELOCITY),
-		 //  "velocity of vibration wave")
-		 ("Vibration.amplitude_quadratic_decay", 
-		  po::value<double> (&Casu::VIBRATION_AMPLITUDE_QUADRATIC_DECAY),
-		  "quadratic decay of vibration amplitude")
-		 ("Vibration.noise", 
-		  po::value<double> (&Casu::VIBRATION_NOISE),
-		  "vibration frequency noise")
-		 ;
+	double maxHeat;
+	double maxVibration;
+
+	bool saveState;
+
+	desc.add_options
+		()
+		("help,h", "produce help message")
+		("config_file,c", 
+		 po::value<string>(&config_file_name)->default_value("Playground.cfg"),
+		 "configuration file name")
+		("Arena.radius,r", po::value<int>(&r), 
+		 "playground radius, in cm")
+		("Heat.env_temp,t", po::value<double>(&env_temp), 
+		 "environment temperature, in C")
+		("Heat.scale", po::value<double>(&heat_scale), 
+		 "heat model scale")
+		("Heat.border_size", po::value<int>(&heat_border_size), "playground radius, in cm")
+
+		(
+		 "Vibration.range",
+		 po::value<double> (&Casu::VIBRATION_RANGE),
+		 "vibration range, in cm"
+		)
+		(
+		 "Vibration.maximum_amplitude", 
+		 po::value<double> (&Casu::VIBRATION_MAXIMUM_AMPLITUDE),
+		 "maximum amplitude of vibration"
+		)
+		(
+		 "Vibration.frequency", 
+		 po::value<double> (&Casu::VIBRATION_FREQUENCY),
+		 "vibration frequency"
+		)
+		(
+		 "Vibration.amplitude_quadratic_decay", 
+		 po::value<double> (&Casu::VIBRATION_AMPLITUDE_QUADRATIC_DECAY),
+		 "quadratic decay of vibration amplitude"
+		)
+		(
+		 "Vibration.noise", 
+		 po::value<double> (&Casu::VIBRATION_NOISE),
+		 "vibration frequency noise"
+		)
+		(
+		 "Viewer.max_heat",
+		 po::value<double> (&maxHeat),
+		 "maximum displayed heat"
+		 )
+		(
+		 "Viewer.max_vibration",
+		 po::value<double> (&maxVibration),
+		 "maximum displayed vibration intensity"
+		  )
+		(
+		 "Simulation.save_state",
+		 po::value<bool> (&saveState),
+		 "save simulation state"
+		 );
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -95,10 +123,15 @@ int main(int argc, char *argv[])
     //texture.invertPixels(QImage::InvertRgba);
     
     WorldExt world (r, pub_address, sub_address,
-						  Color::gray, 
-						  World::GroundTexture (texture.width(),
-														texture.height(), 
-														(const uint32_t*) texture.constBits()) );
+		Color::gray, 
+		World::GroundTexture (
+			texture.width(),
+			texture.height(),
+			(const uint32_t*) texture.constBits ()));
+
+	if (saveState) {
+		world.saveStateTo ("state.txt");
+	}
     
 	WorldHeat *heatModel = new WorldHeat(env_temp, heat_scale, heat_border_size);
 	world.addPhysicSimulation(heatModel);
@@ -112,7 +145,7 @@ int main(int argc, char *argv[])
 	BeeHandler *bh = new BeeHandler();
 	world.addHandler("Bee", bh);
 
-	AssisiPlayground viewer (&world, heatModel);	
+	AssisiPlayground viewer (&world, heatModel, maxHeat, maxVibration);	
 	viewer.show ();
 	
 	return app.exec();

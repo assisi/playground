@@ -46,6 +46,9 @@ namespace Enki
 		 * shades of blue.
 		 */
 		const double maxHeat;
+		/**
+		 * Maximum presentable vibration intensity.
+		 */
 		const double maxVibration;
 		/**
 		 * The layer to drawn upon robots. 
@@ -71,18 +74,23 @@ namespace Enki
 		 */
 		ExtendedWorld *extendedWorld;
 
+		/**
+		 * Z coordinate where the data layer is drawn.
+		 */
+		int dataLayerZ;
+
 	public:
-		AssisiPlayground (ExtendedWorld *world, WorldHeat *worldHeat, QWidget *parent = 0);	
-		void addEPuck (World *world, Point pos);
+		AssisiPlayground (ExtendedWorld *world, WorldHeat *worldHeat, double maxHeat, double maxVibration, QWidget *parent = 0);	
+    void addEPuck(World *world, Point pos);
+
 
 		~AssisiPlayground()
 			{
 
 			}
 	
-		// Inherited from viewer 
-		virtual void sceneCompletedHook();
-		virtual void renderObjectHook(PhysicalObject *object);
+    virtual void sceneCompletedHook();
+    virtual void renderObjectHook(PhysicalObject *object);
 
 		void keyPressEvent (QKeyEvent *event);
 	private:
@@ -90,6 +98,8 @@ namespace Enki
 		void drawVibrationLayer_Chequerboard ();
 		void drawHeatLayer_Chequerboard ();
 		void drawHeatLayer_Gradient ();
+
+		void drawHeatLegend ();
 
 		void setDataToHeat ();
 		void setDataToVibration ();

@@ -16,6 +16,8 @@
 #include "extensions/Component.h"
 #include "extensions/PhysicInteraction.h"
 
+#include "extensions/PointMesh.h"
+
 #include "HeatActuatorPointSource.h"
 
 namespace Enki
@@ -29,7 +31,7 @@ namespace Enki
 		/**
 		 * The points that compose this heat actuator.
 		 */
-		std::vector<Point> mesh;
+		const PointMesh *mesh;
 	public:
 		/**
 		 * Create a circular heat source with the given radius.  The mesh is composed of {@code numberPoints} randomly created.
@@ -61,6 +63,11 @@ namespace Enki
 			double innerRadius,
 			double outerRadius,
 			int numberPoints);
+		HeatActuatorMesh (
+			Enki::Robot* owner,
+			Enki::Vector relativePosition,
+			double heat,
+			const PointMesh *mesh);
 		HeatActuatorMesh(const HeatActuatorMesh& orig);
 		virtual ~HeatActuatorMesh();
 		virtual void step (double dt, PhysicSimulation* w);
@@ -71,3 +78,9 @@ namespace Enki
 
 #endif	/* HEATACTUATORMESH_H */
 
+
+// Local Variables: 
+// mode: c++
+// mode: flyspell-prog
+// ispell-local-dictionary: "british"
+// End: 
