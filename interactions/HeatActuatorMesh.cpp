@@ -5,11 +5,11 @@
  * Created on 9 de Junho de 2014, 16:31
  */
 
-#include <enki/Random.h>
-
 #include "HeatActuatorMesh.h"
 
 #include "WorldHeat.h"
+
+#include "extensions/PointMesh.h"
 
 using namespace Enki;
 
@@ -21,15 +21,8 @@ HeatActuatorMesh::HeatActuatorMesh (
 	int numberPoints
 	):
 	HeatActuatorPointSource (owner, relativePosition, heat), 
-	mesh (numberPoints)
+	mesh (PointMesh::makeCircleMesh (radius, numberPoints))
 {
-	while (numberPoints > 0) {
-		numberPoints--;
-		double angle = uniformRand () * 2 * M_PI;
-		double distance = uniformRand () * radius;
-		this->mesh [numberPoints].x = distance * cos (angle);
-		this->mesh [numberPoints].y = distance * sin (angle);
-	}
 }
 
 HeatActuatorMesh::HeatActuatorMesh (
@@ -41,16 +34,19 @@ HeatActuatorMesh::HeatActuatorMesh (
 	int numberPoints
 	):
 	HeatActuatorPointSource (owner, relativePosition, heat), 
-	mesh (numberPoints)
+	mesh (PointMesh::makeRingMesh (innerRadius, outerRadius, numberPoints))
 {
-	
-	while (numberPoints > 0) {
-		numberPoints--;
-		double angle = uniformRand () * 2 * M_PI;
-		double distance = uniformRand () * (outerRadius - innerRadius) + innerRadius;
-		this->mesh [numberPoints].x = distance * cos (angle);
-		this->mesh [numberPoints].y = distance * sin (angle);
-	}
+}
+
+HeatActuatorMesh::HeatActuatorMesh (
+	Enki::Robot* owner,
+	Enki::Vector relativePosition,
+	double heat,
+	const PointMesh *mesh
+	):
+	HeatActuatorPointSource (owner, relativePosition, heat), 
+	mesh (mesh)
+{
 }
 
 HeatActuatorMesh::HeatActuatorMesh (const HeatActuatorMesh& orig):
@@ -59,8 +55,12 @@ HeatActuatorMesh::HeatActuatorMesh (const HeatActuatorMesh& orig):
 {
 }
 
-HeatActuatorMesh::~HeatActuatorMesh() {
+HeatActuatorMesh::~HeatActuatorMesh ()
+{
+	delete this->mesh;
 }
+
+#include <iostream>
 
 void HeatActuatorMesh::
 step (double dt, PhysicSimulation *ps)
@@ -68,8 +68,15 @@ step (double dt, PhysicSimulation *ps)
 	WorldHeat *worldHeat = dynamic_cast<WorldHeat *> (ps);
 	if (worldHeat != NULL) {
 		if (this->switchedOn) {
-			for (int i = this->mesh.size() - 1; i >= 0; i--) {
-				worldHeat->setHeatAt (this->absolutePosition + this->mesh [i], this->heat);
+			// std::cout << "Setting heat @ " << this->absolutePosition << " to " << this->heat << '\n';
+			// // std::cout << " + ";
+			// // // std::cout << (*(this->mesh));
+			// // // seca (std::cout, *(this->mesh));
+			// // this->mesh->print (std::cout);
+			// // // std::cout << *mesh;
+			// // std::cout << "\n";
+			for (int i = this->mesh->size () - 1; i >= 0; i--) {
+				worldHeat->setHeatAt (this->absolutePosition + (*(this->mesh)) [i], this->heat);
 			}
 		}
 	}

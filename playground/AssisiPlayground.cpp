@@ -6,22 +6,22 @@
 
 #include "AssisiPlayground.h"
 
-static const int DATA_Z_LAYER = 11;
-
 namespace Enki
 {
-	AssisiPlayground::AssisiPlayground (ExtendedWorld *world, WorldHeat *worldHeat, QWidget *parent) :
+	AssisiPlayground::AssisiPlayground (ExtendedWorld *world, WorldHeat *worldHeat, double maxHeat, double maxVibration, QWidget *parent) :
 		ViewerWidget(world, parent),
 		extendedWorld (world),
 		worldHeat (worldHeat),
-		maxHeat (40),
+		maxHeat (maxHeat),
 		maxVibration (10),
 		layerToDraw (NONE),
 		transparency (0.5),
 		useGradient (false),
 		dataSize (ceil (2 * world->r / worldHeat->gridScale), ceil (2 * world->r / worldHeat->gridScale)),
+		// dataSize (worldHeat->size),
 		dataColour (dataSize.x, std::vector<std::vector<float> > (dataSize.y, std::vector<float> (3, 0) ) ),
-		showHelp (true)
+		showHelp (true),
+		dataLayerZ (5)
 	{
 		//ViewerWidget::pos = QPointF(-world->w*5, -world->h * 2);
 		ViewerWidget::pitch = M_PI/2;
@@ -50,12 +50,14 @@ using namespace Enki;
 /* virtual */
 void AssisiPlayground::sceneCompletedHook()
 {
+	glDisable (GL_LIGHTING);
 	glEnable (GL_BLEND);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glPushMatrix ();
-	glTranslated (-this->world->r, -this->world->r, DATA_Z_LAYER);
+	glTranslated (-this->world->r + this->worldHeat->gridScale, -this->world->r + this->worldHeat->gridScale, dataLayerZ);
 	switch (this->layerToDraw) {
 	case HEAT:
+		drawHeatLegend ();
 		if (this->useGradient)
 		 	drawHeatLayer_Gradient ();
 		else
@@ -83,6 +85,7 @@ void AssisiPlayground::sceneCompletedHook()
 	}
 	glPopMatrix ();
 	glDisable (GL_BLEND);
+	glEnable (GL_LIGHTING);
 	if (this->showHelp) {
 		glColor3d(0,0,0);
 		renderText (10, height () - 90, tr ("press F1 to toggle this help") );
@@ -209,6 +212,49 @@ void AssisiPlayground::drawLightLayer_Chequerboard ()
 */
 
 
+void AssisiPlayground::drawHeatLegend ()
+{
+	char label[100];
+	int i;
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix ();
+	glLoadIdentity ();
+	glOrtho (0, this->width (), 0, this->height (), -1.0f, 1.0f);
+
+	glMatrixMode (GL_MODELVIEW);
+	glPushMatrix ();
+	glLoadIdentity ();
+	glPushAttrib (GL_DEPTH_TEST);
+	glDisable (GL_DEPTH_TEST);
+
+	glTranslated (1, this->height () - 12 * 22, 0);
+	for (i = -10; i <= 10; i++) {
+		double heat = this->worldHeat->normalHeat + i * (this->maxHeat - this->worldHeat->normalHeat) / 10;
+		sprintf (label, "%4.1f", heat);
+		glColor3f (0, 0, 0);
+		renderText (12, (11 - i) * 12, label);
+		glTranslated (0, 12, 0);
+		if (i < 0) {
+			glColor3f (0, 0, -i / 10.0);
+		}
+		else {
+			glColor3f (i / 10.0, 0, 0);
+		}
+		glBegin (GL_QUADS); {
+			glVertex2f ( 0,  0);
+			glVertex2f (10,  0);
+			glVertex2f (10, 10);
+			glVertex2f ( 0, 10);
+		} glEnd ();
+	}
+
+	glPopAttrib ();
+	glMatrixMode (GL_PROJECTION);
+	glPopMatrix ();
+	glMatrixMode (GL_MODELVIEW);
+	glPopMatrix ();
+}
 
 void AssisiPlayground::drawHeatLayer_Gradient ()
 {
@@ -234,6 +280,10 @@ void AssisiPlayground::drawVibrationLayer_Chequerboard ()
 	drawDataAsCheckerBoard ();
 }
 
+// #include <fstream>
+
+// std::ofstream debug ("debug.txt");
+
 void AssisiPlayground::setDataToHeat ()
 {
 	Vector pos, where;
@@ -242,6 +292,7 @@ void AssisiPlayground::setDataToHeat ()
 		where.y = -this->world->r + this->worldHeat->gridScale;
 		for (pos.y = 0; pos.y < this->dataSize.y; pos.y++) {
 			double heat = this->worldHeat->getHeatAt (where);
+			// debug << '\t' << heat;
 			double colour = std::max (-1.0, std::min ((heat - this->worldHeat->normalHeat) / this->maxHeat, 1.0));
 			std::vector<float> &dc = this->dataColour [pos.x][pos.y];
 			if (colour < 0) {
@@ -254,10 +305,12 @@ void AssisiPlayground::setDataToHeat ()
 				dc [1] = 0;
 				dc [2] = 0;
 			}
+			// debug << '\t' << dc [0];
 			where.y += this->worldHeat->gridScale;
 		}
 		where.x += this->worldHeat->gridScale;
 	}
+	// debug << '\n';
 }
 
 void AssisiPlayground::setDataToVibration ()
@@ -282,7 +335,7 @@ void AssisiPlayground::setDataToVibration ()
 
 void AssisiPlayground::drawDataAsGradient ()
 {
-	glTranslated (this->worldHeat->gridScale / 2.0, this->worldHeat->gridScale / 2.0, 0);
+	// glTranslated (this->worldHeat->gridScale / 2.0, this->worldHeat->gridScale / 2.0, 0);
 	glScaled (this->worldHeat->gridScale, this->worldHeat->gridScale, 1);
 	Point delta[] = {
 		Point (-1, -1),
@@ -307,7 +360,8 @@ void AssisiPlayground::drawDataAsGradient ()
 
 void AssisiPlayground::drawDataAsCheckerBoard ()
 {
-	glTranslated (this->worldHeat->gridScale, this->worldHeat->gridScale, 0);
+	// glTranslated (this->worldHeat->gridScale / 2.0, this->worldHeat->gridScale / 2.0, 0);
+	// glTranslated (this->worldHeat->gridScale, this->worldHeat->gridScale, 0);
 	glScaled (this->worldHeat->gridScale, this->worldHeat->gridScale, 1);
 	Point delta[] = {
 		Point (-0.5, -0.5),
@@ -330,10 +384,17 @@ void AssisiPlayground::drawDataAsCheckerBoard ()
 	}
 }
 
-
 void AssisiPlayground::keyPressEvent (QKeyEvent *event)
 {
 	switch (event->key()) {
+	case Qt::Key_PageUp:
+		dataLayerZ = std::min (11, dataLayerZ + 1);
+		updateGL ();
+		break;
+	case Qt::Key_PageDown:
+		dataLayerZ = std::max (1, dataLayerZ - 1);
+		updateGL ();
+		break;
 	case Qt::Key_Plus:
 		transparency = std::min (1.0, transparency + 0.1);
 		qDebug () << "Transparency: " << transparency;
