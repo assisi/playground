@@ -27,7 +27,6 @@ namespace Enki
        static const Vector VIBRATION_POSITION;
        static /*const*/ double VIBRATION_MAXIMUM_AMPLITUDE;
        static /*const*/ double VIBRATION_PHASE;
-       static /*const*/ double VIBRATION_FREQUENCY;
        static const double VIBRATION_VELOCITY;
        static /*const*/ double VIBRATION_AMPLITUDE_QUADRATIC_DECAY;
        static /*const*/ double VIBRATION_NOISE;

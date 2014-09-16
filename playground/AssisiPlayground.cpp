@@ -18,7 +18,6 @@ namespace Enki
 		transparency (0.5),
 		useGradient (false),
 		dataSize (ceil (2 * world->r / worldHeat->gridScale), ceil (2 * world->r / worldHeat->gridScale)),
-		// dataSize (worldHeat->size),
 		dataColour (dataSize.x, std::vector<std::vector<float> > (dataSize.y, std::vector<float> (3, 0) ) ),
 		showHelp (true),
 		dataLayerZ (5)
@@ -96,122 +95,6 @@ void AssisiPlayground::sceneCompletedHook()
 	}
 }
 
-
-/*
-
-void AssisiPlayground::drawElectricFieldLayer ()
-{
-	Point delta[] = {
-		Point ( 0,  0),
-		Point (-1,  0),
-		Point (-1, -1),
-		Point ( 0, -1)
-	};
-	glPushMatrix ();
-	glTranslated (-this->world->r, -this->world->r, 0);
-	glScaled (this->worldElectricField->gridScale, this->worldElectricField->gridScale, 1);
-	Vector pos;
-	pos.x = 1;
-	double radius2 = this->worldElectricField->size.x * this->worldElectricField->size.x / 4;
-	do {
-		pos.y = 1;
-		do {
-			if ((pos - this->worldElectricField->size / 2).norm2 () < radius2) {
-				glBegin (GL_QUADS); {
-					for (int i = 0; i < 4; i++) {
-						Point where = pos + delta [i];
-						double value = this->worldElectricField->getElectricFieldAt (where.x, where.y).value;
-						double colour = std::max (-1.0, std::min (value / this->maxElectricField, 1.0));
-						if (colour < 0) {
-							glColor4f (0, 0, -colour, transparency);
-						}
-						else {
-							glColor4f (colour, 0, 0, transparency);
-						}
-						glVertex2f (where.x, where.y);
-					}
-				} glEnd ();
-			}
-			pos.y++;
-		} while (pos.y < this->worldElectricField->size.y);
-		pos.x++;
-	} while (pos.x < this->worldElectricField->size.x);
-	glPopMatrix ();
-}
-
-void AssisiPlayground::drawLightLayer_Gradient ()
-{
-	Point delta[] = {
-		Point (-1, -1),
-		Point ( 0, -1),
-		Point ( 0,  0),
-		Point (-1,  0)
-	};
-	glPushMatrix ();
-	glTranslated (this->worldLight->origin.x, this->worldLight->origin.y, 0);
-	glScaled (this->worldLight->gridScale, this->worldLight->gridScale, 1);
-	Vector pos;
-	pos.x = 1;
-	double radius2 = this->worldLight->size.x * this->worldLight->size.x / 4;
-	do {
-		pos.y = 1;
-		do {
-			if ((pos - this->worldLight->size / 2).norm2 () < radius2) {
-				glBegin (GL_QUADS); {
-					for (int idx = 0; idx < 4; idx++) {
-						Point where = pos + delta [idx];
-						double value = this->worldLight->getIntensityAt (where.x, where.y);
-						double colour = std::min (value / this->maxLightIntensity, 1.0);
-						glColor4f (colour, colour, colour, transparency);
-						glVertex2f (where.x, where.y);
-					}
-				} glEnd ();
-			}
-			pos.y += 1;
-			} while (pos.y < this->worldLight->size.y);
-		pos.x += 1;
-	} while (pos.x < this->worldLight->size.x);
-	glPopMatrix ();
-}
-
-void AssisiPlayground::drawLightLayer_Chequerboard ()
-{
-	Point delta[] = {
-		Point (-0.5, -0.5),
-		Point ( 0.5, -0.5),
-		Point ( 0.5,  0.5),
-		Point (-0.5,  0.5)
-	};
-	glPushMatrix ();
-	glTranslated (this->worldLight->origin.x, this->worldLight->origin.y, 0);
-	glScaled (this->worldLight->gridScale, this->worldLight->gridScale, 1);
-	Vector pos;
-	pos.x = 0;
-	double radius2 = this->worldLight->size.x * this->worldLight->size.x / 4;
-	do {
-		pos.y = 0;
-		do {
-			if ((pos - this->worldLight->size / 2).norm2 () < radius2) {
-				double value = this->worldLight->getIntensityAt (pos.x, pos.y);
-				double colour = std::min (value / this->maxLightIntensity, 1.0);
-				glColor4f (colour, colour, colour, transparency);
-				glBegin (GL_QUADS); {
-					for (int idx = 0; idx < 4; idx++) {
-						Point where = pos + delta [idx];
-						glVertex2f (where.x, where.y);
-					}
-				} glEnd ();
-			}
-			pos.y += 1;
-			} while (pos.y < this->worldLight->size.y);
-		pos.x += 1;
-	} while (pos.x < this->worldLight->size.x);
-	glPopMatrix ();
-}
-
-*/
-
-
 void AssisiPlayground::drawHeatLegend ()
 {
 	char label[100];
@@ -280,10 +163,6 @@ void AssisiPlayground::drawVibrationLayer_Chequerboard ()
 	drawDataAsCheckerBoard ();
 }
 
-// #include <fstream>
-
-// std::ofstream debug ("debug.txt");
-
 void AssisiPlayground::setDataToHeat ()
 {
 	Vector pos, where;
@@ -292,7 +171,6 @@ void AssisiPlayground::setDataToHeat ()
 		where.y = -this->world->r + this->worldHeat->gridScale;
 		for (pos.y = 0; pos.y < this->dataSize.y; pos.y++) {
 			double heat = this->worldHeat->getHeatAt (where);
-			// debug << '\t' << heat;
 			double colour = std::max (-1.0, std::min ((heat - this->worldHeat->normalHeat) / this->maxHeat, 1.0));
 			std::vector<float> &dc = this->dataColour [pos.x][pos.y];
 			if (colour < 0) {
@@ -305,12 +183,10 @@ void AssisiPlayground::setDataToHeat ()
 				dc [1] = 0;
 				dc [2] = 0;
 			}
-			// debug << '\t' << dc [0];
 			where.y += this->worldHeat->gridScale;
 		}
 		where.x += this->worldHeat->gridScale;
 	}
-	// debug << '\n';
 }
 
 void AssisiPlayground::setDataToVibration ()
@@ -335,7 +211,6 @@ void AssisiPlayground::setDataToVibration ()
 
 void AssisiPlayground::drawDataAsGradient ()
 {
-	// glTranslated (this->worldHeat->gridScale / 2.0, this->worldHeat->gridScale / 2.0, 0);
 	glScaled (this->worldHeat->gridScale, this->worldHeat->gridScale, 1);
 	Point delta[] = {
 		Point (-1, -1),
@@ -360,8 +235,6 @@ void AssisiPlayground::drawDataAsGradient ()
 
 void AssisiPlayground::drawDataAsCheckerBoard ()
 {
-	// glTranslated (this->worldHeat->gridScale / 2.0, this->worldHeat->gridScale / 2.0, 0);
-	// glTranslated (this->worldHeat->gridScale, this->worldHeat->gridScale, 0);
 	glScaled (this->worldHeat->gridScale, this->worldHeat->gridScale, 1);
 	Point delta[] = {
 		Point (-0.5, -0.5),

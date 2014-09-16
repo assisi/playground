@@ -27,6 +27,25 @@ WaveVibrationSource::WaveVibrationSource
 	setFrequency (frequency);
 }
 
+WaveVibrationSource::WaveVibrationSource
+	(double range, Robot* owner,
+	 Vector relativePosition,
+	 double maximumAmplitude,
+	 double phase,
+	 double velocity,
+	 double amplitudeQuadraticDecay,
+	 double noise)
+	:
+	VibrationSource (range, owner, relativePosition, OMNIDIRECTIONAL),
+	noise (noise),
+	maximumAmplitude (maximumAmplitude),
+	frequency (0),
+	velocity (velocity),
+	phase (phase),
+	amplitudeQuadraticDecay (amplitudeQuadraticDecay)
+{
+}
+
 WaveVibrationSource::WaveVibrationSource (const WaveVibrationSource& orig):
 	VibrationSource (orig),
 	frequency (orig.frequency),

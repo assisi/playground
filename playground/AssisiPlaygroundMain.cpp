@@ -43,8 +43,6 @@ int main(int argc, char *argv[])
 	double maxHeat;
 	double maxVibration;
 
-	bool saveState;
-
 	desc.add_options
 		()
 		("help,h", "produce help message")
@@ -70,11 +68,6 @@ int main(int argc, char *argv[])
 		 "maximum amplitude of vibration"
 		)
 		(
-		 "Vibration.frequency", 
-		 po::value<double> (&Casu::VIBRATION_FREQUENCY),
-		 "vibration frequency"
-		)
-		(
 		 "Vibration.amplitude_quadratic_decay", 
 		 po::value<double> (&Casu::VIBRATION_AMPLITUDE_QUADRATIC_DECAY),
 		 "quadratic decay of vibration amplitude"
@@ -94,11 +87,7 @@ int main(int argc, char *argv[])
 		 po::value<double> (&maxVibration),
 		 "maximum displayed vibration intensity"
 		  )
-		(
-		 "Simulation.save_state",
-		 po::value<bool> (&saveState),
-		 "save simulation state"
-		 );
+		;
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -129,10 +118,6 @@ int main(int argc, char *argv[])
 			texture.height(),
 			(const uint32_t*) texture.constBits ()));
 
-	if (saveState) {
-		world.saveStateTo ("state.txt");
-	}
-    
 	WorldHeat *heatModel = new WorldHeat(env_temp, heat_scale, heat_border_size);
 	world.addPhysicSimulation(heatModel);
 
