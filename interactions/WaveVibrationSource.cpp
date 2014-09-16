@@ -12,7 +12,6 @@ WaveVibrationSource::WaveVibrationSource
 	 Vector relativePosition,
 	 double maximumAmplitude,
 	 double phase,
-	 double frequency,
 	 double velocity,
 	 double amplitudeQuadraticDecay,
 	 double noise)
@@ -22,10 +21,10 @@ WaveVibrationSource::WaveVibrationSource
 	frequency (0),
 	maximumAmplitude (maximumAmplitude),
 	velocity (velocity),
+	frequency (0),
 	phase (phase),
 	amplitudeQuadraticDecay (amplitudeQuadraticDecay)
 {
-	setFrequency (frequency);
 }
 
 WaveVibrationSource::WaveVibrationSource
