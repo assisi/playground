@@ -16,6 +16,7 @@
 #include "interactions/HeatActuatorMesh.h"
 #include "interactions/WaveVibrationSource.h"
 #include "interactions/VibrationSensor.h"
+#include "interactions/HeatSensor.h"
 
 namespace Enki
 {
@@ -43,6 +44,18 @@ namespace Enki
 		 static /*const*/ double VIBRATION_SENSOR_MAX_MEASURABLE_FREQUENCY;
 		 static /*const*/ double VIBRATION_SENSOR_AMPLITUDE_STANDARD_DEVIATION_GAUSSIAN_NOISE;
 		 static /*const*/ double VIBRATION_SENSOR_FREQUENCY_STANDARD_DEVIATION_GAUSSIAN_NOISE;
+
+
+       /* Temperature sensors' parameters and configuration */
+       static const double TEMP_SENS_COUNT;
+       static const double MIN_MEASURABLE_HEAT;
+       static const double MAX_MEASURABLE_HEAT;
+       static const Vector TEMP_SENS_CENTER_POS;
+       static const Vector TEMP_SENS_NORTH_POS;
+       static const Vector TEMP_SENS_EAST_POS;
+       static const Vector TEMP_SENS_SOUTH_POS;
+       static const Vector TEMP_SENS_WEST_POS;
+
     public:
         //! Create a CASU
         Casu(World* world);
@@ -54,7 +67,10 @@ namespace Enki
 
         typedef std::vector<IRSensor*> IRSensorVector;
         //! Proximity sensors.
-        IRSensorVector range_sensors;                
+        IRSensorVector range_sensors;    
+
+        typedef std::vector<HeatSensor*> TempSensorVector;
+        TempSensorVector temp_sensors;
         
         /* Actuators */
 
