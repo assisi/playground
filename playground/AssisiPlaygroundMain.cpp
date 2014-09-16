@@ -53,22 +53,19 @@ int main(int argc, char *argv[])
          "heat model scale")
         ("Heat.border_size", po::value<int>(&heat_border_size), "playground radius, in cm")
 		 ("Vibration.range",
-		  po::value<double> (&Casu::VIBRATION_RANGE),
+		  po::value<double> (&Casu::VIBRATION_SOURCE_RANGE),
 		  "vibration range, in cm")
 		 ("Vibration.maximum_amplitude", 
-		  po::value<double> (&Casu::VIBRATION_MAXIMUM_AMPLITUDE),
+		  po::value<double> (&Casu::VIBRATION_SOURCE_MAXIMUM_AMPLITUDE),
 		  "maximum amplitude of vibration")
-		 ("Vibration.frequency", 
-		  po::value<double> (&Casu::VIBRATION_FREQUENCY),
-		  "vibration frequency")
 		 // ("Vibration.wave_velocity", 
-		 //  po::value<double> (&Casu::VIBRATION_VELOCITY),
+		 //  po::value<double> (&Casu::VIBRATION_SOURCE_VELOCITY),
 		 //  "velocity of vibration wave")
 		 ("Vibration.amplitude_quadratic_decay", 
-		  po::value<double> (&Casu::VIBRATION_AMPLITUDE_QUADRATIC_DECAY),
+		  po::value<double> (&Casu::VIBRATION_SOURCE_AMPLITUDE_QUADRATIC_DECAY),
 		  "quadratic decay of vibration amplitude")
 		 ("Vibration.noise", 
-		  po::value<double> (&Casu::VIBRATION_NOISE),
+		  po::value<double> (&Casu::VIBRATION_SOURCE_NOISE),
 		  "vibration frequency noise")
 		 ;
 

@@ -15,6 +15,7 @@
 #include "interactions/LightSourceFromAbove.h"
 #include "interactions/HeatActuatorMesh.h"
 #include "interactions/WaveVibrationSource.h"
+#include "interactions/VibrationSensor.h"
 #include "interactions/HeatSensor.h"
 
 namespace Enki
@@ -23,14 +24,27 @@ namespace Enki
     class Casu : public ExtendedRobot
     {
     public:
-       static /*const*/ double VIBRATION_RANGE;
-       static const Vector VIBRATION_POSITION;
-       static /*const*/ double VIBRATION_MAXIMUM_AMPLITUDE;
-       static /*const*/ double VIBRATION_PHASE;
-       static /*const*/ double VIBRATION_FREQUENCY;
-       static const double VIBRATION_VELOCITY;
-       static /*const*/ double VIBRATION_AMPLITUDE_QUADRATIC_DECAY;
-       static /*const*/ double VIBRATION_NOISE;
+       static /*const*/ double VIBRATION_SOURCE_RANGE;
+       static const Vector VIBRATION_SOURCE_POSITION;
+       static /*const*/ double VIBRATION_SOURCE_MAXIMUM_AMPLITUDE;
+       static /*const*/ double VIBRATION_SOURCE_PHASE;
+       static const double VIBRATION_SOURCE_VELOCITY;
+       static /*const*/ double VIBRATION_SOURCE_AMPLITUDE_QUADRATIC_DECAY;
+       static /*const*/ double VIBRATION_SOURCE_NOISE;
+
+		 static const int NUMBER_VIBRATION_SENSORS;
+		 static double VIBRATION_SENSOR_RANGE;
+		 /**
+		  * Casu vibration sensors relative position in cm.
+		  */
+		 static const Vector VIBRATION_SENSOR_POSITION[];
+		 /**
+		  * Maximum vibration frequency measured by casu vibration sensors.
+		  */
+		 static /*const*/ double VIBRATION_SENSOR_MAX_MEASURABLE_FREQUENCY;
+		 static /*const*/ double VIBRATION_SENSOR_AMPLITUDE_STANDARD_DEVIATION_GAUSSIAN_NOISE;
+		 static /*const*/ double VIBRATION_SENSOR_FREQUENCY_STANDARD_DEVIATION_GAUSSIAN_NOISE;
+
 
        /* Temperature sensors' parameters and configuration */
        static const double TEMP_SENS_COUNT;
@@ -41,7 +55,6 @@ namespace Enki
        static const Vector TEMP_SENS_EAST_POS;
        static const Vector TEMP_SENS_SOUTH_POS;
        static const Vector TEMP_SENS_WEST_POS;
-
 
     public:
         //! Create a CASU
@@ -71,7 +84,10 @@ namespace Enki
         HeatActuatorMesh *peltier;
 
         //! Vibration actuator
-        WaveVibrationSource *vibration;
+        WaveVibrationSource *vibration_source;
+
+        typedef std::vector<VibrationSensor *> VibrationSensorVector;
+		  VibrationSensorVector vibration_sensors;
 
     private:
         World* world_;
