@@ -70,6 +70,10 @@ namespace Enki
 			double maximumAmplitude, double phase, double frequency, double velocity,
 			double amplitudeQuadraticDecay, double noise);
 
+		WaveVibrationSource (double range, Robot* owner, Vector relativePosition,
+			double maximumAmplitude, double phase, double velocity,
+			double amplitudeQuadraticDecay, double noise);
+
 		WaveVibrationSource (const WaveVibrationSource& orig);
 
 		virtual ~WaveVibrationSource ();
@@ -81,6 +85,7 @@ namespace Enki
 		 * depends on the random noise parameter.
 		 */
 		void setFrequency (double value);
+		double getFrequency () const {return this->frequency;}
 	private:
 
 	};

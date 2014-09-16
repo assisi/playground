@@ -121,13 +121,14 @@ namespace Enki
                 count++;
             }
         }
-        else if (device == "Vibration")
+        else if (device == "VibeMotor")
         {
-            if (command == "frequency")
+            if (command == "on")
             {
                 Vibration freq_msg;
                 assert (freq_msg.ParseFromString (data));
                 casus_[name]->vibration->setFrequency (freq_msg.freq ());
+					 cerr << casus_[name]->vibration->getFrequency ();
                 count++;
             }
         }
