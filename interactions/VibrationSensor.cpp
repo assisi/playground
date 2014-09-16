@@ -81,10 +81,11 @@ objectStep (double dt, Enki::World* w, Enki::PhysicalObject *po)
 		value = std::min (value, this->maxMeasurableFrequency);
 		value = gaussianRand (value, value * this->frequencyStandardDeviationGaussianNoise);
 		this->frequencyValues.push_back (value);
-		value = waveVibrationSource->getMaximumAmplitude ();
+		value = waveVibrationSource->getWaveAt (this->absolutePosition, this->totalElapsedTime);
 		value = gaussianRand (value, fabs (value * this->amplitudeStandardDeviationGaussianNoise));
 		this->amplitudeValues.push_back (value);
 	}
+	this->totalElapsedTime += dt;
 }
 
 void VibrationSensor::
