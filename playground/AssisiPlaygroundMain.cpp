@@ -58,9 +58,6 @@ int main(int argc, char *argv[])
 		 ("Vibration.maximum_amplitude", 
 		  po::value<double> (&Casu::VIBRATION_SOURCE_MAXIMUM_AMPLITUDE),
 		  "maximum amplitude of vibration")
-		 ("Vibration.frequency", 
-		  po::value<double> (&Casu::VIBRATION_SOURCE_FREQUENCY),
-		  "vibration frequency")
 		 // ("Vibration.wave_velocity", 
 		 //  po::value<double> (&Casu::VIBRATION_SOURCE_VELOCITY),
 		 //  "velocity of vibration wave")

@@ -27,14 +27,19 @@ namespace Enki
        static const Vector VIBRATION_SOURCE_POSITION;
        static /*const*/ double VIBRATION_SOURCE_MAXIMUM_AMPLITUDE;
        static /*const*/ double VIBRATION_SOURCE_PHASE;
-       static /*const*/ double VIBRATION_SOURCE_FREQUENCY;
        static const double VIBRATION_SOURCE_VELOCITY;
        static /*const*/ double VIBRATION_SOURCE_AMPLITUDE_QUADRATIC_DECAY;
        static /*const*/ double VIBRATION_SOURCE_NOISE;
 
+		 static const int NUMBER_VIBRATION_SENSORS;
 		 static double VIBRATION_SENSOR_RANGE;
-		 static const Vector VIBRATION_SENSOR_POSITION;
-		 static /*const*/ double VIBRATION_SENSOR_MAX_MEASURABLE_AMPLITUDE;
+		 /**
+		  * Casu vibration sensors relative position in cm.
+		  */
+		 static const Vector VIBRATION_SENSOR_POSITION[];
+		 /**
+		  * Maximum vibration frequency measured by casu vibration sensors.
+		  */
 		 static /*const*/ double VIBRATION_SENSOR_MAX_MEASURABLE_FREQUENCY;
 		 static /*const*/ double VIBRATION_SENSOR_AMPLITUDE_STANDARD_DEVIATION_GAUSSIAN_NOISE;
 		 static /*const*/ double VIBRATION_SENSOR_FREQUENCY_STANDARD_DEVIATION_GAUSSIAN_NOISE;
@@ -63,9 +68,10 @@ namespace Enki
         HeatActuatorMesh *peltier;
 
         //! Vibration actuator
-        WaveVibrationSource *vibration;
+        WaveVibrationSource *vibration_source;
 
-		  VibrationSensor *sensor;
+        typedef std::vector<VibrationSensor *> VibrationSensorVector;
+		  VibrationSensorVector vibration_sensors;
 
     private:
         World* world_;
