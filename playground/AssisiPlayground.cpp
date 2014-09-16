@@ -13,7 +13,7 @@ namespace Enki
 		extendedWorld (world),
 		worldHeat (worldHeat),
 		maxHeat (maxHeat),
-		maxVibration (10),
+		maxVibration (maxVibration),
 		layerToDraw (NONE),
 		transparency (0.5),
 		useGradient (false),
