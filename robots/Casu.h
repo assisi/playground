@@ -45,7 +45,6 @@ namespace Enki
 		 static /*const*/ double VIBRATION_SENSOR_AMPLITUDE_STANDARD_DEVIATION_GAUSSIAN_NOISE;
 		 static /*const*/ double VIBRATION_SENSOR_FREQUENCY_STANDARD_DEVIATION_GAUSSIAN_NOISE;
 
-
        /* Temperature sensors' parameters and configuration */
        static const double TEMP_SENS_COUNT;
        static const double MIN_MEASURABLE_HEAT;

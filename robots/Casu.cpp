@@ -14,6 +14,7 @@
 #include "interactions/LightSourceFromAbove.h"
 #include "interactions/LightConstants.h"
 #include "interactions/DiagnosticLed.h"
+#include "extensions/PointMesh.h"
 
 const double pi = boost::math::constants::pi<double>();
 
@@ -129,10 +130,12 @@ Casu::Casu(World* world) :
     top_led = new DiagnosticLed(this);
 
     // Add peltier actuator
-    peltier = new HeatActuatorMesh (this, Vector(0,0), 23, 1.2, 1.6, 20);
+	 // TODO: make peltier parameters CASU constants
+    peltier = new HeatActuatorMesh (this, Vector(0,0), 23, PointMesh::makeCircumferenceMesh (1.6, 16));
     this->addPhysicInteraction(this->peltier);
 
 	 // Add vibration actuator
+
 	 this->vibration_source = new WaveVibrationSource
 		(Casu::VIBRATION_SOURCE_RANGE, this,
 		 Casu::VIBRATION_SOURCE_POSITION,
