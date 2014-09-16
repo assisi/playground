@@ -21,13 +21,26 @@ const double pi = boost::math::constants::pi<double>();
 namespace Enki
 {
 
-	/*const*/ double Casu::VIBRATION_RANGE = 100;
-	const Vector Casu::VIBRATION_POSITION = Vector (0, 0);
-	/*const*/ double Casu::VIBRATION_MAXIMUM_AMPLITUDE = 8.5; // units??
-	/*const*/ double Casu::VIBRATION_PHASE = 1;
-	const double Casu::VIBRATION_VELOCITY = 357000;  // sound speed in copper cm/s
-	/*const*/ double Casu::VIBRATION_AMPLITUDE_QUADRATIC_DECAY = 2;
-	/*const*/ double Casu::VIBRATION_NOISE = 1;
+	/*const*/ double Casu::VIBRATION_SOURCE_RANGE = 100;
+	const Vector Casu::VIBRATION_SOURCE_POSITION = Vector (0, 0);
+	/*const*/ double Casu::VIBRATION_SOURCE_MAXIMUM_AMPLITUDE = 8.5; // units??
+	/*const*/ double Casu::VIBRATION_SOURCE_PHASE = 1;
+	const double Casu::VIBRATION_SOURCE_VELOCITY = 357000;  // sound speed in copper cm/s
+	/*const*/ double Casu::VIBRATION_SOURCE_AMPLITUDE_QUADRATIC_DECAY = 2;
+	/*const*/ double Casu::VIBRATION_SOURCE_NOISE = 1;
+
+
+	const int Casu::NUMBER_VIBRATION_SENSORS = 4;
+	double Casu::VIBRATION_SENSOR_RANGE = 100;
+	const Vector Casu::VIBRATION_SENSOR_POSITION[] = {
+		Vector (-2.5,  0),
+		Vector ( 2.5,  0),
+		Vector (   0, -2.5),
+		Vector (   0,  2.5)
+	};
+	/*const*/ double Casu::VIBRATION_SENSOR_MAX_MEASURABLE_FREQUENCY = 500;
+	/*const*/ double Casu::VIBRATION_SENSOR_AMPLITUDE_STANDARD_DEVIATION_GAUSSIAN_NOISE = 0;
+	/*const*/ double Casu::VIBRATION_SENSOR_FREQUENCY_STANDARD_DEVIATION_GAUSSIAN_NOISE = 0;
 
     // Temperature sensors configuration
     const double Casu::TEMP_SENS_COUNT = 5;
@@ -42,6 +55,7 @@ namespace Enki
 Casu::Casu(World* world) :
     world_(world),
     range_sensors(6),
+	 vibration_sensors (Casu::NUMBER_VIBRATION_SENSORS),
     temp_sensors(TEMP_SENS_COUNT)
 {
   
@@ -121,17 +135,29 @@ Casu::Casu(World* world) :
     this->addPhysicInteraction(this->peltier);
 
 	 // Add vibration actuator
-	 this->vibration = new WaveVibrationSource
-		(Casu::VIBRATION_RANGE, this,
-		 Casu::VIBRATION_POSITION,
-		 Casu::VIBRATION_MAXIMUM_AMPLITUDE,
-		 Casu::VIBRATION_PHASE,
-		 Casu::VIBRATION_VELOCITY,
-		 Casu::VIBRATION_AMPLITUDE_QUADRATIC_DECAY,
-		 Casu::VIBRATION_NOISE);
-	 this->vibration->setCylindric(0, 0, -1); // Set to point object
-	 world_->addObject (this->vibration);
-	 addLocalInteraction (this->vibration);
+
+	 this->vibration_source = new WaveVibrationSource
+		(Casu::VIBRATION_SOURCE_RANGE, this,
+		 Casu::VIBRATION_SOURCE_POSITION,
+		 Casu::VIBRATION_SOURCE_MAXIMUM_AMPLITUDE,
+		 Casu::VIBRATION_SOURCE_PHASE,
+		 Casu::VIBRATION_SOURCE_VELOCITY,
+		 Casu::VIBRATION_SOURCE_AMPLITUDE_QUADRATIC_DECAY,
+		 Casu::VIBRATION_SOURCE_NOISE);
+	 this->vibration_source->setCylindric(0, 0, -1); // Set to point object
+	 world_->addObject (this->vibration_source);
+	 addLocalInteraction (this->vibration_source);
+
+	 // Add vibration sensors
+	 for (int i = 0; i < Casu::NUMBER_VIBRATION_SENSORS; i++) {
+		 VibrationSensor *vs = new VibrationSensor 
+			 (Casu::VIBRATION_SENSOR_RANGE, this,
+			  Casu::VIBRATION_SENSOR_POSITION [i], 0,
+			  Casu::VIBRATION_SENSOR_MAX_MEASURABLE_FREQUENCY,
+			  Casu::VIBRATION_SENSOR_AMPLITUDE_STANDARD_DEVIATION_GAUSSIAN_NOISE,
+			  Casu::VIBRATION_SENSOR_FREQUENCY_STANDARD_DEVIATION_GAUSSIAN_NOISE);
+		 this->vibration_sensors [i] = vs;
+	 }
 }
 
 // -----------------------------------------------------------------------------

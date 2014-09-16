@@ -40,54 +40,53 @@ int main(int argc, char *argv[])
     double heat_scale;
     int heat_border_size;
 
-	double maxHeat;
-	double maxVibration;
+    double maxHeat;
+    double maxVibration;
 
-	desc.add_options
-		()
-		("help,h", "produce help message")
-		("config_file,c", 
-		 po::value<string>(&config_file_name)->default_value("Playground.cfg"),
-		 "configuration file name")
-		("Arena.radius,r", po::value<int>(&r), 
-		 "playground radius, in cm")
-		("Heat.env_temp,t", po::value<double>(&env_temp), 
-		 "environment temperature, in C")
-		("Heat.scale", po::value<double>(&heat_scale), 
-		 "heat model scale")
-		("Heat.border_size", po::value<int>(&heat_border_size), "playground radius, in cm")
-
-		(
-		 "Vibration.range",
-		 po::value<double> (&Casu::VIBRATION_RANGE),
-		 "vibration range, in cm"
-		)
-		(
-		 "Vibration.maximum_amplitude", 
-		 po::value<double> (&Casu::VIBRATION_MAXIMUM_AMPLITUDE),
-		 "maximum amplitude of vibration"
-		)
-		(
-		 "Vibration.amplitude_quadratic_decay", 
-		 po::value<double> (&Casu::VIBRATION_AMPLITUDE_QUADRATIC_DECAY),
-		 "quadratic decay of vibration amplitude"
-		)
-		(
-		 "Vibration.noise", 
-		 po::value<double> (&Casu::VIBRATION_NOISE),
-		 "vibration frequency noise"
-		)
-		(
-		 "Viewer.max_heat",
-		 po::value<double> (&maxHeat),
-		 "maximum displayed heat"
-		 )
-		(
-		 "Viewer.max_vibration",
-		 po::value<double> (&maxVibration),
-		 "maximum displayed vibration intensity"
-		  )
-		;
+    desc.add_options
+        ()
+        ("help,h", "produce help message")
+        ("config_file,c", 
+         po::value<string>(&config_file_name)->default_value("Playground.cfg"),
+         "configuration file name")
+        ("Arena.radius,r", po::value<int>(&r), 
+         "playground radius, in cm")
+        ("Heat.env_temp,t", po::value<double>(&env_temp), 
+         "environment temperature, in C")
+        ("Heat.scale", po::value<double>(&heat_scale), 
+         "heat model scale")
+        ("Heat.border_size", po::value<int>(&heat_border_size), "playground radius, in cm")
+         (
+          "Vibration.range",
+          po::value<double> (&Casu::VIBRATION_SOURCE_RANGE),
+          "vibration range, in cm"
+          )
+        (
+         "Vibration.maximum_amplitude", 
+         po::value<double> (&Casu::VIBRATION_SOURCE_MAXIMUM_AMPLITUDE),
+         "maximum amplitude of vibration"
+         )
+        (
+         "Vibration.amplitude_quadratic_decay", 
+         po::value<double> (&Casu::VIBRATION_SOURCE_AMPLITUDE_QUADRATIC_DECAY),
+         "quadratic decay of vibration amplitude"
+         )
+        (
+         "Vibration.noise", 
+         po::value<double> (&Casu::VIBRATION_SOURCE_NOISE),
+         "vibration frequency noise"
+         )
+        (
+         "Viewer.max_heat",
+         po::value<double> (&maxHeat),
+         "maximum displayed heat"
+         )
+        (
+         "Viewer.max_vibration",
+         po::value<double> (&maxVibration),
+         "maximum displayed vibration intensity"
+          )
+        ;
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);

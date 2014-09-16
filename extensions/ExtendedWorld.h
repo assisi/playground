@@ -10,8 +10,6 @@
 #ifndef __EXTENDED_WORLD_H
 #define __EXTENDED_WORLD_H
 
-#include <fstream>
-
 #include <enki/PhysicalEngine.h>
 
 #include "PhysicSimulation.h"

@@ -12,7 +12,6 @@ WaveVibrationSource::WaveVibrationSource
 	 Vector relativePosition,
 	 double maximumAmplitude,
 	 double phase,
-	 double frequency,
 	 double velocity,
 	 double amplitudeQuadraticDecay,
 	 double noise)
@@ -21,26 +20,7 @@ WaveVibrationSource::WaveVibrationSource
 	noise (noise),
 	maximumAmplitude (maximumAmplitude),
 	velocity (velocity),
-	phase (phase),
-	amplitudeQuadraticDecay (amplitudeQuadraticDecay)
-{
-	setFrequency (frequency);
-}
-
-WaveVibrationSource::WaveVibrationSource
-	(double range, Robot* owner,
-	 Vector relativePosition,
-	 double maximumAmplitude,
-	 double phase,
-	 double velocity,
-	 double amplitudeQuadraticDecay,
-	 double noise)
-	:
-	VibrationSource (range, owner, relativePosition, OMNIDIRECTIONAL),
-	noise (noise),
-	maximumAmplitude (maximumAmplitude),
 	frequency (0),
-	velocity (velocity),
 	phase (phase),
 	amplitudeQuadraticDecay (amplitudeQuadraticDecay)
 {
@@ -76,7 +56,7 @@ double WaveVibrationSource::getWaveAt (const Point &position, double time) const
 		* std::sin (
 			2 * boost::math::constants::pi<double> ()
 			* this->frequency
-			* (time - distance / this->velocity + this->phase)
+			* (time + distance / this->velocity + this->phase)
 		)
 		/ (1 + distance2 * this->amplitudeQuadraticDecay);
 }
