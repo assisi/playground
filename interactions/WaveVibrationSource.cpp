@@ -18,9 +18,29 @@ WaveVibrationSource::WaveVibrationSource
 	:
 	VibrationSource (range, owner, relativePosition, OMNIDIRECTIONAL),
 	noise (noise),
+	frequency (0),
 	maximumAmplitude (maximumAmplitude),
 	velocity (velocity),
 	frequency (0),
+	phase (phase),
+	amplitudeQuadraticDecay (amplitudeQuadraticDecay)
+{
+}
+
+WaveVibrationSource::WaveVibrationSource
+	(double range, Robot* owner,
+	 Vector relativePosition,
+	 double maximumAmplitude,
+	 double phase,
+	 double velocity,
+	 double amplitudeQuadraticDecay,
+	 double noise)
+	:
+	VibrationSource (range, owner, relativePosition, OMNIDIRECTIONAL),
+	noise (noise),
+	frequency (0),
+	maximumAmplitude (maximumAmplitude),
+	velocity (velocity),
 	phase (phase),
 	amplitudeQuadraticDecay (amplitudeQuadraticDecay)
 {
@@ -44,6 +64,7 @@ WaveVibrationSource::~WaveVibrationSource()
 void WaveVibrationSource::
 setFrequency (double value)
 {
+	// std::cout << "setFrequency (" << value << ")" << std::endl;
 	this->frequency = value + (2 * uniformRand () - 1) / 2 * this->noise;
 }
 

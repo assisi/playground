@@ -29,8 +29,8 @@ namespace Enki
     {
         // Set shape & color
 
-        double len = 2; // Body length
-        double w = 0.8; // Body width
+        double len = 1.35; // Body length
+        double w = 0.5; // Body width
         double h = 0.4; // Body height
         double m = 1;   // Body mass
 

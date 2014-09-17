@@ -91,6 +91,7 @@ namespace Enki
 		{
 			return this->frequency;
 		}
+
 	private:
 
 	};
