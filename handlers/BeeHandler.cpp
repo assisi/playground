@@ -77,7 +77,20 @@ namespace Enki
             {
                 cerr << "Unknown command for " << name << "/" << device << endl;
                 return 0;
-            }         
+            }
+        }
+        else if (device == "Color")
+        {
+            if (command == "Set")
+            {
+                ColorStamped color_msg;
+                assert(color_msg.ParseFromString(data));
+                std::cout << "Setting color to " << color_msg.color().blue() << std::endl;
+            }
+            else if (command == "Remove")
+            {
+                std::cout << "Removing color " << "" << std::endl;
+            }
         }
         else
         {
