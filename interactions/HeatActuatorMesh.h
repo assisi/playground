@@ -44,7 +44,8 @@ namespace Enki
 		HeatActuatorMesh (
 			Enki::Robot* owner,
 			Enki::Vector relativePosition,
-			double heat,
+			double thermalResponseTime,
+			double ambientTemperature,
 			double radius,
 			int numberPoints);
 		/**
@@ -59,14 +60,16 @@ namespace Enki
 		HeatActuatorMesh (
 			Enki::Robot* owner,
 			Enki::Vector relativePosition,
-			double heat,
+			double thermalResponseTime,
+			double ambientTemperature,
 			double innerRadius,
 			double outerRadius,
 			int numberPoints);
 		HeatActuatorMesh (
 			Enki::Robot* owner,
 			Enki::Vector relativePosition,
-			double heat,
+			double thermalResponseTime,
+			double ambientTemperature,
 			const PointMesh *mesh);
 		HeatActuatorMesh(const HeatActuatorMesh& orig);
 		virtual ~HeatActuatorMesh();

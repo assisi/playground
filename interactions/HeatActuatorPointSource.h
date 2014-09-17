@@ -7,6 +7,8 @@
 #include "extensions/Component.h"
 #include "extensions/PhysicInteraction.h"
 
+#include "WorldHeat.h"
+
 namespace Enki
 {
 	/**
@@ -23,6 +25,10 @@ namespace Enki
 		 */
 		double heat;
 		/**
+		 * How much does this heat actuator takes to heat the environment.
+		 */
+		double thermalResponseTime;
+		/**
 		 * Is this actuator turned on.
 		 */
 		bool switchedOn;
@@ -30,11 +36,22 @@ namespace Enki
 		 * Whether we should recompute the heat distribution in the world.
 		 */
 		bool recomputeHeatDistribution;
+		/**
+		 * Return the real heat that this actuator is able to produce.
+		 */
+		double getRealHeat (double dt, WorldHeat *worldHeat) const
+		{
+			double factor = std::min (1.0, this->thermalResponseTime * dt);
+			return
+				factor * this->heat
+				+ (1 - factor) * worldHeat->getHeatAt (this->absolutePosition);
+		}
 	public:
 		HeatActuatorPointSource (
 			Enki::Robot* owner,
 			Enki::Vector relativePosition,
-			double heat);
+			double thermalResponseTime,
+			double ambientTemperature);
 		void setHeat (double value);
 		bool isSwitchedOn () const
 		{

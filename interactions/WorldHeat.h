@@ -43,7 +43,7 @@ namespace Enki
 		WorldHeat (double normalHeat, double gridScale, double borderSize);
 		virtual ~WorldHeat () {}
 
-		double getHeatAt (Vector &pos) const;
+		double getHeatAt (const Vector &pos) const;
 		void setHeatAt (const Vector &pos, double value);
 		/**
 		 * When a heat actuator turns off, we have to recompute the heat

@@ -17,7 +17,7 @@ WorldHeat (double normalHeat, double gridScale, double borderSize):
 {
 }
 
-double WorldHeat::getHeatAt (Vector &pos) const
+double WorldHeat::getHeatAt (const Vector &pos) const
 {
 	int x, y;
 	toIndex (pos, x, y);

@@ -25,6 +25,10 @@ using namespace Enki;
 
 namespace po = boost::program_options;
 
+namespace Enki {
+	double env_temp;
+}
+
 int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
@@ -36,7 +40,6 @@ int main(int argc, char *argv[])
     // Variables to store the options
     int r;
     string config_file_name("Playground.cfg");
-    double env_temp;
     double heat_scale;
     int heat_border_size;
 

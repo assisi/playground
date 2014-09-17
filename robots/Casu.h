@@ -55,9 +55,13 @@ namespace Enki
        static const Vector TEMP_SENS_SOUTH_POS;
        static const Vector TEMP_SENS_WEST_POS;
 
+		 /* peltier's parameters and configuration */
+		 static const Vector PELTIER_POSITION;
+		 static /*const*/ double PELTIER_THERMAL_RESPONSE_TIME;
+
     public:
         //! Create a CASU
-        Casu(World* world);
+		 Casu (World* world, double ambientTemperature);
 
         //! Destructor
         ~Casu();

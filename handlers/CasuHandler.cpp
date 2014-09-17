@@ -29,6 +29,7 @@ using namespace AssisiMsg;
 
 namespace Enki
 {
+	extern double env_temp;
 
     /* virtual */
     string CasuHandler::createObject(const std::string& data, 
@@ -43,7 +44,7 @@ namespace Enki
             Point pos(spawn_msg.pose().position().x(),
                       spawn_msg.pose().position().y());
             double yaw(spawn_msg.pose().orientation().z());
-            casus_[name] = new Casu(world);
+            casus_[name] = new Casu(world, env_temp);
             casus_[name]->pos = pos;
             casus_[name]->angle = yaw;
             world->addObject(casus_[name]);
