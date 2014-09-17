@@ -57,7 +57,7 @@ namespace Enki
 
 		 /* peltier's parameters and configuration */
 		 static const Vector PELTIER_POSITION;
-		 static /*const*/ double PELTIER_THERMAL_RESPONSE_TIME;
+		 static /*const*/ double PELTIER_THERMAL_RESPONSE;
 
     public:
         //! Create a CASU

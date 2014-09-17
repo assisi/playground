@@ -54,7 +54,7 @@ namespace Enki
 
 	/* peltier's parameters and configuration */
 	const Vector Casu::PELTIER_POSITION = Vector (0, 0);
-	/*const*/ double Casu::PELTIER_THERMAL_RESPONSE_TIME = 0.3;
+	/*const*/ double Casu::PELTIER_THERMAL_RESPONSE = 0.3;
 
 
 	Casu::Casu(World* world, double ambientTemperature) :
@@ -138,7 +138,7 @@ namespace Enki
 	 // TODO: make peltier parameters CASU constants
     peltier = new HeatActuatorMesh
 		 (this, Vector(0,0),
-		  PELTIER_THERMAL_RESPONSE_TIME, ambientTemperature,
+		  PELTIER_THERMAL_RESPONSE, ambientTemperature,
 		  PointMesh::makeCircumferenceMesh (1.6, 16));
     this->addPhysicInteraction(this->peltier);
 

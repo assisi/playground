@@ -80,6 +80,11 @@ int main(int argc, char *argv[])
          "vibration frequency noise"
          )
         (
+         "Peltier.thermal_response", 
+         po::value<double> (&Casu::PELTIER_THERMAL_RESPONSE),
+         "peltier thermal response"
+         )
+        (
          "Viewer.max_heat",
          po::value<double> (&maxHeat),
          "maximum displayed heat"
