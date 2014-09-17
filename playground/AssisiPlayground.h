@@ -45,7 +45,9 @@ namespace Enki
 		 * values are drawn in shades of red while lower values are drawn in
 		 * shades of blue.
 		 */
-		const double maxHeat;
+		static const double MAX_HEAT;
+		static const double MIN_HEAT;
+		static const int NUMBER_HEAT_TICS;
 		/**
 		 * Maximum presentable vibration intensity.
 		 */
@@ -80,7 +82,7 @@ namespace Enki
 		int dataLayerZ;
 
 	public:
-		AssisiPlayground (ExtendedWorld *world, WorldHeat *worldHeat, double maxHeat, double maxVibration, QWidget *parent = 0);	
+		AssisiPlayground (ExtendedWorld *world, WorldHeat *worldHeat, double maxVibration, QWidget *parent = 0);
     void addEPuck(World *world, Point pos);
 
 
@@ -106,6 +108,8 @@ namespace Enki
 		void drawDataAsGradient ();
 		void drawDataAsCheckerBoard ();
 
+		void heatToColour (double heat);
+		void heatToColour (double heat, float &red, float &green, float &blue);
 	};
 
 } // namespace Enki

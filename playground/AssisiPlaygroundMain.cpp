@@ -43,7 +43,6 @@ int main(int argc, char *argv[])
     double heat_scale;
     int heat_border_size;
 
-    double maxHeat;
     double maxVibration;
 
     desc.add_options
@@ -83,11 +82,6 @@ int main(int argc, char *argv[])
          "Peltier.thermal_response", 
          po::value<double> (&Casu::PELTIER_THERMAL_RESPONSE),
          "peltier thermal response"
-         )
-        (
-         "Viewer.max_heat",
-         po::value<double> (&maxHeat),
-         "maximum displayed heat"
          )
         (
          "Viewer.max_vibration",
@@ -137,7 +131,7 @@ int main(int argc, char *argv[])
 	BeeHandler *bh = new BeeHandler();
 	world.addHandler("Bee", bh);
 
-	AssisiPlayground viewer (&world, heatModel, maxHeat, maxVibration);	
+	AssisiPlayground viewer (&world, heatModel, maxVibration);
 	viewer.show ();
 	
 	return app.exec();
