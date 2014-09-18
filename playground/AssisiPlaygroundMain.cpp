@@ -31,6 +31,8 @@ namespace po = boost::program_options;
 
 static WorldExt *world;
 
+static double timerPeriodSec = 1;
+
 /**
  * Function assigned to SIGALRM signal.
  */
@@ -98,6 +100,11 @@ int main(int argc, char *argv[])
          po::value<double> (&maxVibration),
          "maximum displayed vibration intensity"
           )
+		 (
+		  "Simulation.timer_period",
+		  po::value<double> (&timerPeriodSec),
+		  "simulation timer period (in seconds)"
+		  )
         ;
 
     po::variables_map vm;
@@ -157,8 +164,9 @@ int main(int argc, char *argv[])
 		sigaction (SIGALRM, &saProgresso, 0);
 		/* set up timer */
 		struct itimerval value;
-		value.it_interval.tv_sec = 1;
-		value.it_interval.tv_usec = 0;
+		value.it_interval.tv_sec = timerPeriodSec;
+		long usec = timerPeriodSec * 1000000;
+		value.it_interval.tv_usec = usec;
 		value.it_value.tv_sec = 1;
 		value.it_value.tv_usec = 0;
 		setitimer (ITIMER_REAL, &value, NULL);
@@ -169,10 +177,7 @@ int main(int argc, char *argv[])
 		do {
 			ret = sem_wait (&block);
 		} while (ret == -1 && errno == EINTR);
-		/* block on standard input */
-		int dummy;
-		cin >> dummy;
-		cout << "Simulator finished\n" << dummy << "\n";
+		cout << "Simulator finished\n";
 		return 0;
 	}
 
@@ -180,6 +185,5 @@ int main(int argc, char *argv[])
 
 void progress (int dummy)
 {
-	cout << "World->step(1)\n";
-	world->step (1);
+	world->step (timerPeriodSec);
 }
