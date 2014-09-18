@@ -85,11 +85,9 @@ namespace Enki
             {
                 ColorStamped color_msg;
                 assert(color_msg.ParseFromString(data));
-                std::cout << "Setting color to " << color_msg.color().blue() << std::endl;
-            }
-            else if (command == "Remove")
-            {
-                std::cout << "Removing color " << "" << std::endl;
+                bees_[name]->setColor(Color(color_msg.color().red(),
+                                            color_msg.color().green(),
+                                            color_msg.color().blue()));
             }
         }
         else
