@@ -168,7 +168,7 @@ namespace Enki
             zmq::send_multipart(socket, ca.first, "IR", "Ranges", data);
 
             /* Publish vibration readings */
-            VibrationArray vibrations;
+            VibrationReadingArray vibrations;
             BOOST_FOREACH (VibrationSensor *vs, ca.second->vibration_sensors)
             {
                 /*
