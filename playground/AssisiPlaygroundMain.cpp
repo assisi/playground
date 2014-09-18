@@ -105,6 +105,11 @@ int main(int argc, char *argv[])
 		  po::value<double> (&timerPeriodSec),
 		  "simulation timer period (in seconds)"
 		  )
+		 (
+		  "Bee.scale_factor",
+		  po::value<double> (&Bee::SCALE_FACTOR),
+		  "bee scale factor"
+		  )
         ;
 
     po::variables_map vm;

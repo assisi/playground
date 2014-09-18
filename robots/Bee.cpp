@@ -23,7 +23,7 @@ int sign(T val)
 
 namespace Enki
 {
-	const double Bee::SCALE_FACTOR = 1.0;
+	double Bee::SCALE_FACTOR = 1.0;
 
     Bee::Bee(double scaleFactor) :
         DifferentialWheeled(0.4, 2, 0.0),

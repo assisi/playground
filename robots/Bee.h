@@ -20,7 +20,7 @@ namespace Enki
 	class Bee : public DifferentialWheeled, public ExtendedRobot
 	{
 	public:
-		static const double SCALE_FACTOR;
+		static double SCALE_FACTOR;
 
 	public:
         //! Create a Bee
