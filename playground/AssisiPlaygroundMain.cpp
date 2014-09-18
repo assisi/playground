@@ -1,3 +1,7 @@
+#include <signal.h>
+#include <sys/time.h>
+#include <semaphore.h>
+
 #include <QApplication>
 #include <QImage>
 
@@ -25,9 +29,16 @@ using namespace Enki;
 
 namespace po = boost::program_options;
 
+static WorldExt *world;
+
+/**
+ * Function assigned to SIGALRM signal.
+ */
+void progress (int dummy);
+
 int main(int argc, char *argv[])
 {
-	QApplication app(argc, argv);
+	//	QApplication app(argc, argv);
 	
     /** Parse command line options **/
     
@@ -46,6 +57,7 @@ int main(int argc, char *argv[])
     desc.add_options
         ()
         ("help,h", "produce help message")
+        ("nogui", "run without viewer")
         ("config_file,c", 
          po::value<string>(&config_file_name)->default_value("Playground.cfg"),
          "configuration file name")
@@ -110,7 +122,7 @@ int main(int argc, char *argv[])
     texture = QGLWidget::convertToGLFormat(texture);    
     //texture.invertPixels(QImage::InvertRgba);
     
-    WorldExt world (r, pub_address, sub_address,
+    world = new WorldExt (r, pub_address, sub_address,
 		Color::gray, 
 		World::GroundTexture (
 			texture.width(),
@@ -118,21 +130,56 @@ int main(int argc, char *argv[])
 			(const uint32_t*) texture.constBits ()));
 
 	WorldHeat *heatModel = new WorldHeat(env_temp, heat_scale, heat_border_size);
-	world.addPhysicSimulation(heatModel);
+	world->addPhysicSimulation(heatModel);
 
 	CasuHandler *ch = new CasuHandler();
-	world.addHandler("Casu", ch);
+	world->addHandler("Casu", ch);
 
 	PhysicalObjectHandler *ph = new PhysicalObjectHandler();
-	world.addHandler("Physical", ph);
+	world->addHandler("Physical", ph);
 
 	BeeHandler *bh = new BeeHandler();
-	world.addHandler("Bee", bh);
+	world->addHandler("Bee", bh);
 
-	AssisiPlayground viewer (&world, heatModel, maxHeat, maxVibration);	
-	viewer.show ();
+	if (vm.count ("nogui") == 0) {
+		QApplication app(argc, argv);
+
+		AssisiPlayground viewer (world, heatModel, maxHeat, maxVibration);	
+		viewer.show ();
 	
-	return app.exec();
+		return app.exec();
+	}
+	else {
+		/* set up the action for alarm */
+		struct sigaction saProgresso;
+		saProgresso.sa_handler = progress;
+		saProgresso.sa_flags = 0;
+		sigaction (SIGALRM, &saProgresso, 0);
+		/* set up timer */
+		struct itimerval value;
+		value.it_interval.tv_sec = 1;
+		value.it_interval.tv_usec = 0;
+		value.it_value.tv_sec = 1;
+		value.it_value.tv_usec = 0;
+		setitimer (ITIMER_REAL, &value, NULL);
+		/* block on a semaphore */
+		sem_t block;
+		sem_init (&block, 0, 0);
+		int ret;
+		do {
+			ret = sem_wait (&block);
+		} while (ret == -1 && errno == EINTR);
+		/* block on standard input */
+		int dummy;
+		cin >> dummy;
+		cout << "Simulator finished\n" << dummy << "\n";
+		return 0;
+	}
 
 }
 
+void progress (int dummy)
+{
+	cout << "World->step(1)\n";
+	world->step (1);
+}

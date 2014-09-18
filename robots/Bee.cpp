@@ -23,7 +23,9 @@ int sign(T val)
 
 namespace Enki
 {
-    Bee::Bee(void) :
+	const double Bee::SCALE_FACTOR = 1.0;
+
+    Bee::Bee(double scaleFactor) :
         DifferentialWheeled(0.4, 2, 0.0),
         object_sensors(5)
     {
@@ -36,14 +38,14 @@ namespace Enki
 
         //setRectangular(len, w, h, 1);
         Polygone footprint;
-        footprint.push_back(Point(len/2,w/4));
-        footprint.push_back(Point(len/2-w/(4*sqrt(2)),w/2));
-        footprint.push_back(Point(-len/2+w/(4*sqrt(2)),w/2));
-        footprint.push_back(Point(-len/2,w/4));
-        footprint.push_back(Point(-len/2,-w/4));
-        footprint.push_back(Point(-len/2+w/(2*sqrt(2)),-w/2));
-        footprint.push_back(Point(len/2-w/(2*sqrt(2)),-w/2));
-        footprint.push_back(Point(len/2,-w/4));
+        footprint.push_back(Point(len/2,w/4) * scaleFactor);
+        footprint.push_back(Point(len/2-w/(4*sqrt(2)),w/2) * scaleFactor);
+        footprint.push_back(Point(-len/2+w/(4*sqrt(2)),w/2) * scaleFactor);
+        footprint.push_back(Point(-len/2,w/4) * scaleFactor);
+        footprint.push_back(Point(-len/2,-w/4) * scaleFactor);
+        footprint.push_back(Point(-len/2+w/(2*sqrt(2)),-w/2) * scaleFactor);
+        footprint.push_back(Point(len/2-w/(2*sqrt(2)),-w/2) * scaleFactor);
+        footprint.push_back(Point(len/2,-w/4) * scaleFactor);
         PhysicalObject::Hull hull(PhysicalObject::Part(footprint, h));
         setCustomHull(hull, m);
         setColor(Color(0.93,0.79,0,1));
