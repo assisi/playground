@@ -169,8 +169,12 @@ int main(int argc, char *argv[])
 		sigaction (SIGALRM, &saProgresso, 0);
 		/* set up timer */
 		struct itimerval value;
+		timerPeriodSec = fabs (timerPeriodSec);
 		value.it_interval.tv_sec = timerPeriodSec;
 		long usec = timerPeriodSec * 1000000;
+		while (usec > 999999) {
+			usec -= 1000000;
+		}
 		value.it_interval.tv_usec = usec;
 		value.it_value.tv_sec = 1;
 		value.it_value.tv_usec = 0;
