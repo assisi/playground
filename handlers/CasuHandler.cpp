@@ -176,6 +176,8 @@ namespace Enki
                   vibrationReading->add_amplitude (a);
                BOOST_FOREACH (double f, vs->getFrequency ())
                   vibrationReading->add_freq (f);
+					// TODO
+					//  add vibration amplitude standard deviation
             }
             vibrations.SerializeToString (&data);
             zmq::send_multipart (socket, ca.first, "Acc", "Measurements", data);
