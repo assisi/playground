@@ -77,7 +77,18 @@ namespace Enki
             {
                 cerr << "Unknown command for " << name << "/" << device << endl;
                 return 0;
-            }         
+            }
+        }
+        else if (device == "Color")
+        {
+            if (command == "Set")
+            {
+                ColorStamped color_msg;
+                assert(color_msg.ParseFromString(data));
+                bees_[name]->setColor(Color(color_msg.color().red(),
+                                            color_msg.color().green(),
+                                            color_msg.color().blue()));
+            }
         }
         else
         {

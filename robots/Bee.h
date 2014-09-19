@@ -19,10 +19,12 @@ namespace Enki
 	 * \ingroup robot */
 	class Bee : public DifferentialWheeled, public ExtendedRobot
 	{
+	public:
+		static double SCALE_FACTOR;
 
 	public:
         //! Create a Bee
-        Bee(void);
+		Bee(double scaleSize = Bee::SCALE_FACTOR);
         
         //! destructor
         virtual ~Bee();

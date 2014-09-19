@@ -18,9 +18,9 @@ WaveVibrationSource::WaveVibrationSource
 	:
 	VibrationSource (range, owner, relativePosition, OMNIDIRECTIONAL),
 	noise (noise),
+	frequency (0),
 	maximumAmplitude (maximumAmplitude),
 	velocity (velocity),
-	frequency (0),
 	phase (phase),
 	amplitudeQuadraticDecay (amplitudeQuadraticDecay)
 {
@@ -44,6 +44,7 @@ WaveVibrationSource::~WaveVibrationSource()
 void WaveVibrationSource::
 setFrequency (double value)
 {
+	// std::cout << "setFrequency (" << value << ")" << std::endl;
 	this->frequency = value + (2 * uniformRand () - 1) / 2 * this->noise;
 }
 

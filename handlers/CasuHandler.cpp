@@ -126,7 +126,7 @@ namespace Enki
         {
             if (command == "on")
             {
-                Vibration freq_msg;
+                VibrationSetpoint freq_msg;
                 assert (freq_msg.ParseFromString (data));
                 casus_[name]->vibration_source->setFrequency (freq_msg.freq ());
                 count++;
@@ -167,15 +167,18 @@ namespace Enki
             zmq::send_multipart(socket, ca.first, "IR", "Ranges", data);
 
             /* Publish vibration readings */
-            VibrationArray vibrations;
+            VibrationReadingArray vibrations;
             BOOST_FOREACH (VibrationSensor *vs, ca.second->vibration_sensors)
             {
+					VibrationReading *vibrationReading = vibrations.add_reading ();
                const std::vector<double> &amplitudes = vs->getAmplitude ();
                const std::vector<double> &frequencies = vs->getFrequency ();
                BOOST_FOREACH (double a, vs->getAmplitude ())
-                  vibrations.add_amplitude (a);
+                  vibrationReading->add_amplitude (a);
                BOOST_FOREACH (double f, vs->getFrequency ())
-                  vibrations.add_freq (f);
+                  vibrationReading->add_freq (f);
+					// TODO
+					//  add vibration amplitude standard deviation
             }
             vibrations.SerializeToString (&data);
             zmq::send_multipart (socket, ca.first, "Acc", "Measurements", data);
