@@ -29,6 +29,8 @@ namespace Enki
         DifferentialWheeled(0.4, 2, 0.0),
         object_sensors(5)
     {
+		 collisionElasticity = 0.1;
+		 dryFrictionCoefficient=0.25;
         // Set shape & color
 
         double len = 1.35; // Body length

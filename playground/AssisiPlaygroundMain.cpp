@@ -157,7 +157,7 @@ int main(int argc, char *argv[])
 	if (vm.count ("nogui") == 0) {
 		QApplication app(argc, argv);
 
-		AssisiPlayground viewer (world, heatModel, maxHeat, maxVibration);	
+		AssisiPlayground viewer (world, heatModel, maxVibration);	
 		viewer.show ();
 	
 		return app.exec();
