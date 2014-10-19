@@ -191,6 +191,19 @@ namespace Enki
             temperatures.SerializeToString(&data);
             zmq::send_multipart(socket, ca.first, "Temp", "Temperatures", data);
 
+            /* Publish temperature actuator setpoint and state. */            
+            Temperature temp_ref;
+            temp_ref.set_temp(ca.second->peltier->getHeat());
+            temp_ref.SerializeToString(&data);
+            if (ca.second->peltier->isSwitchedOn())
+            {
+                zmq::send_multipart(socket, ca.first, "Peltier", "On", data);
+            }
+            else
+            {
+                zmq::send_multipart(socket, ca.first, "Peltier", "Off", data);
+            }                
+
             /* Publish other stuff as necessary ... */
 
             count++;

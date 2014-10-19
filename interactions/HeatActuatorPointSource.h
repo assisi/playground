@@ -36,6 +36,7 @@ namespace Enki
 			Enki::Vector relativePosition,
 			double heat);
 		void setHeat (double value);
+        double getHeat(void) { return this->heat; }
 		bool isSwitchedOn () const
 		{
 			return this->switchedOn;
