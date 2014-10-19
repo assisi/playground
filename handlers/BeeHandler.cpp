@@ -85,9 +85,14 @@ namespace Enki
             {
                 ColorStamped color_msg;
                 assert(color_msg.ParseFromString(data));
+                /*
                 bees_[name]->setColor(Color(color_msg.color().red(),
                                             color_msg.color().green(),
                                             color_msg.color().blue()));
+                */
+                bees_[name]->setColor(color_msg.color().red(),
+                                      color_msg.color().green(),
+                                      color_msg.color().blue());
             }
         }
         else
@@ -118,8 +123,15 @@ namespace Enki
             send_multipart(socket, ca.first, "Object", "Ranges", data);
             count++;
 
-            /* Publish velocities */
+            /* Publish velocity setpoints */
             DiffDrive drive;
+            drive.set_vel_left(ca.second->leftSpeed);
+            drive.set_vel_right(ca.second->rightSpeed);
+            drive.SerializeToString(&data);
+            send_multipart(socket, ca.first, "Base", "VelRef", data);
+            count++;
+
+            /* Publish velocities */
             drive.set_vel_left(ca.second->leftEncoder);
             drive.set_vel_right(ca.second->rightEncoder);
             send_multipart(socket, ca.first, "Base", "Enc", data);
@@ -148,6 +160,14 @@ namespace Enki
             temps.add_temp(ca.second->heat_sensor->getMeasuredHeat());
             temps.SerializeToString(&data);
             send_multipart(socket, ca.first, "Temp", "Temperatures", data);
+
+            /* Publish Diagnostic color "actuator" set value */
+            ColorStamped color;
+            color.mutable_color()->set_red(ca.second->color_r_);
+            color.mutable_color()->set_green(ca.second->color_g_);
+            color.mutable_color()->set_blue(ca.second->color_b_);
+            color.SerializeToString(&data);
+            send_multipart(socket, ca.first, "Color", "ColorVal", data);
             
             /* Publish other stuff as necessary */
         }
