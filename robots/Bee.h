@@ -41,10 +41,20 @@ namespace Enki
         //! Heat sensor.
         HeatSensor* heat_sensor;
 
+        //! Bee color (useful for diagnostic purposes)
+        double color_r_;
+        double color_g_;
+        double color_b_;
+
         /**
          * Update the position of this bee.  
          */
         void step (int dt, const World *);
+
+        /**
+         * Update the bee color (useful for diagnostic purposes).
+         */
+        void setColor(double r, double g, double b);
 	};
 }
 

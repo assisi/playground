@@ -27,7 +27,8 @@ namespace Enki
 
     Bee::Bee(double scaleFactor) :
         DifferentialWheeled(0.4, 2, 0.0),
-        object_sensors(5)
+        object_sensors(5),
+        color_r_(0.93), color_g_(0.79), color_b_(0)
     {
 		 collisionElasticity = 0.1;
 		 dryFrictionCoefficient=0.25;
@@ -50,7 +51,7 @@ namespace Enki
         footprint.push_back(Point(len/2,-w/4) * scaleFactor);
         PhysicalObject::Hull hull(PhysicalObject::Part(footprint, h));
         setCustomHull(hull, m);
-        setColor(Color(0.93,0.79,0,1));
+        setColor(color_r_, color_g_ , color_b_);
 
         // Set other physical properties
         PhysicalObject::dryFrictionCoefficient = 2.5;
@@ -86,5 +87,13 @@ namespace Enki
             delete p;
         }
         delete light_sensor_blue;
+    }
+
+    void Bee::setColor(double r, double g, double b)
+    {
+        color_r_ = r;
+        color_g_ = g;
+        color_b_ = b;
+        PhysicalObject::setColor(Color(r,g,b,1));
     }
 }
