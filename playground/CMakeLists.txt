@@ -33,34 +33,34 @@ include_directories (${CMAKE_SOURCE_DIR}
 #link_directories (${CMAKE_BINARY_DIR})
 
 # Demo world "server" (no GUI)
-set(test_ext_SOURCES WorldExt.cpp
-                     ../robots/Casu.cpp
-                     ../robots/Bee.cpp
-                     ../handlers/EPuckHandler.cpp
-                     ../handlers/CasuHandler.cpp
-                     ../handlers/PhysicalObjectHandler.cpp
-                     ../handlers/BeeHandler.cpp
-                     ../interactions/LightConstants.cpp
-                     ../interactions/LightSource.cpp
-                     ../interactions/LightSourceFromAbove.cpp
-                     ../interactions/LightSensor.cpp
-                     ../interactions/WorldHeat.cpp
-                     ../interactions/HeatSensor.cpp
-                     ../interactions/HeatActuatorMesh.cpp
-                     ../interactions/HeatActuatorPointSource.cpp
-					 ../interactions/WaveVibrationSource.cpp
-                     ../interactions/VibrationSource.cpp
-                     ../interactions/VibrationSensor.cpp
-                     ../interactions/ObjectSensor.cpp
-                     ../extensions/Component.cpp
-                     ../extensions/ExtendedRobot.cpp
-                     ../extensions/ExtendedWorld.cpp
-                     ../extensions/PointMesh.cpp
-                     TestWorldExt.cpp
-                     ${ProtoSources})
+#set(test_ext_SOURCES WorldExt.cpp
+#                     ../robots/Casu.cpp
+#                     ../robots/Bee.cpp
+#                     ../handlers/EPuckHandler.cpp
+#                     ../handlers/CasuHandler.cpp
+#                     ../handlers/PhysicalObjectHandler.cpp
+#                     ../handlers/BeeHandler.cpp
+#                     ../interactions/LightConstants.cpp
+#                     ../interactions/LightSource.cpp
+#                     ../interactions/LightSourceFromAbove.cpp
+#                     ../interactions/LightSensor.cpp
+#                     ../interactions/WorldHeat.cpp
+#                     ../interactions/HeatSensor.cpp
+#                     ../interactions/HeatActuatorMesh.cpp
+#                     ../interactions/HeatActuatorPointSource.cpp
+#					 ../interactions/WaveVibrationSource.cpp
+#                     ../interactions/VibrationSource.cpp
+#                     ../interactions/VibrationSensor.cpp
+#                     ../interactions/ObjectSensor.cpp
+#                     ../extensions/Component.cpp
+#                     ../extensions/ExtendedRobot.cpp
+#                     ../extensions/ExtendedWorld.cpp
+#                     ../extensions/PointMesh.cpp
+#                     TestWorldExt.cpp
+#                     ${ProtoSources})
 
-add_executable(test_ext ${test_ext_SOURCES})
-target_link_libraries(test_ext ${enki_LIBRARIES} ${ZeroMQ_LIBRARY} ${PROTOBUF_LIBRARY} ${Boost_LIBRARIES})
+#add_executable(test_ext ${test_ext_SOURCES})
+#target_link_libraries(test_ext ${enki_LIBRARIES} ${ZeroMQ_LIBRARY} ${PROTOBUF_LIBRARY} ${Boost_LIBRARIES})
 
 find_package(Qt4 REQUIRED)
 find_package(OpenGL REQUIRED)
