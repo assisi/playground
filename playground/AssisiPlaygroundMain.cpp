@@ -29,6 +29,9 @@ using namespace Enki;
 
 namespace po = boost::program_options;
 
+namespace Enki {
+	double env_temp;
+}
 static WorldExt *world;
 
 static double timerPeriodSec = 1;
@@ -49,11 +52,9 @@ int main(int argc, char *argv[])
     // Variables to store the options
     int r;
     string config_file_name("Playground.cfg");
-    double env_temp;
     double heat_scale;
     int heat_border_size;
 
-    double maxHeat;
     double maxVibration;
 
     desc.add_options
@@ -91,9 +92,9 @@ int main(int argc, char *argv[])
          "vibration frequency noise"
          )
         (
-         "Viewer.max_heat",
-         po::value<double> (&maxHeat),
-         "maximum displayed heat"
+         "Peltier.thermal_response", 
+         po::value<double> (&Casu::PELTIER_THERMAL_RESPONSE),
+         "peltier thermal response"
          )
         (
          "Viewer.max_vibration",
@@ -156,7 +157,7 @@ int main(int argc, char *argv[])
 	if (vm.count ("nogui") == 0) {
 		QApplication app(argc, argv);
 
-		AssisiPlayground viewer (world, heatModel, maxHeat, maxVibration);	
+		AssisiPlayground viewer (world, heatModel, maxVibration);	
 		viewer.show ();
 	
 		return app.exec();
@@ -189,7 +190,6 @@ int main(int argc, char *argv[])
 		cout << "Simulator finished\n";
 		return 0;
 	}
-
 }
 
 void progress (int dummy)

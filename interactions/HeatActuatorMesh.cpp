@@ -16,11 +16,12 @@ using namespace Enki;
 HeatActuatorMesh::HeatActuatorMesh (
 	Enki::Robot* owner,
 	Enki::Vector relativePosition,
-	double heat,
+	double thermalResponseTime,
+	double ambientTemperature,
 	double radius,
 	int numberPoints
 	):
-	HeatActuatorPointSource (owner, relativePosition, heat), 
+	HeatActuatorPointSource (owner, relativePosition, thermalResponseTime, ambientTemperature),
 	mesh (PointMesh::makeCircleMesh (radius, numberPoints))
 {
 }
@@ -28,12 +29,13 @@ HeatActuatorMesh::HeatActuatorMesh (
 HeatActuatorMesh::HeatActuatorMesh (
 	Enki::Robot* owner,
 	Enki::Vector relativePosition,
-	double heat,
+	double thermalResponseTime,
+	double ambientTemperature,
 	double innerRadius,
 	double outerRadius,
 	int numberPoints
 	):
-	HeatActuatorPointSource (owner, relativePosition, heat), 
+	HeatActuatorPointSource (owner, relativePosition, thermalResponseTime, ambientTemperature), 
 	mesh (PointMesh::makeRingMesh (innerRadius, outerRadius, numberPoints))
 {
 }
@@ -41,10 +43,11 @@ HeatActuatorMesh::HeatActuatorMesh (
 HeatActuatorMesh::HeatActuatorMesh (
 	Enki::Robot* owner,
 	Enki::Vector relativePosition,
-	double heat,
+	double thermalResponseTime,
+	double ambientTemperature,
 	const PointMesh *mesh
 	):
-	HeatActuatorPointSource (owner, relativePosition, heat), 
+	HeatActuatorPointSource (owner, relativePosition, thermalResponseTime, ambientTemperature), 
 	mesh (mesh)
 {
 }
@@ -68,15 +71,9 @@ step (double dt, PhysicSimulation *ps)
 	WorldHeat *worldHeat = dynamic_cast<WorldHeat *> (ps);
 	if (worldHeat != NULL) {
 		if (this->switchedOn) {
-			// std::cout << "Setting heat @ " << this->absolutePosition << " to " << this->heat << '\n';
-			// // std::cout << " + ";
-			// // // std::cout << (*(this->mesh));
-			// // // seca (std::cout, *(this->mesh));
-			// // this->mesh->print (std::cout);
-			// // // std::cout << *mesh;
-			// // std::cout << "\n";
+			double value = this->getRealHeat (dt, worldHeat);
 			for (int i = this->mesh->size () - 1; i >= 0; i--) {
-				worldHeat->setHeatAt (this->absolutePosition + (*(this->mesh)) [i], this->heat);
+				worldHeat->setHeatAt (this->absolutePosition + (*(this->mesh)) [i], value);
 			}
 		}
 	}

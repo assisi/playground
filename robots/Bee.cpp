@@ -30,6 +30,8 @@ namespace Enki
         object_sensors(5),
         color_r_(0.93), color_g_(0.79), color_b_(0)
     {
+		 collisionElasticity = 0.1;
+		 dryFrictionCoefficient=0.25;
         // Set shape & color
 
         double len = 1.35; // Body length

@@ -8,11 +8,10 @@
 
 namespace Enki
 {
-	AssisiPlayground::AssisiPlayground (ExtendedWorld *world, WorldHeat *worldHeat, double maxHeat, double maxVibration, QWidget *parent) :
+	AssisiPlayground::AssisiPlayground (ExtendedWorld *world, WorldHeat *worldHeat, double maxVibration, QWidget *parent) :
 		ViewerWidget(world, parent),
 		extendedWorld (world),
 		worldHeat (worldHeat),
-		maxHeat (maxHeat),
 		maxVibration (maxVibration),
 		layerToDraw (NONE),
 		transparency (0.5),
@@ -45,6 +44,11 @@ namespace Enki
 }
 
 using namespace Enki;
+
+const double AssisiPlayground::MAX_HEAT = 50;
+const double AssisiPlayground::MIN_HEAT = 25;
+const int AssisiPlayground::NUMBER_HEAT_TICS = 9;
+
 
 /* virtual */
 void AssisiPlayground::sceneCompletedHook()
@@ -93,6 +97,40 @@ void AssisiPlayground::sceneCompletedHook()
 		renderText(10, height()-30, tr("move camera on x/y by moving mouse while pressing ctrl+shift+left mouse button"));
 		renderText(10, height()-10, tr("move camera on z by moving mouse while pressing ctrl+shift+right mouse button"));
 	}
+	glColor3d (0, 0, 0);
+	char time[1000];
+	sprintf (time, "time %6.1f", ((ExtendedWorld *) this->world)->getAbsoluteTime ());
+	renderText (10, height () - 10, tr (time));
+}
+
+void AssisiPlayground::heatToColour (double heat)
+{
+	float red, green, blue;
+	heatToColour (heat, red, green, blue);
+	glColor3f (red, green, blue);
+}
+
+void AssisiPlayground::heatToColour (double heat, float &red, float &green, float &blue)
+{
+	double CUT_HEAT = 40;
+	if (heat > CUT_HEAT) {
+		blue = 0;
+			// (AssisiPlayground::MAX_HEAT - heat)
+			// / (AssisiPlayground::MAX_HEAT - CUT_HEAT);
+		green =
+			(heat - CUT_HEAT)
+			/ (AssisiPlayground::MAX_HEAT - CUT_HEAT);
+		red = 1;
+	}
+	else {
+		red =
+			(heat - AssisiPlayground::MIN_HEAT)
+			/ (CUT_HEAT - AssisiPlayground::MIN_HEAT);
+		green = 0;
+		blue =
+			(CUT_HEAT - heat)
+			/ (CUT_HEAT - AssisiPlayground::MIN_HEAT);
+	}
 }
 
 void AssisiPlayground::drawHeatLegend ()
@@ -111,19 +149,17 @@ void AssisiPlayground::drawHeatLegend ()
 	glPushAttrib (GL_DEPTH_TEST);
 	glDisable (GL_DEPTH_TEST);
 
-	glTranslated (1, this->height () - 12 * 22, 0);
-	for (i = -10; i <= 10; i++) {
-		double heat = this->worldHeat->normalHeat + i * (this->maxHeat - this->worldHeat->normalHeat) / 10;
+	glTranslated (1, this->height () - 12 * (AssisiPlayground::NUMBER_HEAT_TICS + 1), 0);
+	for (i = 0; i < AssisiPlayground::NUMBER_HEAT_TICS; i++) {
+		double heat =
+			AssisiPlayground::MIN_HEAT
+			+ i * (AssisiPlayground::MAX_HEAT - AssisiPlayground::MIN_HEAT)
+			/ (AssisiPlayground::NUMBER_HEAT_TICS - 1);
 		sprintf (label, "%4.1f", heat);
 		glColor3f (0, 0, 0);
-		renderText (12, (11 - i) * 12, label);
+		renderText (12, (AssisiPlayground::NUMBER_HEAT_TICS - i) * 12, label);
 		glTranslated (0, 12, 0);
-		if (i < 0) {
-			glColor3f (0, 0, -i / 10.0);
-		}
-		else {
-			glColor3f (i / 10.0, 0, 0);
-		}
+		heatToColour (heat);
 		glBegin (GL_QUADS); {
 			glVertex2f ( 0,  0);
 			glVertex2f (10,  0);
@@ -171,18 +207,8 @@ void AssisiPlayground::setDataToHeat ()
 		where.y = -this->world->r + this->worldHeat->gridScale;
 		for (pos.y = 0; pos.y < this->dataSize.y; pos.y++) {
 			double heat = this->worldHeat->getHeatAt (where);
-			double colour = std::max (-1.0, std::min ((heat - this->worldHeat->normalHeat) / this->maxHeat, 1.0));
 			std::vector<float> &dc = this->dataColour [pos.x][pos.y];
-			if (colour < 0) {
-				dc [0] = 0;
-				dc [1] = 0;
-				dc [2] = -colour;
-			}
-			else {
-				dc [0] = colour;
-				dc [1] = 0;
-				dc [2] = 0;
-			}
+			heatToColour (heat, dc [0], dc [1], dc [2]);
 			where.y += this->worldHeat->gridScale;
 		}
 		where.x += this->worldHeat->gridScale;

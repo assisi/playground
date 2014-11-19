@@ -125,6 +125,18 @@ namespace Enki
 #endif
 		}
 
+		/**
+		 * Fill the grid with the given value.
+		 */
+		void fillGrid (T value)
+		{
+			for (int x = this->size.x - 1; x >= 0; x--) {
+				for (int y = this->size.y - 1; y >= 0; y--) {
+					this->grid [this->adtIndex][x][y] = value;
+				}
+			}
+		}
+
 	protected:
 		void toIndex (const Enki::Vector& position, int &x, int &y) const
 		{

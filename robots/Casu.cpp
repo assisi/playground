@@ -53,7 +53,12 @@ namespace Enki
     const Vector Casu::TEMP_SENS_WEST_POS = Vector(0.0,2.5);
     const Vector Casu::TEMP_SENS_CENTER_POS = Vector(0.0,0.0);
 
-Casu::Casu(World* world) :
+	/* peltier's parameters and configuration */
+	const Vector Casu::PELTIER_POSITION = Vector (0, 0);
+	/*const*/ double Casu::PELTIER_THERMAL_RESPONSE = 0.3;
+
+
+	Casu::Casu(World* world, double ambientTemperature) :
     world_(world),
     range_sensors(6),
 	 vibration_sensors (Casu::NUMBER_VIBRATION_SENSORS),
@@ -132,7 +137,10 @@ Casu::Casu(World* world) :
 
     // Add peltier actuator
 	 // TODO: make peltier parameters CASU constants
-    peltier = new HeatActuatorMesh (this, Vector(0,0), 23, PointMesh::makeCircumferenceMesh (1.6, 16));
+    peltier = new HeatActuatorMesh
+		 (this, Vector(0,0),
+		  PELTIER_THERMAL_RESPONSE, ambientTemperature,
+		  PointMesh::makeCircumferenceMesh (1.6, 16));
     this->addPhysicInteraction(this->peltier);
 
 	 // Add vibration actuator

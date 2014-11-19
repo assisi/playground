@@ -23,10 +23,25 @@ namespace Enki
 	public:
 		const double minMeasurableHeat;
 		const double maxMeasurableHeat;
+		/**
+		 * How fast does this sensor responds to environmental changes to
+		 * temperature.  This attribute is used with conjunction with the
+		 * delta time parameter of {@code step(double,PhysicSimulation*)}
+		 * method.  The thermal response used is
+		 *
+		 * <code>thermalResponseTime * dt</code>
+		 *
+		 * This value should be less than one.
+		 */
+		const double thermalResponseTime;
 	public:
 		HeatSensor (
-			Enki::Robot* owner,
-			Enki::Vector relativePosition,
+			Enki::Robot* owner, Enki::Vector relativePosition,
+			double minMeasurableHeat, double maxMeasurableHeat,
+			double thermalResponseTime,
+			double ambientTemperature);
+		HeatSensor (
+			Enki::Robot* owner, Enki::Vector relativePosition,
 			double minMeasurableHeat, double maxMeasurableHeat);
 		double getMeasuredHeat () const
 		{

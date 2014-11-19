@@ -9,7 +9,6 @@
 
 #include "interactions/VibrationSource.h"
 #include "interactions/NotSimulated.h"
-#include "interactions/WorldHeat.h"
 
 using namespace Enki;
 
