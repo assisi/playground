@@ -27,6 +27,7 @@ namespace Enki
 	class ExtendedWorld:
 		public World
 	{
+	protected:
 		typedef std::vector<PhysicSimulation *> PhysicSimulations;
 		typedef PhysicSimulations::iterator PhysicSimulationsIterator;
 		//! Vector of physic simulations.
