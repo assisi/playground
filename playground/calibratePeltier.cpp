@@ -29,9 +29,11 @@ int main (int argc, char *argv[])
 		<< ".txt";
 	std::ofstream log (filename.str ().c_str ());
 	const int NUM = 5;
-	double setPoints[] = {42.1493, 32.273,  37.7843, 31.4044, 33.8716};
+	// double setPoints[] = {42.1493, 32.273,  37.7843, 31.4044, 33.8716};
+	double setPoints[] = {42, 26,  38, 30, 34};
 	int interval[] =     {1217.39, 2409.32, 3606.27, 4823.35, 6005.22};
 	int index = 0;
+
 	casu->peltier->setHeat (setPoints [index]);
 	while (index < NUM) {
 		world->step (timerPeriodSec);
