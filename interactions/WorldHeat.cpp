@@ -12,6 +12,8 @@ WorldHeat::
 WorldHeat (double normalHeat, double gridScale, double borderSize):
 	AbstractGridSimulation (gridScale, borderSize),
 	normalHeat (normalHeat),
+	logStream (NULL),
+	relativeTime (0),
 	// gridScale is in centimetres
 	maxDeltaTime ((gridScale / 100) * (gridScale / 100) / WorldHeat::THERMAL_DIFFUSIVITY_COPPER)
 {
@@ -53,6 +55,10 @@ initStateComputing (double deltaTime)
 void WorldHeat::
 computeNextState (double deltaTime)
 {
+	this->relativeTime += deltaTime;
+	if (this->logStream != NULL) {
+		dumpState (*this->logStream);
+	}
 	int nextAdtIndex = 1 - this->adtIndex;
 	double factor =
 		deltaTime
@@ -107,6 +113,7 @@ dumpState (ostream &os)
 	os << '\n';
 #endif
 // #ifdef DUMP_LINE
+	os << this->relativeTime;
 	for (int y = 1; y < this->size.y - 1; y++) {
 		for (int x = 1; x < this->size.x - 1; x++) {
 			os << '\t' << this->grid [this->adtIndex][x][y];
