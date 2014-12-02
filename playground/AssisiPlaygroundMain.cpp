@@ -60,7 +60,10 @@ int main(int argc, char *argv[])
     // Variables to store the options
     int r;
     string config_file_name("Playground.cfg");
-	 string heat_log_file_name;
+	// Create the world and the viewer
+    string pub_address("tcp://*:5555"); 
+    string sub_address("tcp://*:5556");
+    string heat_log_file_name;
     double heat_scale;
     int heat_border_size;
 
@@ -73,6 +76,12 @@ int main(int argc, char *argv[])
         ("config_file,c", 
          po::value<string>(&config_file_name)->default_value("Playground.cfg"),
          "configuration file name")
+        ("pub_addr",
+         po::value<string>(&pub_address)->default_value("tcp://*:5555"),
+         "Address for publishing data, in the form tcp://hostname:port")
+        ("sub_addr",
+         po::value<string>(&sub_address)->default_value("tcp://*:5556"),
+         "Address for subscribing to commands, in the form tcp://hostname:port")
         ("Arena.radius,r", po::value<int>(&r), 
          "playground radius, in cm")
         ("Heat.env_temp,t", po::value<double>(&env_temp), 
@@ -145,10 +154,6 @@ int main(int argc, char *argv[])
         cout << desc << endl;
         return 1;
     }
-
-	// Create the world and the viewer
-    string pub_address("tcp://*:5555"); 
-    string sub_address("tcp://*:5556");
 
     //QImage texture("playground/world.png");
     QImage texture(QString(":/textures/ground_grayscale.png"));
