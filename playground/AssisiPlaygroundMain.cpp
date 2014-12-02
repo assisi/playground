@@ -52,13 +52,14 @@ int main(int argc, char *argv[])
     // Variables to store the options
     int r;
     string config_file_name("Playground.cfg");
+	 string heat_log_file_name;
     double heat_scale;
     int heat_border_size;
 
     double maxVibration;
 
     desc.add_options
-        ()
+		 ()
         ("help,h", "produce help message")
         ("nogui", "run without viewer")
         ("config_file,c", 
@@ -76,6 +77,11 @@ int main(int argc, char *argv[])
           po::value<double> (&Casu::VIBRATION_SOURCE_RANGE),
           "vibration range, in cm"
           )
+		(
+		 "Heat.log_file",
+		 po::value<string> (&heat_log_file_name)->default_value (""),
+		 "heat log file name"
+		 )
         (
          "Vibration.maximum_amplitude", 
          po::value<double> (&Casu::VIBRATION_SOURCE_MAXIMUM_AMPLITUDE),
@@ -143,6 +149,9 @@ int main(int argc, char *argv[])
 			(const uint32_t*) texture.constBits ()));
 
 	WorldHeat *heatModel = new WorldHeat(env_temp, heat_scale, heat_border_size);
+	if (heat_log_file_name != "") {
+		heatModel->logToStream (heat_log_file_name);
+	}
 	world->addPhysicSimulation(heatModel);
 
 	CasuHandler *ch = new CasuHandler();

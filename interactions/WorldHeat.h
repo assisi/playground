@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <iostream>
+#include <fstream>
+#include <string>
 
 #include "extensions/ExtendedWorld.h"
 #include "extensions/PhysicSimulation.h"
@@ -25,6 +27,15 @@ namespace Enki
 		 * Maximum admissible delta time when computing the next state.
 		 */
 		const double maxDeltaTime;
+		/**
+		 * Output stream where heat information is logged.
+		 */
+		std::ostream *logStream;
+		/**
+		 * How much time has passed since the simulation started.  Unit is
+		 * simulation time.
+		 */
+		double relativeTime;
 	public:
 		/**
 		 * Normal environmental heat used to compute heat at world borders.
@@ -76,6 +87,30 @@ namespace Enki
 		// virtual void handleObjectSense (PhysicalObject *po);
 
 		void dumpState (std::ostream &os);
+
+		/**
+		 * Turn on heat log.  The heat grid will be written to the given output
+		 * stream.
+		 */
+		void logToStream (std::string fileName)
+		{
+			if (this->logStream != NULL) {
+				// this->logStream->close ();
+				delete this->logStream;
+			}
+			this->logStream = new std::ofstream (
+				fileName.c_str (),
+				std::ofstream::out | std::ofstream::trunc);
+		}
+
+		void turnOffLog ()
+		{
+			if (this->logStream != NULL) {
+				// this->logStream->close ();
+				delete this->logStream;
+			}
+			this->logStream = NULL;
+		}
 
 	protected:
 		/**
