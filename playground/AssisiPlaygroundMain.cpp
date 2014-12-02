@@ -34,7 +34,15 @@ namespace Enki {
 }
 static WorldExt *world;
 
+/**
+ * Timer period used in the headless simulation mode.
+ */
 static double timerPeriodSec = 1;
+
+/**
+ * Speed up factor used in the headless simulation mode.
+ */
+static double speedupFactor = 1.0;
 
 /**
  * Function assigned to SIGALRM signal.
@@ -113,11 +121,17 @@ int main(int argc, char *argv[])
 		  "simulation timer period (in seconds)"
 		  )
 		 (
+		  "Simulation.speedup_factor",
+		  po::value<double> (&speedupFactor),
+		  "simulation speedup factor (in seconds)"
+		  )
+		 (
 		  "Bee.scale_factor",
 		  po::value<double> (&Bee::SCALE_FACTOR),
 		  "bee scale factor"
 		  )
         ;
+	 speedupFactor = max (speedupFactor, 1.0);
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -203,5 +217,5 @@ int main(int argc, char *argv[])
 
 void progress (int dummy)
 {
-	world->step (timerPeriodSec);
+	world->step (speedupFactor * timerPeriodSec);
 }
