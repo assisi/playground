@@ -26,6 +26,8 @@ int main (int argc, char *argv[])
 		<< timerPeriodSec
 		<< "_thermal-response="
 		<< Casu::PELTIER_THERMAL_RESPONSE
+		<< "_world_temperature="
+		<< env_temp
 		<< ".txt";
 	std::ofstream log (filename.str ().c_str ());
 	const int NUM = 5;
