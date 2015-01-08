@@ -22,11 +22,11 @@ int main (int argc, char *argv[])
 	ostringstream filename;
 	filename
 		<< "log"
-		<< "_timer_period="
+		<< "_timer-period="
 		<< timerPeriodSec
 		<< "_thermal-response="
 		<< Casu::PELTIER_THERMAL_RESPONSE
-		<< "_world_temperature="
+		<< "_world-temperature="
 		<< env_temp
 		<< ".txt";
 	std::ofstream log (filename.str ().c_str ());
