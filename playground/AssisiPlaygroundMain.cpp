@@ -140,7 +140,6 @@ int main(int argc, char *argv[])
 		  "bee scale factor"
 		  )
         ;
-	 speedupFactor = max (speedupFactor, 1.0);
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
