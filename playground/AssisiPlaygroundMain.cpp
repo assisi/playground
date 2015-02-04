@@ -143,9 +143,12 @@ int main(int argc, char *argv[])
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
+    po::notify(vm);
+    // here we read the config file, so it seems crucial that notify is executed first
     ifstream config_file(config_file_name.c_str(), std::ifstream::in);
     po::store(po::parse_config_file(config_file, desc), vm);
     config_file.close();
+	// not clear what the consequences of >1 notify call are, but no issues noticed
     po::notify(vm);
 
     if (vm.count("help"))
