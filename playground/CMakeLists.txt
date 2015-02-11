@@ -13,6 +13,8 @@ find_package(ZeroMQ REQUIRED)
 # boost::for_each is used within WorldExt
 find_package(Boost REQUIRED)
 find_package(Boost COMPONENTS program_options REQUIRED)
+find_package(Boost COMPONENTS filesystem REQUIRED)
+find_package(Boost COMPONENTS system REQUIRED)
 
 # Set up compilation of protobuffer files
 find_package(Protobuf REQUIRED)
