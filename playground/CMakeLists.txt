@@ -7,10 +7,10 @@ find_library(enki_LIBRARY enki)
 find_library(enkiviewer_LIBRARY enkiviewer)
 set(enki_LIBRARIES ${enki_LIBRARY} ${enkiviewer_LIBRARY})
 
+find_package(Threads)
 
 find_package(ZeroMQ REQUIRED)
 
-# boost::for_each is used within WorldExt
 find_package(Boost COMPONENTS program_options filesystem system REQUIRED)
 
 # Set up compilation of protobuffer files
@@ -114,7 +114,8 @@ target_link_libraries(assisi_playground ${enki_LIBRARIES}
                                         ${OPENGL_LIBRARIES} 
                                         ${ZeroMQ_LIBRARY}
                                         ${PROTOBUF_LIBRARY}
-                                        ${Boost_LIBRARIES})
+                                        ${Boost_LIBRARIES}
+                                        ${CMAKE_THREAD_LIBS_INIT})
 
 # Copy config files to binary dir
 configure_file(Playground.cfg Playground.cfg COPYONLY)
