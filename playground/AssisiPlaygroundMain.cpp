@@ -209,11 +209,24 @@ int main(int argc, char *argv[])
 		setitimer (ITIMER_REAL, &value, NULL);
 		/* block on a semaphore */
 		sem_t block;
-		sem_init (&block, 0, 0);
 		int ret;
 		do {
-			ret = sem_wait (&block);
-		} while (ret == -1 && errno == EINTR);
+			ret = sem_init (&block, 0, 0);
+			if (ret != 0) {
+				printf ("errno=%d\n", errno);
+				perror ("initialisation of playground semaphore");
+				return 1;
+			}
+		} while (ret == -1 && errno == EAGAIN);
+		do {
+			do {
+				ret = sem_wait (&block);
+			} while (ret == -1 && errno == EINTR);
+			if (ret != 0) {
+				printf ("errno=%d\n", errno);
+				perror ("playground blocking semaphore");
+			}
+		} while (ret == -1 && errno == EAGAIN);
 		cout << "Simulator finished\n";
 		return 0;
 	}

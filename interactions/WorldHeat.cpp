@@ -60,21 +60,22 @@ computeNextState (double deltaTime)
 		dumpState (*this->logStream);
 	}
 	int nextAdtIndex = 1 - this->adtIndex;
-	double factor =
-		deltaTime
-		/ this->maxDeltaTime
-		/ 4
+	// double factor =
+	// 	deltaTime
+	// 	/ this->maxDeltaTime
+	// 	/ 4
+	// 	;
+	double factor = 
+		WorldHeat::THERMAL_DIFFUSIVITY_COPPER
+		* deltaTime
+		/ (this->gridScale / 100) // gridScale is in centimetres
+		/ (this->gridScale / 100) // gridScale is in centimetres
 		;
 	static bool first = true;
 	if (factor > 0.25 && first) {
 		first = false;
 		cout << "Factor is " << factor << '\n';
 	}
-	// double factor = 
-	// 	WorldHeat::THERMAL_DIFFUSIVITY_AIR
-	// 	* deltaTime
-	// 	/ (this->gridScale / 100) // gridScale is in centimetres
-	// 	/ 4.0;
 	// to avoid overshooting
 	factor = std::min (factor, 0.25);
 	for (int x = 1; x < this->size.x - 1; x++) {
