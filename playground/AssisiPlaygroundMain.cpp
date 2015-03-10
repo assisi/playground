@@ -32,14 +32,35 @@ namespace po = boost::program_options;
 namespace Enki {
 	double env_temp;
 }
+
 static WorldExt *world;
 
+/**
+ * Heat model used by ASSISIbf playground
+ */
+static WorldHeat *heatModel;
+
+/**
+ * Timer period used in the headless simulation mode.
+ */
 static double timerPeriodSec = 1;
+
+/**
+ * Speed up factor used in the headless simulation mode.
+ */
+static double speedupFactor = 1.0;
+
+static sem_t block;
 
 /**
  * Function assigned to SIGALRM signal.
  */
 void progress (int dummy);
+
+/**
+ * Function assigned to SIGQUIT signal.
+ */
+void finish (int dummy);
 
 int main(int argc, char *argv[])
 {
@@ -113,6 +134,11 @@ int main(int argc, char *argv[])
 		  "simulation timer period (in seconds)"
 		  )
 		 (
+		  "Simulation.speedup_factor",
+		  po::value<double> (&speedupFactor),
+		  "simulation speedup factor (in seconds)"
+		  )
+		 (
 		  "Bee.scale_factor",
 		  po::value<double> (&Bee::SCALE_FACTOR),
 		  "bee scale factor"
@@ -148,7 +174,7 @@ int main(int argc, char *argv[])
 			texture.height(),
 			(const uint32_t*) texture.constBits ()));
 
-	WorldHeat *heatModel = new WorldHeat(env_temp, heat_scale, heat_border_size);
+	heatModel = new WorldHeat (env_temp, heat_scale, heat_border_size);
 	if (heat_log_file_name != "") {
 		heatModel->logToStream (heat_log_file_name);
 	}
@@ -172,6 +198,14 @@ int main(int argc, char *argv[])
 		return app.exec();
 	}
 	else {
+		/* set up the action for control-C */
+		struct sigaction saFinish;
+		saFinish.sa_handler = finish;
+		saFinish.sa_flags = 0;
+		sigaction (SIGQUIT, &saFinish, 0);
+		sigaction (SIGINT, &saFinish, 0);
+		sigaction (SIGTERM, &saFinish, 0);
+
 		/* set up the action for alarm */
 		struct sigaction saProgresso;
 		saProgresso.sa_handler = progress;
@@ -189,19 +223,49 @@ int main(int argc, char *argv[])
 		value.it_value.tv_sec = 1;
 		value.it_value.tv_usec = 0;
 		setitimer (ITIMER_REAL, &value, NULL);
-		/* block on a semaphore */
-		sem_t block;
-		sem_init (&block, 0, 0);
+		/* initialise blocking a semaphore */
 		int ret;
 		do {
-			ret = sem_wait (&block);
-		} while (ret == -1 && errno == EINTR);
-		cout << "Simulator finished\n";
+			ret = sem_init (&block, 0, 0);
+			if (ret != 0) {
+				printf ("errno=%d\n", errno);
+				perror ("initialisation of playground semaphore");
+				return 1;
+			}
+		} while (ret == -1 && errno == EAGAIN);
+		/* block on a semaphore */
+		do {
+			do {
+				ret = sem_wait (&block);
+			} while (ret == -1 && errno == EINTR);
+			if (ret != 0) {
+				printf ("errno=%d\n", errno);
+				perror ("playground blocking semaphore");
+			}
+		} while (ret == -1 && errno == EAGAIN);
+		/* disable timer */
+		value.it_interval.tv_sec = 0;
+		value.it_interval.tv_usec = 0;
+		value.it_value.tv_sec = 0;
+		value.it_value.tv_usec = 0;
+		setitimer (ITIMER_REAL, &value, NULL);
+		/* clean up */
+		delete world;
+		delete heatModel;
+		cout << "Simulator finished CORRECTLY!!!\n";
 		return 0;
 	}
 }
 
 void progress (int dummy)
 {
-	world->step (timerPeriodSec);
+	world->step (speedupFactor * timerPeriodSec);
+}
+
+void finish (int dummy)
+{
+	cout << "Received signal " << dummy << "\n";
+	if (sem_post (&block) == -1) {
+		perror ("Error unlocking blocking semaphore");
+	}
 }

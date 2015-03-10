@@ -19,6 +19,16 @@ WorldHeat (double normalHeat, double gridScale, double borderSize):
 {
 }
 
+WorldHeat::
+~WorldHeat ()
+{
+	if (this->logStream != NULL) {
+		cout << "Closing heat log\n";
+		this->logStream->flush ();
+		delete this->logStream;
+	}
+}
+
 double WorldHeat::getHeatAt (const Vector &pos) const
 {
 	int x, y;
@@ -60,21 +70,17 @@ computeNextState (double deltaTime)
 		dumpState (*this->logStream);
 	}
 	int nextAdtIndex = 1 - this->adtIndex;
-	double factor =
-		deltaTime
-		/ this->maxDeltaTime
-		/ 4
+	double factor = 
+		WorldHeat::THERMAL_DIFFUSIVITY_COPPER
+		* deltaTime
+		/ (this->gridScale / 100) // gridScale is in centimetres
+		/ (this->gridScale / 100) // gridScale is in centimetres
 		;
 	static bool first = true;
 	if (factor > 0.25 && first) {
 		first = false;
 		cout << "Factor is " << factor << '\n';
 	}
-	// double factor = 
-	// 	WorldHeat::THERMAL_DIFFUSIVITY_AIR
-	// 	* deltaTime
-	// 	/ (this->gridScale / 100) // gridScale is in centimetres
-	// 	/ 4.0;
 	// to avoid overshooting
 	factor = std::min (factor, 0.25);
 	for (int x = 1; x < this->size.x - 1; x++) {
@@ -89,9 +95,6 @@ computeNextState (double deltaTime)
 				)
 				* factor
 				;
-			// if (this->grid [this->adtIndex][x][y] == 30) {
-			// 	cout << deltaHeat << '\n';
-			// }
 			this->grid [nextAdtIndex][x][y] =
 				this->grid [this->adtIndex][x][y] + deltaHeat;
 		}

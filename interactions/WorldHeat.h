@@ -30,7 +30,7 @@ namespace Enki
 		/**
 		 * Output stream where heat information is logged.
 		 */
-		std::ostream *logStream;
+		std::ofstream *logStream;
 		/**
 		 * How much time has passed since the simulation started.  Unit is
 		 * simulation time.
@@ -52,7 +52,7 @@ namespace Enki
 
 	public:
 		WorldHeat (double normalHeat, double gridScale, double borderSize);
-		virtual ~WorldHeat () {}
+		virtual ~WorldHeat ();
 
 		double getHeatAt (const Vector &pos) const;
 		void setHeatAt (const Vector &pos, double value);
@@ -95,7 +95,7 @@ namespace Enki
 		void logToStream (std::string fileName)
 		{
 			if (this->logStream != NULL) {
-				// this->logStream->close ();
+				this->logStream->flush ();
 				delete this->logStream;
 			}
 			this->logStream = new std::ofstream (
