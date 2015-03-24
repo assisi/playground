@@ -52,7 +52,11 @@ static double timerPeriodSec = 0.001;
  */
 static double speedupFactor = 1.0;
 
-static sem_t block;
+// static sem_t block;
+
+#define PHYSICS_OVERSAMPLING 3
+
+static bool go = true;
 
 /**
  * Function assigned to SIGALRM signal.
@@ -215,7 +219,7 @@ int main(int argc, char *argv[])
 		return app.exec();
 	}
 	else {
-		if (!heatModel->validParameters (speedupFactor * timerPeriodSec)) {
+		if (!heatModel->validParameters (timerPeriodSec)) {
 			cerr << "Parameters of heat model are not valid!\nExiting.\n";
 			return 1;
 		}
@@ -226,50 +230,73 @@ int main(int argc, char *argv[])
 		sigaction (SIGQUIT, &saFinish, 0);
 		sigaction (SIGINT, &saFinish, 0);
 		sigaction (SIGTERM, &saFinish, 0);
-
-		/* set up the action for alarm */
-		struct sigaction saProgresso;
-		saProgresso.sa_handler = progress;
-		saProgresso.sa_flags = 0;
-		sigaction (SIGALRM, &saProgresso, 0);
-		/* set up timer */
-		struct itimerval value;
-		timerPeriodSec = fabs (timerPeriodSec);
-		value.it_interval.tv_sec = timerPeriodSec;
-		long usec = timerPeriodSec * 1000000;
-		while (usec > 999999) {
-			usec -= 1000000;
+		/* main loop */
+		while (go) {
+			world->step (timerPeriodSec, PHYSICS_OVERSAMPLING);
+			if (usleep (speedupFactor) == -1) {
+				if (errno == EINTR) {
+					break;
+				}
+			}
 		}
-		value.it_interval.tv_usec = usec;
-		value.it_value.tv_sec = 1;
-		value.it_value.tv_usec = 0;
-		setitimer (ITIMER_REAL, &value, NULL);
-		/* initialise blocking a semaphore */
-		int ret;
-		do {
-			ret = sem_init (&block, 0, 0);
-			if (ret != 0) {
-				printf ("errno=%d\n", errno);
-				perror ("initialisation of playground semaphore");
-				return 1;
-			}
-		} while (ret == -1 && errno == EAGAIN);
-		/* block on a semaphore */
-		do {
-			do {
-				ret = sem_wait (&block);
-			} while (ret == -1 && errno == EINTR);
-			if (ret != 0) {
-				printf ("errno=%d\n", errno);
-				perror ("playground blocking semaphore");
-			}
-		} while (ret == -1 && errno == EAGAIN);
-		/* disable timer */
-		value.it_interval.tv_sec = 0;
-		value.it_interval.tv_usec = 0;
-		value.it_value.tv_sec = 0;
-		value.it_value.tv_usec = 0;
-		setitimer (ITIMER_REAL, &value, NULL);
+
+
+		// if (!heatModel->validParameters (speedupFactor * timerPeriodSec)) {
+		// 	cerr << "Parameters of heat model are not valid!\nExiting.\n";
+		// 	return 1;
+		// }
+		// /* set up the action for control-C */
+		// struct sigaction saFinish;
+		// saFinish.sa_handler = finish;
+		// saFinish.sa_flags = 0;
+		// sigaction (SIGQUIT, &saFinish, 0);
+		// sigaction (SIGINT, &saFinish, 0);
+		// sigaction (SIGTERM, &saFinish, 0);
+
+		// /* set up the action for alarm */
+		// struct sigaction saProgresso;
+		// saProgresso.sa_handler = progress;
+		// saProgresso.sa_flags = 0;
+		// sigaction (SIGALRM, &saProgresso, 0);
+		// /* set up timer */
+		// struct itimerval value;
+		// timerPeriodSec = fabs (timerPeriodSec);
+		// value.it_interval.tv_sec = timerPeriodSec;
+		// long usec = timerPeriodSec * 1000000;
+		// while (usec > 999999) {
+		// 	usec -= 1000000;
+		// }
+		// value.it_interval.tv_usec = usec;
+		// value.it_value.tv_sec = 1;
+		// value.it_value.tv_usec = 0;
+		// setitimer (ITIMER_REAL, &value, NULL);
+		// /* initialise blocking a semaphore */
+		// int ret;
+		// do {
+		// 	ret = sem_init (&block, 0, 0);
+		// 	if (ret != 0) {
+		// 		printf ("errno=%d\n", errno);
+		// 		perror ("initialisation of playground semaphore");
+		// 		return 1;
+		// 	}
+		// } while (ret == -1 && errno == EAGAIN);
+		// /* block on a semaphore */
+		// do {
+		// 	do {
+		// 		ret = sem_wait (&block);
+		// 	} while (ret == -1 && errno == EINTR);
+		// 	if (ret != 0) {
+		// 		printf ("errno=%d\n", errno);
+		// 		perror ("playground blocking semaphore");
+		// 	}
+		// } while (ret == -1 && errno == EAGAIN);
+		// /* disable timer */
+		// value.it_interval.tv_sec = 0;
+		// value.it_interval.tv_usec = 0;
+		// value.it_value.tv_sec = 0;
+		// value.it_value.tv_usec = 0;
+		// setitimer (ITIMER_REAL, &value, NULL);
+
 		/* clean up */
 		delete world;
 		delete heatModel;
@@ -280,13 +307,14 @@ int main(int argc, char *argv[])
 
 void progress (int dummy)
 {
-	world->step (speedupFactor * timerPeriodSec);
+	world->step (speedupFactor * timerPeriodSec, PHYSICS_OVERSAMPLING);
 }
 
 void finish (int dummy)
 {
 	cout << "Received signal " << dummy << "\n";
-	if (sem_post (&block) == -1) {
-		perror ("Error unlocking blocking semaphore");
-	}
+	go = false;
+	// if (sem_post (&block) == -1) {
+	// 	perror ("Error unlocking blocking semaphore");
+	// }
 }
