@@ -55,11 +55,6 @@ static double speedupFactor = 1.0;
 static sem_t block;
 
 /**
- * Speed up factor used in the headless simulation mode.
- */
-static double speedupFactor = 1.0;
-
-/**
  * Function assigned to SIGALRM signal.
  */
 void progress (int dummy);
