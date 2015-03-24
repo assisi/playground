@@ -43,7 +43,7 @@ static WorldHeat *heatModel;
 /**
  * Timer period used in the headless simulation mode.
  */
-static double timerPeriodSec = 1;
+static double timerPeriodSec = 0.001;
 
 /**
  * Speed up factor used in the headless simulation mode.
@@ -192,12 +192,20 @@ int main(int argc, char *argv[])
 	if (vm.count ("nogui") == 0) {
 		QApplication app(argc, argv);
 
-		AssisiPlayground viewer (world, heatModel, maxVibration);	
+		AssisiPlayground viewer (world, heatModel, maxVibration);
+		if (!heatModel->validParameters (viewer.timerPeriodMs / 1000.)) {
+			cerr << "Parameters of heat model are not valid!\nExiting.\n";
+			return 1;
+		}
 		viewer.show ();
 	
 		return app.exec();
 	}
 	else {
+		if (!heatModel->validParameters (speedupFactor * timerPeriodSec)) {
+			cerr << "Parameters of heat model are not valid!\nExiting.\n";
+			return 1;
+		}
 		/* set up the action for control-C */
 		struct sigaction saFinish;
 		saFinish.sa_handler = finish;
