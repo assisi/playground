@@ -6,6 +6,7 @@
 #include <QImage>
 
 #include <boost/program_options.hpp>
+#include <boost/filesystem.hpp>
 
 #include "WorldExt.h"
 #include "AssisiPlayground.h"
@@ -28,6 +29,7 @@ using namespace std;
 using namespace Enki;
 
 namespace po = boost::program_options;
+namespace fs = boost::filesystem;
 
 namespace Enki {
 	double env_temp;
@@ -69,12 +71,15 @@ int main(int argc, char *argv[])
 
     double maxVibration;
 
+    fs::path default_config = fs::read_symlink(fs::path("/proc/self/exe"));
+    default_config.remove_filename() /= "Playground.cfg";
+
     desc.add_options
 		 ()
         ("help,h", "produce help message")
         ("nogui", "run without viewer")
         ("config_file,c", 
-         po::value<string>(&config_file_name)->default_value("Playground.cfg"),
+         po::value<string>(&config_file_name)->default_value(default_config.native()),
          "configuration file name")
         ("pub_addr",
          po::value<string>(&pub_address)->default_value("tcp://*:5555"),
@@ -143,9 +148,12 @@ int main(int argc, char *argv[])
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
+    po::notify(vm);
+    // here we read the config file, so it seems crucial that notify is executed first
     ifstream config_file(config_file_name.c_str(), std::ifstream::in);
     po::store(po::parse_config_file(config_file, desc), vm);
     config_file.close();
+	// not clear what the consequences of >1 notify call are, but no issues noticed
     po::notify(vm);
 
     if (vm.count("help"))
