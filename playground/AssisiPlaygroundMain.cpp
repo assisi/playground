@@ -284,6 +284,7 @@ int runTimer ()
 	struct sigaction saFinish;
 	saFinish.sa_handler = finishTimer;
 	saFinish.sa_flags = 0;
+	sigaction (SIGHUP, &saFinish, 0);
 	sigaction (SIGQUIT, &saFinish, 0);
 	sigaction (SIGINT, &saFinish, 0);
 	sigaction (SIGTERM, &saFinish, 0);
