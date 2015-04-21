@@ -24,13 +24,15 @@ namespace Enki
 		public AbstractGridSimulation<double>
 	{
 		/**
-		 * Maximum admissible delta time when computing the next state.
+		 * Value of alpha without the value of parameter {@code deltaTime}.  Alpha
+		 * is used in the discrete equation that models heat propagation.
+		 * state.
 		 */
-		const double maxDeltaTime;
+		const double partialAlpha;
 		/**
 		 * Output stream where heat information is logged.
 		 */
-		std::ostream *logStream;
+		std::ofstream *logStream;
 		/**
 		 * How much time has passed since the simulation started.  Unit is
 		 * simulation time.
@@ -52,7 +54,16 @@ namespace Enki
 
 	public:
 		WorldHeat (double normalHeat, double gridScale, double borderSize);
-		virtual ~WorldHeat () {}
+		virtual ~WorldHeat ();
+		/**
+		 * Checks if this instance of the heat model combined with the given
+		 * {@code deltaTime} parameter is valid.  A valid set of parameters does
+		 * not cause instability or overshooting in the heat model.
+
+		 * @param deltaTime parameter used in the discrete equation that models
+		 * heat propagation.
+		 */
+		bool validParameters (double deltaTime) const;
 
 		double getHeatAt (const Vector &pos) const;
 		void setHeatAt (const Vector &pos, double value);
@@ -77,8 +88,14 @@ namespace Enki
 		//  * interaction.
 		//  */
 		// virtual void handleObjectAction (const PhysicalObject *po);
+
 		/**
 		 * Computes the next state of this physic interaction.
+		 *
+		 * @param  deltaTime parameter used in the discrete equation that models
+		 * heat propagation.
+		 *
+		 * @pre validParameters(deltaTime)
 		 */
 		virtual void computeNextState (double deltaTime);
 		// /**
@@ -95,7 +112,7 @@ namespace Enki
 		void logToStream (std::string fileName)
 		{
 			if (this->logStream != NULL) {
-				// this->logStream->close ();
+				this->logStream->flush ();
 				delete this->logStream;
 			}
 			this->logStream = new std::ofstream (
