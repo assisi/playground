@@ -13,6 +13,7 @@ namespace Enki
 		extendedWorld (world),
 		worldHeat (worldHeat),
 		maxVibration (maxVibration),
+		MAX_AIR_FLOW (10),
 		layerToDraw (NONE),
 		transparency (0.5),
 		useGradient (false),
@@ -81,6 +82,12 @@ void AssisiPlayground::sceneCompletedHook()
 		else
 			drawVibrationLayer_Chequerboard ();
 		break;
+	case AIR_FLOW:
+		if (this->useGradient)
+			drawAirFlowLayer_Gradient ();
+		else
+			drawAirFlowLayer_Chequerboard ();
+		break;
 	case NONE:
 		break;
 	default:
@@ -91,11 +98,11 @@ void AssisiPlayground::sceneCompletedHook()
 	glEnable (GL_LIGHTING);
 	if (this->showHelp) {
 		glColor3d(0,0,0);
-		renderText (10, height () - 90, tr ("press F1 to toggle this help") );
-		renderText (10, height () - 70, tr ("press H to show heat     press V to show vibration") );
-		renderText(10, height()-50, tr("rotate camera by moving mouse while pressing ctrl+left mouse button"));
-		renderText(10, height()-30, tr("move camera on x/y by moving mouse while pressing ctrl+shift+left mouse button"));
-		renderText(10, height()-10, tr("move camera on z by moving mouse while pressing ctrl+shift+right mouse button"));
+		renderText (10, height () - 120, tr ("press F1 to toggle this help") );
+		renderText (10, height () - 90, tr ("press H to show heat     press V to show vibration       press A to show air flow") );
+		renderText(10, height()-70, tr("rotate camera by moving mouse while pressing ctrl+left mouse button"));
+		renderText(10, height()-50, tr("move camera on x/y by moving mouse while pressing ctrl+shift+left mouse button"));
+		renderText(10, height()-30, tr("move camera on z by moving mouse while pressing ctrl+shift+right mouse button"));
 	}
 	glColor3d (0, 0, 0);
 	char time[1000];
@@ -199,6 +206,18 @@ void AssisiPlayground::drawVibrationLayer_Chequerboard ()
 	drawDataAsCheckerBoard ();
 }
 
+void AssisiPlayground::drawAirFlowLayer_Gradient ()
+{
+	setDataToAirFlow ();
+	drawDataAsGradient ();
+}
+
+void AssisiPlayground::drawAirFlowLayer_Chequerboard ()
+{
+	setDataToAirFlow ();
+	drawDataAsCheckerBoard ();
+}
+
 void AssisiPlayground::setDataToHeat ()
 {
 	Vector pos, where;
@@ -225,6 +244,25 @@ void AssisiPlayground::setDataToVibration ()
 		for (pos.y = 0; pos.y < this->dataSize.y; pos.y++) {
 			double vibration = this->extendedWorld->getVibrationAmplitudeAt (where, time);
 			double colour = std::min (vibration / this->maxVibration, 1.0);
+			std::vector<float> &dc = this->dataColour [pos.x][pos.y];
+			dc [0] = 0;
+			dc [1] = colour;
+			dc [2] = 0;
+			where.y += this->worldHeat->gridScale;
+		}
+		where.x += this->worldHeat->gridScale;
+	}
+}
+
+void AssisiPlayground::setDataToAirFlow ()
+{
+	Vector pos, where;
+	where.x = -this->world->r + this->worldHeat->gridScale;
+	for (pos.x = 0; pos.x < this->dataSize.x; pos.x++) {
+		where.y = -this->world->r + this->worldHeat->gridScale;
+		for (pos.y = 0; pos.y < this->dataSize.y; pos.y++) {
+			double airflow = this->extendedWorld->getAirFlowIntensityAt (where);
+			double colour = std::min (airflow / this->MAX_AIR_FLOW, 1.0);
 			std::vector<float> &dc = this->dataColour [pos.x][pos.y];
 			dc [0] = 0;
 			dc [1] = colour;
@@ -327,6 +365,11 @@ void AssisiPlayground::keyPressEvent (QKeyEvent *event)
 	case Qt::Key_V:
 		qDebug () << "Switching vibration";
 		this->layerToDraw = (this->layerToDraw == VIBRATION ? NONE : VIBRATION);
+		updateGL ();
+		break;
+	case Qt::Key_A:
+		qDebug () << "Switching air flow";
+		this->layerToDraw = (this->layerToDraw == AIR_FLOW ? NONE : AIR_FLOW);
 		updateGL ();
 		break;
 	case Qt::Key_F1:
