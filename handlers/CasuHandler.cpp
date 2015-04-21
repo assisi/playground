@@ -132,9 +132,9 @@ namespace Enki
                 count++;
             }
         }
-		  else if (device == "AirPump")
+		  else if (device == "Airflow")
 		  {
-			  if (command == "intensity")
+			  if (command == "On")
 			  {
 				  Airflow airflow;
 				  assert (airflow.ParseFromString (data));
