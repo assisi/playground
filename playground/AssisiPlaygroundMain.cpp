@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
     // MAC workaround for Thomas
 #if defined __APPLE__
     char * pathbuf = new char[MAXPATHLEN];
-    _NSGetExecutablePath(pathbuf, MAXPATHLEN];
+    _NSGetExecutablePath(pathbuf, MAXPATHLEN);
     default_config = fs::path(pathbuf);
     delete [] pathbuf;
 #elif defined __linux__
