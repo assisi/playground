@@ -132,6 +132,21 @@ namespace Enki
                 count++;
             }
         }
+		  else if (device == "AirPump")
+		  {
+			  if (command == "intensity")
+			  {
+				  Airflow airflow;
+				  assert (airflow.ParseFromString (data));
+				  casus_ [name]->air_pump->setIntensity (airflow.intensity ());
+				  count++;
+			  }
+			  else if (command == "Off")
+			  {
+				  casus_ [name]->air_pump->setIntensity (0);
+				  count++;
+			  }
+		  }
         else
         {
             cerr << "Unknown device " << device << endl;

@@ -168,7 +168,13 @@ namespace Enki
             color.mutable_color()->set_blue(ca.second->color_b_);
             color.SerializeToString(&data);
             send_multipart(socket, ca.first, "Color", "ColorVal", data);
-            
+
+            /* Publish air flow sensor */
+            Airflow airflow;
+				airflow.set_intensity (ca.second->air_flow_sensor->intensity.norm ());
+				airflow.SerializeToString (&data);
+				send_multipart (socket, ca.first, "AirFlow", "Intensity", data);
+
             /* Publish other stuff as necessary */
         }
 
