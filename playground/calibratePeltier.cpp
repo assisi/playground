@@ -22,10 +22,12 @@ int main (int argc, char *argv[])
 	ostringstream filename;
 	filename
 		<< "log"
-		<< "_timer_period="
+		<< "_timer-period="
 		<< timerPeriodSec
 		<< "_thermal-response="
 		<< Casu::PELTIER_THERMAL_RESPONSE
+		<< "_world-temperature="
+		<< env_temp
 		<< ".txt";
 	std::ofstream log (filename.str ().c_str ());
 	const int NUM = 5;
@@ -38,7 +40,7 @@ int main (int argc, char *argv[])
 	while (index < NUM) {
 		world->step (timerPeriodSec);
 		log << world->getAbsoluteTime ();
-		for (int j = 0; j < 4; j++) {
+		for (int j = 0; j < Casu::TEMP_SENS_COUNT; j++) {
 			log << '\t'
 				 << casu->temp_sensors [j]->getMeasuredHeat ();
 		}
@@ -51,48 +53,5 @@ int main (int argc, char *argv[])
 			}
 		}
 	}
-
-	return 0;
-	casu->peltier->setHeat (42);
-	for (int i = 0; i < 12000*3; i++) {
-		world->step (timerPeriodSec);
-		log << world->getAbsoluteTime ();
-		for (int j = 0; j < 4; j++) {
-			log << '\t'
-				 << casu->temp_sensors [j]->getMeasuredHeat ();
-		}
-		log << '\n';
-	}
-	casu->peltier->setHeat (32);
-	for (int i = 0; i < 12000*3; i++) {
-		world->step (timerPeriodSec);
-		log << world->getAbsoluteTime ();
-		for (int j = 0; j < 4; j++) {
-			log << '\t'
-				 << casu->temp_sensors [j]->getMeasuredHeat ();
-		}
-		log << '\n';
-	}
-	casu->peltier->setHeat (37.9);
-	for (int i = 0; i < 12000*3; i++) {
-		world->step (timerPeriodSec);
-		log << world->getAbsoluteTime ();
-		for (int j = 0; j < 4; j++) {
-			log << '\t'
-				 << casu->temp_sensors [j]->getMeasuredHeat ();
-		}
-		log << '\n';
-	}
-	casu->peltier->setHeat (31.7);
-	for (int i = 0; i < 12000*3; i++) {
-		world->step (timerPeriodSec);
-		log << world->getAbsoluteTime ();
-		for (int j = 0; j < 4; j++) {
-			log << '\t'
-				 << casu->temp_sensors [j]->getMeasuredHeat ();
-		}
-		log << '\n';
-	}
-	log.close ();
 	return 0;
 }

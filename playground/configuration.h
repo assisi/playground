@@ -9,8 +9,17 @@ namespace Enki {
 		MODE_NO_VIEWER
 	} Mode;
 
+	/**
+	 * Environmental temperature.  This value is used to initialise the heat
+	 * model.  The heat model is composed of a rectangular grid.  Heat flows from
+	 * hotter grid cells to colder grid cells.  Cells in the border exchange heat
+	 * with the outside world whose temperature is given by this variable.
+	 */
 	extern double env_temp;
 
+	/**
+	 * Arena radius in centimetres.
+	 */
 	extern int radius;
 
 	extern double heat_scale;
