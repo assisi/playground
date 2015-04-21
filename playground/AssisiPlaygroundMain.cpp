@@ -99,9 +99,11 @@ int main(int argc, char *argv[])
     // MAC workaround for Thomas
 #if defined __APPLE__
     char * pathbuf = new char[MAXPATHLEN];
-    _NSGetExecutablePath(pathbuf, MAXPATHLEN);
+    uint32_t* bufsize = new uint32_t(MAXPATHLEN)
+    _NSGetExecutablePath(pathbuf, bufsize);
     default_config = fs::path(pathbuf);
     delete [] pathbuf;
+    delete bufsize;
 #elif defined __linux__
     default_config = fs::read_symlink(fs::path("/proc/self/exe"));
 #endif
