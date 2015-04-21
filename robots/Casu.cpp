@@ -81,15 +81,15 @@ namespace Enki
     // Add range sensors
     range_sensors[0] = new IRSensor(this, Vector(0.866,0), 0, 0, 
                                     2, 3731, 0.3, 0.7, 0);
-    range_sensors[1] = new IRSensor(this, Vector(0.43,0.75), 0, pi/3, 
+    range_sensors[1] = new IRSensor(this, Vector(0.43,-0.75), 0, -pi/3, 
                                     2, 3731, 0.3, 0.7, 0);
-    range_sensors[2] = new IRSensor(this, Vector(-0.43,0.75), 0, 2*pi/3, 
+    range_sensors[2] = new IRSensor(this, Vector(-0.43,-0.75), 0, -2*pi/3, 
                                     2, 3731, 0.3, 0.7, 0);
     range_sensors[3] = new IRSensor(this, Vector(-0.866,0), 0, pi, 
                                     2, 3731, 0.3, 0.7, 0);
-    range_sensors[4] = new IRSensor(this, Vector(-0.43,-0.75), 0, -2*pi/3, 
+    range_sensors[4] = new IRSensor(this, Vector(-0.43,0.75), 0, 2*pi/3, 
                                     2, 3731, 0.3, 0.7, 0);
-    range_sensors[5] = new IRSensor(this, Vector(0.43,-0.75), 0, -pi/3, 
+    range_sensors[5] = new IRSensor(this, Vector(0.43,0.75), 0, pi/3, 
                                     2, 3731, 0.3, 0.7, 0);
 
     BOOST_FOREACH(IRSensor* p, range_sensors)
