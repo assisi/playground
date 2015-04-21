@@ -27,7 +27,8 @@
 
 // MAC workaround for Thomas
 #if defined __APPLE__
-#include  <mach-o/dyld.h>
+#include <mach-o/dyld.h>
+#include <sys/param.h>
 #endif
 
 using namespace std;
