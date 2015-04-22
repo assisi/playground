@@ -160,6 +160,8 @@ set(calibratePeltier_SOURCES calibratePeltier.cpp
                        ../interactions/HeatActuatorPointSource.cpp
 					   ../interactions/WaveVibrationSource.cpp
                        ../interactions/VibrationSensor.cpp
+                       ../interactions/AirPump.cpp
+                       ../interactions/AirFlowSensor.cpp
                        ../interactions/ObjectSensor.cpp
                        ../extensions/Component.cpp
                        ../extensions/ExtendedRobot.cpp
