@@ -84,12 +84,14 @@ set(playground_SOURCES AssisiPlaygroundMain.cpp
                        ../interactions/LightSensor.cpp
                        ../interactions/WorldHeat.cpp
                        ../interactions/HeatSensor.cpp
-			           ../interactions/VibrationSource.cpp
+                       ../interactions/VibrationSource.cpp
                        ../interactions/HeatActuatorMesh.cpp
                        ../interactions/HeatActuatorPointSource.cpp
-					   ../interactions/WaveVibrationSource.cpp
+                       ../interactions/WaveVibrationSource.cpp
                        ../interactions/VibrationSensor.cpp
                        ../interactions/ObjectSensor.cpp
+                       ../interactions/AirPump.cpp
+                       ../interactions/AirFlowSensor.cpp
                        ../extensions/Component.cpp
                        ../extensions/ExtendedRobot.cpp
                        ../extensions/ExtendedWorld.cpp
