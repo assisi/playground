@@ -132,21 +132,27 @@ namespace Enki
                 count++;
             }
         }
-		  else if (device == "Airflow")
-		  {
-			  if (command == "On")
-			  {
-				  Airflow airflow;
-				  assert (airflow.ParseFromString (data));
-				  casus_ [name]->air_pump->setIntensity (airflow.intensity ());
-				  count++;
-			  }
-			  else if (command == "Off")
-			  {
-				  casus_ [name]->air_pump->setIntensity (0);
-				  count++;
-			  }
-		  }
+        else if (device == "Airflow")
+        {
+           if (command == "On")
+           {
+              Airflow airflow;
+              assert (airflow.ParseFromString (data));
+              BOOST_FOREACH(AirPump* p, casus_ [name]->air_pumps)
+              {
+                  p->setIntensity (airflow.intensity ());
+              }
+              count++;
+           }
+           else if (command == "Off")
+           {
+              BOOST_FOREACH(AirPump* p, casus_ [name]->air_pumps)
+              {
+                  p->setIntensity (0);
+              }
+              count++;
+           }
+        }
         else
         {
             cerr << "Unknown device " << device << endl;

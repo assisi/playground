@@ -20,10 +20,11 @@ const double pi = boost::math::constants::pi<double>();
 
 namespace Enki
 {
-    const Vector Casu::AIR_PUMP_POSITION = Vector (0, 0);
+    const int Casu::AIR_PUMP_QUANTITY = 5;
+    const double Casu::AIR_PUMP_DISTANCE = 2.5;
     const double Casu::AIR_PUMP_RANGE = 5;
     const double Casu::AIR_PUMP_ORIENTATION = 0;
-    const double Casu::AIR_PUMP_APERTURE = pi / 6;
+    const double Casu::AIR_PUMP_APERTURE = 2 * pi / (AIR_PUMP_QUANTITY / 2);
 
     /*const*/ double Casu::VIBRATION_SOURCE_RANGE = 100;
     const Vector Casu::VIBRATION_SOURCE_POSITION = Vector (0, 0);
@@ -66,7 +67,8 @@ namespace Enki
         world_(world),
         range_sensors(6),
         vibration_sensors (Casu::NUMBER_VIBRATION_SENSORS),
-        temp_sensors(TEMP_SENS_COUNT)
+        temp_sensors(TEMP_SENS_COUNT),
+        air_pumps (Casu::AIR_PUMP_QUANTITY)
     {
   
         // Set physical properties
@@ -173,14 +175,19 @@ namespace Enki
         }
 
         // Add air pump actuator
-        this->air_pump = new AirPump
-            (Casu::AIR_PUMP_RANGE,
-             this,
-             Casu::AIR_PUMP_POSITION,
-             Casu::AIR_PUMP_ORIENTATION,
-             Casu::AIR_PUMP_APERTURE);
-        this->air_pump->setCylindric(0, 0, -1); // Set to point object
-        world_->addObject (this->air_pump);
+        for (int i = 0; i < Casu::AIR_PUMP_QUANTITY; i++) {
+            double angle = Casu::AIR_PUMP_ORIENTATION + i * pi / Casu::AIR_PUMP_QUANTITY;
+            Vector position (Casu::AIR_PUMP_DISTANCE * cos (angle), Casu::AIR_PUMP_DISTANCE * sin (angle));
+            AirPump *airPump = new AirPump
+                (Casu::AIR_PUMP_RANGE,
+                 this,
+                 position,
+                 angle,
+                 Casu::AIR_PUMP_APERTURE);
+            airPump->setCylindric(0, 0, -1); // Set to point object
+            world_->addObject (airPump);
+            this->air_pumps [i] = airPump;
+        }
     }
 
 // -----------------------------------------------------------------------------
@@ -195,6 +202,11 @@ namespace Enki
         world_->removeObject(this->light_source_blue);
 
         delete top_led;
+
+        BOOST_FOREACH(AirPump* p, air_pumps)
+            {
+                delete p;
+            }
     }
 
 // -----------------------------------------------------------------------------

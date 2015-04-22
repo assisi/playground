@@ -61,7 +61,8 @@ namespace Enki
        static /*const*/ double PELTIER_THERMAL_RESPONSE;
 
        /* air pump's parameters and configuration */
-       static const Vector AIR_PUMP_POSITION;
+       static const int AIR_PUMP_QUANTITY;
+       static const double AIR_PUMP_DISTANCE;
        static const double AIR_PUMP_RANGE;
        static const double AIR_PUMP_ORIENTATION;
        static const double AIR_PUMP_APERTURE;
@@ -100,8 +101,9 @@ namespace Enki
         //! Vibration sensors
         VibrationSensorVector vibration_sensors;
 
+        typedef std::vector<AirPump *> AirPumpVector;
         //! Air pump
-        AirPump *air_pump;
+        AirPumpVector air_pumps;
 
     private:
         World* world_;
