@@ -25,6 +25,7 @@ namespace Enki
 
 		static const Vector AIR_FLOW_SENSOR_POSITION;
 		static const double AIR_FLOW_SENSOR_RANGE;
+		static const double AIR_FLOW_SENSOR_ORIENTATION;
 
 	public:
         //! Create a Bee

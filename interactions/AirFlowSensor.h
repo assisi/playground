@@ -35,8 +35,11 @@ namespace Enki {
 
 		 * @param relativePosition The position of this air flow sensor relative
 		 * to robot origin.
+
+		 * @param relativeOrientation Orientation of this air flow sensor relative
+		 * to robot heading.
 		 */
-		AirFlowSensor (double range, Enki::Robot* owner, Enki::Vector relativePosition);
+		AirFlowSensor (double range, Enki::Robot* owner, Enki::Vector relativePosition, double relativeOrientation);
 		/**
 		 * Destructor
 		 */
@@ -49,6 +52,11 @@ namespace Enki {
 		 * Interact with the given object only if it is an {@code AirPump} object.
 		 */
 		virtual void objectStep (double dt, Enki::World* w, Enki::PhysicalObject *po);
+		/**
+		 * Update air flow intensity to take into consideration air flow sensor
+		 * orientation.
+		 */
+		virtual void finalize (double dt, Enki::World* w);
 	};
 
 }
