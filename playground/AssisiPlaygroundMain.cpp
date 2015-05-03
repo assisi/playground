@@ -71,6 +71,13 @@ static sem_t block;
 
 static bool go = true;
 
+static QPointF cameraPos;
+static double cameraPosX = 0;
+static double cameraPosY = 0;
+static double cameraAltitude = 1;
+static double cameraYaw = -M_PI / 2;
+static double cameraPitch = 3 * M_PI / 8;
+
 int runTimer ();
 
 void runLoop ();
@@ -175,6 +182,21 @@ int main(int argc, char *argv[])
              po::value<double> (&Bee::SCALE_FACTOR),
              "bee scale factor"
              )
+		 (
+		  "Camera.pos_x",
+		  po::value<double> (&cameraPosX),
+		  "camera x position"
+		  )
+		 (
+		  "Camera.pos_y",
+		  po::value<double> (&cameraPosY),
+		  "camera y position"
+		  )
+		 (
+		  "Camera.altitude",
+		  po::value<double> (&cameraAltitude),
+		  "camera altitude"
+		  )
         ;
 
     po::variables_map vm;
@@ -227,6 +249,11 @@ int main(int argc, char *argv[])
 		if (!heatModel->validParameters (viewer.timerPeriodMs / 1000.)) {
 			cerr << "Parameters of heat model are not valid!\nExiting.\n";
 			return 1;
+		}
+		if (vm.count ("Camera.pos_x") > 0
+			 || vm.count ("Camera.pos_y") > 0
+			 || vm.count ("Camera.altitude") > 0) {
+			viewer.setCameraPosition (cameraPosX, cameraPosY, cameraAltitude);
 		}
 		viewer.show ();
 	
