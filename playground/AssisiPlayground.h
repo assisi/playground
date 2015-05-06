@@ -35,7 +35,7 @@ namespace Enki
 		/**
 		 * Data layers that can be drawn in the window.
 		 */
-		enum Layer {NONE, HEAT, ELECTRIC_FIELD, VIBRATION, LIGHT};
+		enum Layer {NONE, HEAT, ELECTRIC_FIELD, VIBRATION, LIGHT, DIFFUSIVITY};
 		/**
 		 * Heat physic simulation used in the underlying world.
 		 */
@@ -100,10 +100,12 @@ namespace Enki
 		void drawVibrationLayer_Chequerboard ();
 		void drawHeatLayer_Chequerboard ();
 		void drawHeatLayer_Gradient ();
+		void drawDiffusivityLayer_Chequerboard ();
 
 		void drawHeatLegend ();
 
 		void setDataToHeat ();
+		void setDataToDiffusivity ();
 		void setDataToVibration ();
 		void drawDataAsGradient ();
 		void drawDataAsCheckerBoard ();

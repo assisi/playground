@@ -29,6 +29,14 @@ PointMesh::~PointMesh ()
 {
 }
 
+void PointMesh::addPointMesh (const PointMesh& orig, const Point &delta)
+{
+	std::cout << "Adding point mesh with delta " << delta << "\n";
+	for (int i = orig.size () - 1; i >= 0; i--) {
+		this->points.push_back (orig [i] + delta);
+	}
+}
+
 PointMesh *PointMesh::makeCircleMesh (double radius, int numberPoints)
 {
 	PointMesh *result = new PointMesh (numberPoints);
@@ -72,6 +80,42 @@ PointMesh *PointMesh::makeCircumferenceMesh (double radius, int numberPoints)
 	return result;
 }
 
+PointMesh *PointMesh::makeRectangularMesh (double width, double height, int numberPoints)
+{
+	numberPoints -= numberPoints % 4;
+	PointMesh *result = new PointMesh (numberPoints);
+	double sc = numberPoints / 4;
+	while (numberPoints > 3) {
+		double scale = (4 * numberPoints) / sc;
+		numberPoints--;
+		result->points [numberPoints].x =   width / 2;
+		result->points [numberPoints].y = -height / 2 + scale * height;
+		numberPoints--;
+		result->points [numberPoints].x =  -width / 2;
+		result->points [numberPoints].y = -height / 2 + scale * height;
+		numberPoints--;
+		result->points [numberPoints].x =  -width / 2 + scale * width;
+		result->points [numberPoints].y = -height / 2;
+		numberPoints--;
+		result->points [numberPoints].x =  -width / 2 + scale * width;
+		result->points [numberPoints].y =  height / 2;
+	}
+	return result;
+}
+
+PointMesh *PointMesh::makeLineMesh (double x, double y, int numberPoints)
+{
+	PointMesh *result = new PointMesh (numberPoints);
+	double sc = numberPoints - 1;
+	while (numberPoints > 0) {
+		numberPoints--;
+		double scale = numberPoints / sc;
+		result->points [numberPoints].x = scale * x;
+		result->points [numberPoints].y = scale * y;
+	}
+	return result;
+}
+
 void PointMesh::print (std::ostream &os) const
 {
 	os << this->points [0];
@@ -80,7 +124,7 @@ void PointMesh::print (std::ostream &os) const
 	}
 }
 
-std::ostream &operator<< (std::ostream &os, const PointMesh  &mesh)
+std::ostream &operator<< (std::ostream &os, PointMesh const &mesh)
 {
 	os << mesh [0];
 	for (int i = 1; i < mesh.size (); i++) {

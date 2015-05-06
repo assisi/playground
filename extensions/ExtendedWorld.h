@@ -27,12 +27,13 @@ namespace Enki
 	class ExtendedWorld:
 		public World
 	{
-	protected:
+	public:
 		typedef std::vector<PhysicSimulation *> PhysicSimulations;
 		typedef PhysicSimulations::iterator PhysicSimulationsIterator;
 		//! Vector of physic simulations.
 		PhysicSimulations physicSimulations;
 
+	protected:
 		typedef std::set<ExtendedRobot *> ExtendedRobots;
 		typedef ExtendedRobots::iterator ExtendedRobotsIterator;
 		

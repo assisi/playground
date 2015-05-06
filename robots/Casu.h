@@ -10,6 +10,7 @@
 
 #include <PhysicalEngine.h>
 
+#include "extensions/ExtendedWorld.h"
 #include <interactions/IRSensor.h>
 #include "interactions/DiagnosticLed.h"
 #include "interactions/LightSourceFromAbove.h"
@@ -20,6 +21,8 @@
 
 namespace Enki
 {
+
+    enum {NORTH = 1, SOUTH = 2, WEST = 4, EAST = 8};
 
     class Casu : public ExtendedRobot
     {
@@ -58,10 +61,12 @@ namespace Enki
 		 /* peltier's parameters and configuration */
 		 static const Vector PELTIER_POSITION;
 		 static /*const*/ double PELTIER_THERMAL_RESPONSE;
+       static const double BRIDGE_LENGTH;
+       static const double BRIDGE_WIDTH;
 
     public:
         //! Create a CASU
-		 Casu (World* world, double ambientTemperature);
+        Casu (ExtendedWorld* world, double ambientTemperature, int bridgeMask = NORTH | SOUTH | EAST | WEST);
 
         //! Destructor
         ~Casu();
@@ -94,7 +99,7 @@ namespace Enki
 
     private:
         World* world_;
-        
+        void createBridge (PointMesh *shape, Vector direction);
     };
 }
 

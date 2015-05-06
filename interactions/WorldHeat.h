@@ -12,6 +12,13 @@
 
 namespace Enki
 {
+	struct Cell {
+		double temperature;
+		double heatDiffusivity;
+		Cell ();
+		Cell (const Cell &other);
+	};
+
 	/**
 	 * Provides a simulation of heat to be used in Enki.
 
@@ -21,7 +28,7 @@ namespace Enki
 	 * Moore neighbours.
 	 */
 	class WorldHeat :
-		public AbstractGridSimulation<double>
+		public AbstractGridSimulation<Cell>
 	{
 		/**
 		 * Value of alpha without the value of parameter {@code deltaTime}.  Alpha
@@ -33,6 +40,23 @@ namespace Enki
 		 * Output stream where heat information is logged.
 		 */
 		std::ofstream *logStream;
+		/**
+		 * Rate at which world heat is logged.  This is used with field
+		 * {@code iterationsToNextLog} to produce logs.
+		 *
+		 * <p> When field {@code iterationsToNextLog} reaches zero, we log
+		 * the world heat and reset this field to value {@code logRate}.
+		 */
+		const int logRate;
+		/**
+		 * How many iterations should we wait before logging the next
+		 * iteration.  This is used with field {@code logRate} to
+		 * produce logs.
+		 *
+		 * <p> When field {@code iterationsToNextLog} reaches zero, we log
+		 * the world heat and reset this field to value {@code logRate}.
+		 */
+		int iterationsToNextLog;
 		/**
 		 * How much time has passed since the simulation started.  Unit is
 		 * simulation time.
@@ -52,8 +76,11 @@ namespace Enki
 		 */
 		static const double THERMAL_DIFFUSIVITY_COPPER;
 
+		static const double DEFAULT_TEMPERATURE;
+		static const double DEFAULT_HEAT_DIFFUSIVITY;
+
 	public:
-		WorldHeat (double normalHeat, double gridScale, double borderSize);
+		WorldHeat (double normalHeat, double gridScale, double borderSize, int logRate = 1);
 		virtual ~WorldHeat ();
 		/**
 		 * Checks if this instance of the heat model combined with the given
@@ -67,6 +94,11 @@ namespace Enki
 
 		double getHeatAt (const Vector &pos) const;
 		void setHeatAt (const Vector &pos, double value);
+
+		double getHeatDiffusivityAt (const Point &position) const;
+		void setHeatDiffusivityAt (const Point &position, double value);
+
+
 		/**
 		 * When a heat actuator turns off, we have to recompute the heat
 		 * distribution in the world.  We do this for a certain number of
@@ -128,7 +160,10 @@ namespace Enki
 			}
 			this->logStream = NULL;
 		}
-
+		/**
+		 * Reset temperature to given value.  Heat dissipation is NOT changed.
+		 */
+		void resetTemperature (double value);
 	protected:
 		/**
 		 * Update the heat grid and return the largest difference between two

@@ -3,6 +3,7 @@
  */
 
 #include <cmath>
+#include <iostream>
 
 #include <boost/foreach.hpp>
 #include <boost/math/constants/constants.hpp>
@@ -56,9 +57,11 @@ namespace Enki
 	/* peltier's parameters and configuration */
 	const Vector Casu::PELTIER_POSITION = Vector (0, 0);
 	/*const*/ double Casu::PELTIER_THERMAL_RESPONSE = 0.3;
+	const double Casu::BRIDGE_LENGTH = 4.5;
+	const double Casu::BRIDGE_WIDTH = 1.0;
 
 
-	Casu::Casu(World* world, double ambientTemperature) :
+    Casu::Casu (ExtendedWorld* world, double ambientTemperature, int bridgeMask) :
     world_(world),
     range_sensors(6),
 	 vibration_sensors (Casu::NUMBER_VIBRATION_SENSORS),
@@ -137,11 +140,43 @@ namespace Enki
 
     // Add peltier actuator
 	 // TODO: make peltier parameters CASU constants
+	 const double PELTIER_RADIUS = 1.6;
+	 const double GRID_SCALE = 0.5;
+	 const double chocFactor = 1.25;
+	 PointMesh *other;
+	 PointMesh *mesh = PointMesh::makeCircumferenceMesh (PELTIER_RADIUS, 16);
+	 PointMesh *shape = PointMesh::makeCircumferenceMesh
+		 (PELTIER_RADIUS,
+		  (int) (ceil (chocFactor * (2 * pi * PELTIER_RADIUS) / GRID_SCALE)));
+	 other = PointMesh::makeCircumferenceMesh
+		 (PELTIER_RADIUS,
+		  (int) (ceil (chocFactor * (2 * pi * PELTIER_RADIUS) / GRID_SCALE)));
+	 shape->addPointMesh (*other, Point (0, 0));
+	 delete other;
+	 other = PointMesh::makeCircumferenceMesh
+		 (radius,
+		  (int) (ceil (chocFactor * (2 * pi * radius) / 0.5)));
+	 shape->addPointMesh (*other, Point (0, 0));
+	 delete other;
+	 if (bridgeMask & NORTH) {
+		 createBridge (shape, Point (0, 1));
+	 }
+	 if (bridgeMask & SOUTH) {
+		 createBridge (shape, Point (0, -1));
+	 }
+	 if (bridgeMask & EAST) {
+		 createBridge (shape, Point (1, 0));
+	 }
+	 if (bridgeMask & WEST) {
+		 createBridge (shape, Point (-1, 0));
+	 }
     peltier = new HeatActuatorMesh
 		 (this, Vector(0,0),
 		  PELTIER_THERMAL_RESPONSE, ambientTemperature,
-		  PointMesh::makeCircumferenceMesh (1.6, 16));
+		  mesh, shape);
     this->addPhysicInteraction(this->peltier);
+
+
 
 	 // Add vibration actuator
 
@@ -184,5 +219,27 @@ Casu::~Casu()
 }
 
 // -----------------------------------------------------------------------------
+
+
+void Casu::
+createBridge (PointMesh *shape, Vector direction)
+{
+	const double GRID_SCALE = 0.5;
+	const double chocFactor = 1.125;
+	const double CASU_RADIUS = 1;
+	Point p1, p2;
+	p1 = direction;
+	p1 *= Casu::BRIDGE_LENGTH;
+	PointMesh *other;
+	other = PointMesh::makeLineMesh (p1.x, p1.y, (int) ceil (chocFactor * Casu::BRIDGE_LENGTH / GRID_SCALE));
+	p1 = direction;
+	p1 *= CASU_RADIUS;
+	shape->addPointMesh (*other, p1);
+	p2 = direction.perp ();
+	p2 *= chocFactor * GRID_SCALE;
+	shape->addPointMesh (*other, p1 + p2);
+	shape->addPointMesh (*other, p1 - p2);
+	delete other;
+}
 
 }
