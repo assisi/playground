@@ -66,7 +66,7 @@ namespace Enki
 
     public:
         //! Create a CASU
-        Casu (ExtendedWorld* world, double ambientTemperature, int bridgeMask = NORTH | SOUTH | EAST | WEST);
+         Casu (double yaw, ExtendedWorld* world, double ambientTemperature, int bridgeMask = NORTH | SOUTH | EAST | WEST);
 
         //! Destructor
         ~Casu();

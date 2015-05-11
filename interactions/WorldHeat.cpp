@@ -11,6 +11,8 @@ const double WorldHeat::THERMAL_DIFFUSIVITY_COPPER = 1.11e-4;
 const double WorldHeat::DEFAULT_TEMPERATURE = 25;
 const double WorldHeat::DEFAULT_HEAT_DIFFUSIVITY = WorldHeat::THERMAL_DIFFUSIVITY_AIR;
 
+const double HEAT_DISSIPATION = 0; // 1e-4;
+
 /*
 struct Cell {
 	double temperature;
@@ -145,6 +147,7 @@ computeNextState (double deltaTime)
 	int nextAdtIndex = 1 - this->adtIndex;
 	for (int x = 1; x < this->size.x - 1; x++) {
 		for (int y = 1; y < this->size.y - 1; y++) {
+			/*
 			const double alpha = 
 				this->partialAlpha
 				* this->grid [this->adtIndex][x][y].heatDiffusivity
@@ -159,6 +162,21 @@ computeNextState (double deltaTime)
 				 - 4 * this->grid [this->adtIndex][x][y].temperature
 				)
 				* alpha
+				;
+			*/
+			const double alpha = 
+				this->partialAlpha
+				* deltaTime
+				;
+			const double deltaHeat =
+				(
+				 + (this->grid [this->adtIndex][x][y + 1].temperature - this->grid [this->adtIndex][x][y].temperature) * this->grid [this->adtIndex][x][y + 1].heatDiffusivity
+				 + (this->grid [this->adtIndex][x][y - 1].temperature - this->grid [this->adtIndex][x][y].temperature) * this->grid [this->adtIndex][x][y - 1].heatDiffusivity
+				 + (this->grid [this->adtIndex][x + 1][y].temperature - this->grid [this->adtIndex][x][y].temperature) * this->grid [this->adtIndex][x + 1][y].heatDiffusivity
+				 + (this->grid [this->adtIndex][x - 1][y].temperature - this->grid [this->adtIndex][x][y].temperature) * this->grid [this->adtIndex][x - 1][y].heatDiffusivity
+				 ) * alpha
+				+ ( normalHeat - this->grid [this->adtIndex][x][y].temperature )
+				* HEAT_DISSIPATION
 				;
 			this->grid [nextAdtIndex][x][y].temperature =
 				this->grid [this->adtIndex][x][y].temperature + deltaHeat;

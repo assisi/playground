@@ -61,7 +61,7 @@ namespace Enki
 	const double Casu::BRIDGE_WIDTH = 1.0;
 
 
-    Casu::Casu (ExtendedWorld* world, double ambientTemperature, int bridgeMask) :
+    Casu::Casu (double yaw, ExtendedWorld* world, double ambientTemperature, int bridgeMask) :
     world_(world),
     range_sensors(6),
 	 vibration_sensors (Casu::NUMBER_VIBRATION_SENSORS),
@@ -158,17 +158,18 @@ namespace Enki
 		  (int) (ceil (chocFactor * (2 * pi * radius) / 0.5)));
 	 shape->addPointMesh (*other, Point (0, 0));
 	 delete other;
+	 Matrix22 rot (yaw);
 	 if (bridgeMask & NORTH) {
-		 createBridge (shape, Point (0, 1));
+		 createBridge (shape, rot * Point (0, 1));
 	 }
 	 if (bridgeMask & SOUTH) {
-		 createBridge (shape, Point (0, -1));
+		 createBridge (shape, rot * Point (0, -1));
 	 }
 	 if (bridgeMask & EAST) {
-		 createBridge (shape, Point (1, 0));
+		 createBridge (shape, rot * Point (1, 0));
 	 }
 	 if (bridgeMask & WEST) {
-		 createBridge (shape, Point (-1, 0));
+		 createBridge (shape, rot * Point (-1, 0));
 	 }
     peltier = new HeatActuatorMesh
 		 (this, Vector(0,0),
@@ -219,7 +220,6 @@ Casu::~Casu()
 }
 
 // -----------------------------------------------------------------------------
-
 
 void Casu::
 createBridge (PointMesh *shape, Vector direction)

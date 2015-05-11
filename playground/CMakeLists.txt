@@ -68,6 +68,12 @@ set(QT_USE_QTOPENGL TRUE)
 include(${QT_USE_FILE})
 add_definitions(${QT_DEFINITIONS})
 
+#set(GCC_GRAPHITE_COMPILE_FLAGS, "-floop-parallelize-all -ftree-parallelize-loops=4")
+
+set(GCC_GRAPHITE_COMPILE_FLAGS, "")
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${GCC_GRAPHITE_COMPILE_FLAGS}" )
+
+
 # The ASSISI playground
 set(playground_SOURCES AssisiPlaygroundMain.cpp
                        AssisiPlayground.cpp
