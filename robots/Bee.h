@@ -9,7 +9,8 @@
 #include "interactions/ObjectSensor.h"
 #include "interactions/HeatSensor.h"
 #include "interactions/LightSensor.h"
-	
+#include "interactions/AirFlowSensor.h"
+
 namespace Enki
 {
 	
@@ -21,6 +22,9 @@ namespace Enki
 	{
 	public:
 		static double SCALE_FACTOR;
+
+		static const Vector AIR_FLOW_SENSOR_POSITION;
+		static const double AIR_FLOW_SENSOR_RANGE;
 
 	public:
         //! Create a Bee
@@ -40,6 +44,9 @@ namespace Enki
 
         //! Heat sensor.
         HeatSensor* heat_sensor;
+
+		  //! Air flow sensor.
+		  AirFlowSensor *air_flow_sensor;
 
         //! Bee color (useful for diagnostic purposes)
         double color_r_;
