@@ -47,7 +47,7 @@ namespace Enki
             casus_[name] = new Casu(yaw, world, env_temp);
             casus_[name]->pos = pos;
             casus_[name]->angle = yaw;
-            casus_[name]->peltier->setHeatDiffusivity (world, WorldHeat::THERMAL_DIFFUSIVITY_COPPER);
+            // casus_[name]->peltier->setHeatDiffusivity (world, WorldHeat::THERMAL_DIFFUSIVITY_COPPER);
 
             world->addObject(casus_[name]);
         }
@@ -231,3 +231,7 @@ namespace Enki
 // -----------------------------------------------------------------------------
 
 }
+
+// Local Variables: 
+// indent-tabs-mode: nil
+// End: 

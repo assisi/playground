@@ -22,6 +22,11 @@ const double pi = boost::math::constants::pi<double>();
 namespace Enki
 {
 
+	void setHeatDiffusivity (Enki::Cell &cell)
+	{
+		cell.heatDiffusivity = WorldHeat::THERMAL_DIFFUSIVITY_COPPER;
+	}
+
 	/*const*/ double Casu::VIBRATION_SOURCE_RANGE = 100;
 	const Vector Casu::VIBRATION_SOURCE_POSITION = Vector (0, 0);
 	/*const*/ double Casu::VIBRATION_SOURCE_MAXIMUM_AMPLITUDE = 8.5; // units??
@@ -177,7 +182,7 @@ namespace Enki
 		  mesh, shape);
     this->addPhysicInteraction(this->peltier);
 
-
+	 world->worldHeat->drawCircle (setHeatDiffusivity, this->pos, radius);
 
 	 // Add vibration actuator
 

@@ -49,7 +49,7 @@ namespace Enki
 		/**
 		 * Function used to update grid cells.
 		 */
-		typedef void (*UpdateFunction) (const T &value); 
+		typedef void (*UpdateFunction) (T &value); 
 		/**
 		 * Length in world coordinates of a grid point.
 		 */
@@ -170,7 +170,11 @@ namespace Enki
 				}
 			}
 		}
-		void fillLine (UpdateFunction update, int ax, int ay, int bx, int by)
+		/**
+		 * Update the grid cells that form a line between points (ax,ay) and
+		 * (bx,by).  This function uses the raster line drawing algorithm.
+		 */
+		void drawLine (UpdateFunction update, int ax, int ay, int bx, int by)
 		{
 			if (ax == bx) {
 				int y;
@@ -195,6 +199,49 @@ namespace Enki
 						error -= 1.0;
 					}
 				}
+			}
+		}
+		/**
+		 * Update the grid cells that form an upright rectangle between lower left
+		 * point (ax,ay) and upper right point (bx,by).  This function uses the
+		 * raster rectangle drawing algorithm.
+		 */
+		void drawUprightRectangle (UpdateFunction update, int ax, int ay, int bx, int by)
+		{
+			int x, y;
+			for (x = ax; x <= bx; x++) {
+				for (y = ay; y <= by; y++) {
+					(*update) (this->grid [this->adtIndex][x][y]);
+				}
+			}
+		}
+		void drawCircle (UpdateFunction update, const Point &center, double worldRadius)
+		{
+			int cx, cy, radius;
+			int x, y, d, deltaE, deltaSE;
+			toIndex (center, cx, cy);
+			radius = this->scale (worldRadius);
+			x = 0;
+			y = radius;
+			d = 1 - radius;
+			deltaE = 3;
+			deltaSE = 5 - radius * 2;
+			circlePoints (update, cx, cy, x, y);
+			while (y > x) {
+				if (d < 0) {
+					d += deltaE;
+					deltaE += 2;
+					deltaSE += 3;
+					x++;
+				}
+				else {
+					d += (x - y) << 1 + 5;
+					deltaE += 2;
+					deltaSE += 4;
+					x++;
+					y--;
+				}
+				circlePoints (update, cx, cy, x, y);
 			}
 		}
 		/*
@@ -225,6 +272,9 @@ namespace Enki
 		}
 		*/
 	protected:
+		/**
+		 * Convert a world position to grid position.
+		 */
 		void toIndex (const Enki::Vector& position, int &x, int &y) const
 		{
 			x = round ((position.x - this->origin.x) / this->gridScale);
@@ -232,6 +282,22 @@ namespace Enki
 #ifdef DEBUG
 			std::cout << position << " <=> " << x << "," << y << " => " << value << '\n';
 #endif
+		}
+		int scale (double value)
+		{
+			return  round (value / this->gridScale);
+		}
+	private:
+		void circlePoints (UpdateFunction update, int cx, int cy, int x, int y)
+		{
+			(*update) (this->grid [this->adtIndex][cx + x][cy + y]);
+			(*update) (this->grid [this->adtIndex][cx + y][cy + x]);
+			(*update) (this->grid [this->adtIndex][cx + x][cy - y]);
+			(*update) (this->grid [this->adtIndex][cx + y][cy - x]);
+			(*update) (this->grid [this->adtIndex][cx - x][cy + y]);
+			(*update) (this->grid [this->adtIndex][cx - y][cy + x]);
+			(*update) (this->grid [this->adtIndex][cx - x][cy - y]);
+			(*update) (this->grid [this->adtIndex][cx - y][cy - x]);
 		}
 	};
 }

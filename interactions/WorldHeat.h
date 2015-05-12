@@ -98,7 +98,6 @@ namespace Enki
 		double getHeatDiffusivityAt (const Point &position) const;
 		void setHeatDiffusivityAt (const Point &position, double value);
 
-
 		/**
 		 * When a heat actuator turns off, we have to recompute the heat
 		 * distribution in the world.  We do this for a certain number of
