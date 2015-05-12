@@ -10,6 +10,22 @@
 
 namespace Enki
 {
+
+	// extern const int MAX_NUMBER_EDGES;
+	struct Edge
+	{
+		int ymax;
+		int xxmin;
+		double m1;
+	};
+
+	template<class T>
+	class AbstractGridSimulation;
+
+	template <class T>
+	void fillPolygone (AbstractGridSimulation<T> *sim, const T &value, const std::vector<Point> &points);
+
+
 	/**
 	 * Abstract class of physical models based in a grid.  The grid
 	 * coordinate system depends on world walls type.  If the walls are
@@ -26,7 +42,14 @@ namespace Enki
 	class AbstractGridSimulation :
 		public PhysicSimulation
 	{
+		std::vector<std::vector<Edge> > edgeTable;
+		std::vector<std::vector<Edge> > activeEdgeTable;
+		
 	public:
+		/**
+		 * Function used to update grid cells.
+		 */
+		typedef void (*UpdateFunction) (const T &value); 
 		/**
 		 * Length in world coordinates of a grid point.
 		 */
@@ -136,7 +159,71 @@ namespace Enki
 				}
 			}
 		}
-
+		/**
+		 * Fill the grid using the given function.
+		 */
+		void fillGrid (UpdateFunction update)
+		{
+			for (int x = this->size.x - 1; x >= 0; x--) {
+				for (int y = this->size.y - 1; y >= 0; y--) {
+					(*update) (this->grid [this->adtIndex][x][y]);
+				}
+			}
+		}
+		void fillLine (UpdateFunction update, int ax, int ay, int bx, int by)
+		{
+			if (ax == bx) {
+				int y;
+				for (y = ay; y <= by; y++) {
+					(*update) (this->grid [this->adtIndex][ax][y]);
+				}
+			}
+			else {
+				int mx = bx - ax;
+				int my = by - ay;
+				double deltaError = ((double) my) / mx;
+				double error = 0;
+				int x, y;
+				int sy = (by > ay ? 1 : -1);
+				y = ay;
+				for (x = ax; x <= bx; x++) {
+					(*update) (this->grid [this->adtIndex][x][y]);
+					error += deltaError;
+					while (error >= 0.5) {
+						(*update) (this->grid [this->adtIndex][x][y]);
+						y += sy;
+						error -= 1.0;
+					}
+				}
+			}
+		}
+		/*
+		void fillPolygone (UpdateFunction update, std::vector<Point> points)
+		{
+			int x, y;
+			int ymin, ymax;
+			int i;
+			vector<double> intersections (points.size ());
+			vector<bool> use (points.size ());
+			double t;
+			const int ps1 = points.size () - 1;
+			// compute minimum and maximum y coordinates
+			ymin = ymax = round (points [0].y);
+			for (i = ps1; i > 0; i--) {
+				y = points [i].y;
+				ymin = std::min (ymin, y);
+				ymax = std::max (ymax, y);
+			}
+			for (y = ymin; y <= ymax; y++) {
+				// find intersections
+				intersect (points [0].x, points [0].y, points [ps1].x, points [ps1].x, y, intersections [0], use [0]);
+				for (i = ps1; i > 0; i--) {
+					intersect (points [i].x, points [i].y, points [i - 1].x, points [i - 1].x, y, intersections [i], use [i]);
+				}
+				// sort intersections by x 
+			}
+		}
+		*/
 	protected:
 		void toIndex (const Enki::Vector& position, int &x, int &y) const
 		{
