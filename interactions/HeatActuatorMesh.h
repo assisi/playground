@@ -32,10 +32,6 @@ namespace Enki
 		 * The points that compose the heat source of this actuator.
 		 */
 		const PointMesh *mesh;
-		/**
-		 * The points that compose the shape of this actuator.
-		 */
-		const PointMesh *shape;
 	public:
 		/**
 		 * Create a circular heat source with the given radius.  The mesh is composed of {@code numberPoints} randomly created.
@@ -69,21 +65,9 @@ namespace Enki
 			double innerRadius,
 			double outerRadius,
 			int numberPoints);
-		HeatActuatorMesh (
-			Enki::Robot* owner,
-			Enki::Vector relativePosition,
-			double thermalResponseTime,
-			double ambientTemperature,
-			const PointMesh *mesh,
-			const PointMesh *shape);
 		HeatActuatorMesh(const HeatActuatorMesh& orig);
 		virtual ~HeatActuatorMesh();
 		virtual void step (double dt, PhysicSimulation* w);
-		/**
-		 * Set the heat diffusivity in the grid cells where this actuator is
-		 * located.
-		 */
-		virtual void setHeatDiffusivity (Enki::ExtendedWorld *world, double heatDiffusivity);
 	private:
 
 	};

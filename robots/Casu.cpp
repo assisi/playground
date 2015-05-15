@@ -22,10 +22,20 @@ const double pi = boost::math::constants::pi<double>();
 namespace Enki
 {
 
-	void setHeatDiffusivity (Enki::Cell &cell)
+	// void setHeatDiffusivity (Enki::Cell &cell)
+	// {
+	// 	cell.heatDiffusivity = WorldHeat::THERMAL_DIFFUSIVITY_COPPER;
+	// }
+
+	void setHeatDiffusivity (double &cell)
 	{
-		cell.heatDiffusivity = WorldHeat::THERMAL_DIFFUSIVITY_COPPER;
+		cell = WorldHeat::THERMAL_DIFFUSIVITY_COPPER;
 	}
+
+	// Bee-Casu geometry
+	const double Casu::BRIDGE_LENGTH = 4.5;
+	const double Casu::BRIDGE_WIDTH = 1.0;
+
 
 	/*const*/ double Casu::VIBRATION_SOURCE_RANGE = 100;
 	const Vector Casu::VIBRATION_SOURCE_POSITION = Vector (0, 0);
@@ -62,8 +72,7 @@ namespace Enki
 	/* peltier's parameters and configuration */
 	const Vector Casu::PELTIER_POSITION = Vector (0, 0);
 	/*const*/ double Casu::PELTIER_THERMAL_RESPONSE = 0.3;
-	const double Casu::BRIDGE_LENGTH = 4.5;
-	const double Casu::BRIDGE_WIDTH = 1.0;
+    const double Casu::PELTIER_RADIUS = 1.6;
 
 
     Casu::Casu (double yaw, ExtendedWorld* world, double ambientTemperature, int bridgeMask) :
@@ -145,44 +154,28 @@ namespace Enki
 
     // Add peltier actuator
 	 // TODO: make peltier parameters CASU constants
-	 const double PELTIER_RADIUS = 1.6;
-	 const double GRID_SCALE = 0.5;
-	 const double chocFactor = 1.25;
-	 PointMesh *other;
-	 PointMesh *mesh = PointMesh::makeCircumferenceMesh (PELTIER_RADIUS, 16);
-	 PointMesh *shape = PointMesh::makeCircumferenceMesh
-		 (PELTIER_RADIUS,
-		  (int) (ceil (chocFactor * (2 * pi * PELTIER_RADIUS) / GRID_SCALE)));
-	 other = PointMesh::makeCircumferenceMesh
-		 (PELTIER_RADIUS,
-		  (int) (ceil (chocFactor * (2 * pi * PELTIER_RADIUS) / GRID_SCALE)));
-	 shape->addPointMesh (*other, Point (0, 0));
-	 delete other;
-	 other = PointMesh::makeCircumferenceMesh
-		 (radius,
-		  (int) (ceil (chocFactor * (2 * pi * radius) / 0.5)));
-	 shape->addPointMesh (*other, Point (0, 0));
-	 delete other;
-	 Matrix22 rot (yaw);
-	 if (bridgeMask & NORTH) {
-		 createBridge (shape, rot * Point (0, 1));
-	 }
-	 if (bridgeMask & SOUTH) {
-		 createBridge (shape, rot * Point (0, -1));
-	 }
-	 if (bridgeMask & EAST) {
-		 createBridge (shape, rot * Point (1, 0));
-	 }
-	 if (bridgeMask & WEST) {
-		 createBridge (shape, rot * Point (-1, 0));
-	 }
     peltier = new HeatActuatorMesh
 		 (this, Vector(0,0),
 		  PELTIER_THERMAL_RESPONSE, ambientTemperature,
-		  mesh, shape);
+		  PELTIER_RADIUS, 16);
     this->addPhysicInteraction(this->peltier);
+	 world->worldHeat->drawCircle (WorldHeat::THERMAL_DIFFUSIVITY_COPPER, this->pos, PELTIER_RADIUS);
 
-	 world->worldHeat->drawCircle (setHeatDiffusivity, this->pos, radius);
+	 // Add bridges
+	 Matrix22 rot (yaw);
+	 if (bridgeMask & NORTH) {
+		 createBridge (world, rot * Point (0, 1));
+	 }
+	 if (bridgeMask & SOUTH) {
+		 createBridge (world, rot * Point (0, -1));
+	 }
+	 if (bridgeMask & EAST) {
+		 createBridge (world, rot * Point (1, 0));
+	 }
+	 if (bridgeMask & WEST) {
+		 createBridge (world, rot * Point (-1, 0));
+	 }
+
 
 	 // Add vibration actuator
 
@@ -227,24 +220,21 @@ Casu::~Casu()
 // -----------------------------------------------------------------------------
 
 void Casu::
-createBridge (PointMesh *shape, Vector direction)
+createBridge (ExtendedWorld* world, Vector direction)
 {
-	const double GRID_SCALE = 0.5;
-	const double chocFactor = 1.125;
-	const double CASU_RADIUS = 1;
+	Point upperRight, lowerLeft;
 	Point p1, p2;
+	p2 = direction.perp ();
+	p2 *= Casu::BRIDGE_WIDTH / 2;
 	p1 = direction;
 	p1 *= Casu::BRIDGE_LENGTH;
-	PointMesh *other;
-	other = PointMesh::makeLineMesh (p1.x, p1.y, (int) ceil (chocFactor * Casu::BRIDGE_LENGTH / GRID_SCALE));
-	p1 = direction;
-	p1 *= CASU_RADIUS;
-	shape->addPointMesh (*other, p1);
-	p2 = direction.perp ();
-	p2 *= chocFactor * GRID_SCALE;
-	shape->addPointMesh (*other, p1 + p2);
-	shape->addPointMesh (*other, p1 - p2);
-	delete other;
+	p1 -= p2;
+	lowerLeft.x = std::min (p1.x, p2.x);
+	lowerLeft.y = std::min (p1.y, p2.y);
+	upperRight.x = std::max (p1.x, p2.x);
+	upperRight.y = std::max (p1.y, p2.y);
+	world->worldHeat->drawUprightRectangle (WorldHeat::THERMAL_DIFFUSIVITY_COPPER, lowerLeft, upperRight);
+
 }
 
 }

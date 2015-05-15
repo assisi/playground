@@ -7,45 +7,13 @@ using namespace std;
 
 const double WorldHeat::THERMAL_DIFFUSIVITY_AIR = 1.9e-5;
 const double WorldHeat::THERMAL_DIFFUSIVITY_COPPER = 1.11e-4;
-
-const double WorldHeat::DEFAULT_TEMPERATURE = 25;
-const double WorldHeat::DEFAULT_HEAT_DIFFUSIVITY = WorldHeat::THERMAL_DIFFUSIVITY_AIR;
-
 const double HEAT_DISSIPATION = 0; // 1e-4;
-
-/*
-struct Cell {
-	double temperature;
-	double heatDiffusivity;
-	Cell ():
-		temperature (WorldHeat::DEFAULT_TEMPERATURE),
-		heatDiffusivity (WorldHeat::DEFAULT_HEAT_DIFFUSIVITY)
-	{
-	}
-	Cell (const Cell &other):
-		temperature (other.temperature),
-		heatDiffusivity (other.heatDiffusivity)
-	{
-	}
-};
-*/
-
-Cell::Cell ():
-	temperature (WorldHeat::DEFAULT_TEMPERATURE),
-	heatDiffusivity (WorldHeat::DEFAULT_HEAT_DIFFUSIVITY)
-{
-}
-
-Cell::Cell (const Cell &other):
-	temperature (other.temperature),
-	heatDiffusivity (other.heatDiffusivity)
-{
-}
-
 
 WorldHeat::
 WorldHeat (double normalHeat, double gridScale, double borderSize, int logRate):
-	AbstractGridSimulation (gridScale, borderSize),
+	AbstractGrid (gridScale, borderSize),
+	AbstractGridSimulation (),
+	AbstractGridProperties (),
 	normalHeat (normalHeat),
 	logStream (NULL),
 	logRate (logRate - 1),
@@ -81,7 +49,7 @@ double WorldHeat::getHeatAt (const Vector &pos) const
 {
 	int x, y;
 	toIndex (pos, x, y);
-	return this->grid [this->adtIndex][x][y].temperature;
+	return this->grid [this->adtIndex][x][y];
 }
 
 void WorldHeat::
@@ -89,7 +57,7 @@ setHeatAt (const Vector &pos, double value)
 {
 	int x, y;
 	toIndex (pos, x, y);
-	this->grid [this->adtIndex][x][y].temperature = value;
+	this->grid [this->adtIndex][x][y] = value;
 }
 
 double WorldHeat::
@@ -97,7 +65,7 @@ getHeatDiffusivityAt (const Point &pos) const
 {
 	int x, y;
 	toIndex (pos, x, y);
-	return this->grid [this->adtIndex][x][y].heatDiffusivity;
+	return this->prop [x][y];
 }
 
 void WorldHeat::
@@ -105,26 +73,24 @@ setHeatDiffusivityAt (const Point &pos, double value)
 {
 	int x, y;
 	toIndex (pos, x, y);
-	this->grid [0][x][y].heatDiffusivity = value;
-	this->grid [1][x][y].heatDiffusivity = value;
+	this->prop [x][y] = value;
 }
 
 
 void WorldHeat::
 initParameters (const ExtendedWorld *world)
 {
+	AbstractGrid::initParameters (world);
 	AbstractGridSimulation::initParameters (world);
-	for (int i = 0; i < 2; i++) {
-		for (int x = 0; x < this->size.x; x++) {
-			for (int y = 0; y < this->size.y; y++) {
-				this->grid [i][x][y].temperature = this->normalHeat;
-				this->grid [i][x][y].heatDiffusivity = WorldHeat::THERMAL_DIFFUSIVITY_AIR;
+	AbstractGridProperties::initParameters (world);
+	for (int x = 0; x < this->size.x; x++) {
+		for (int y = 0; y < this->size.y; y++) {
+			for (int i = 0; i < 2; i++) {
+				this->grid [i][x][y] = this->normalHeat;
 			}
+			this->prop [x][y] = WorldHeat::THERMAL_DIFFUSIVITY_AIR;
 		}
 	}
-	cout
-		<< "Initialised heat diffusivity to " << this->grid [0][0][0].heatDiffusivity
-		<< "\n";
 }
 
 void WorldHeat::
@@ -144,42 +110,22 @@ computeNextState (double deltaTime)
 			this->iterationsToNextLog--;
 		}
 	}
-	int nextAdtIndex = 1 - this->adtIndex;
+	const int nextAdtIndex = 1 - this->adtIndex;
+	const double alpha = this->partialAlpha * deltaTime;
 	for (int x = 1; x < this->size.x - 1; x++) {
 		for (int y = 1; y < this->size.y - 1; y++) {
-			/*
-			const double alpha = 
-				this->partialAlpha
-				* this->grid [this->adtIndex][x][y].heatDiffusivity
-				* deltaTime
-				;
-			const double deltaHeat = 
-				(
-				 + this->grid [this->adtIndex][x][y + 1].temperature
-				 + this->grid [this->adtIndex][x][y - 1].temperature
-				 + this->grid [this->adtIndex][x + 1][y].temperature
-				 + this->grid [this->adtIndex][x - 1][y].temperature
-				 - 4 * this->grid [this->adtIndex][x][y].temperature
-				)
-				* alpha
-				;
-			*/
-			const double alpha = 
-				this->partialAlpha
-				* deltaTime
-				;
+			const double currentHeat = this->grid [this->adtIndex][x][y];
 			const double deltaHeat =
 				(
-				 + (this->grid [this->adtIndex][x][y + 1].temperature - this->grid [this->adtIndex][x][y].temperature) * this->grid [this->adtIndex][x][y + 1].heatDiffusivity
-				 + (this->grid [this->adtIndex][x][y - 1].temperature - this->grid [this->adtIndex][x][y].temperature) * this->grid [this->adtIndex][x][y - 1].heatDiffusivity
-				 + (this->grid [this->adtIndex][x + 1][y].temperature - this->grid [this->adtIndex][x][y].temperature) * this->grid [this->adtIndex][x + 1][y].heatDiffusivity
-				 + (this->grid [this->adtIndex][x - 1][y].temperature - this->grid [this->adtIndex][x][y].temperature) * this->grid [this->adtIndex][x - 1][y].heatDiffusivity
+				 + (this->grid [this->adtIndex][x][y + 1] - currentHeat) * this->prop [x][y + 1]
+				 + (this->grid [this->adtIndex][x][y - 1] - currentHeat) * this->prop [x][y - 1]
+				 + (this->grid [this->adtIndex][x + 1][y] - currentHeat) * this->prop [x + 1][y]
+				 + (this->grid [this->adtIndex][x - 1][y] - currentHeat) * this->prop [x - 1][y]
+				 + (this->normalHeat - currentHeat ) * HEAT_DISSIPATION
 				 ) * alpha
-				+ ( normalHeat - this->grid [this->adtIndex][x][y].temperature )
-				* HEAT_DISSIPATION
 				;
-			this->grid [nextAdtIndex][x][y].temperature =
-				this->grid [this->adtIndex][x][y].temperature + deltaHeat;
+			this->grid [nextAdtIndex][x][y] =
+				this->grid [this->adtIndex][x][y] + deltaHeat;
 		}
 	}
 	this->adtIndex = nextAdtIndex;
@@ -202,7 +148,7 @@ dumpState (ostream &os)
 	os << this->relativeTime;
 	for (int y = 1; y < this->size.y - 1; y++) {
 		for (int x = 1; x < this->size.x - 1; x++) {
-			os << '\t' << this->grid [this->adtIndex][x][y].temperature;
+			os << '\t' << this->grid [this->adtIndex][x][y];
 		}
 	}
 	os << '\n';
@@ -215,7 +161,7 @@ resetTemperature (double value)
 {
 	for (int x = this->size.x - 1; x >= 0; x--) {
 		for (int y = this->size.y - 1; y >= 0; y--) {
-			this->grid [this->adtIndex][x][y].temperature = value;
+			this->grid [this->adtIndex][x][y] = value;
 		}
 	}
 }

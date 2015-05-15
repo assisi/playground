@@ -61,6 +61,7 @@ namespace Enki
 		 /* peltier's parameters and configuration */
 		 static const Vector PELTIER_POSITION;
 		 static /*const*/ double PELTIER_THERMAL_RESPONSE;
+		 static const double PELTIER_RADIUS;
        static const double BRIDGE_LENGTH;
        static const double BRIDGE_WIDTH;
 
@@ -99,7 +100,7 @@ namespace Enki
 
     private:
         World* world_;
-        void createBridge (PointMesh *shape, Vector direction);
+        void createBridge (ExtendedWorld* world, Vector direction);
     };
 }
 

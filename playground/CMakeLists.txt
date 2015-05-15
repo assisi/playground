@@ -84,13 +84,13 @@ set(playground_SOURCES AssisiPlaygroundMain.cpp
                        ../handlers/CasuHandler.cpp
                        ../handlers/PhysicalObjectHandler.cpp
                        ../handlers/BeeHandler.cpp
-                       ../interactions/AbstractGridSimulation.cpp
                        ../interactions/LightConstants.cpp
                        ../interactions/LightSource.cpp
                        ../interactions/LightSourceFromAbove.cpp
                        ../interactions/LightSensor.cpp
                        ../interactions/WorldHeat.cpp
                        ../interactions/HeatSensor.cpp
+                       ../interactions/AbstractGrid.cpp
 			           ../interactions/VibrationSource.cpp
                        ../interactions/HeatActuatorMesh.cpp
                        ../interactions/HeatActuatorPointSource.cpp

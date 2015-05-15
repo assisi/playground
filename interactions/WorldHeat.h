@@ -9,26 +9,28 @@
 #include "extensions/ExtendedWorld.h"
 #include "extensions/PhysicSimulation.h"
 #include "interactions/AbstractGridSimulation.h"
+#include "interactions/AbstractGridProperties.h"
 
 namespace Enki
 {
-	struct Cell {
-		double temperature;
-		double heatDiffusivity;
-		Cell ();
-		Cell (const Cell &other);
-	};
-
 	/**
 	 * Provides a simulation of heat to be used in Enki.
 
 	 * <p> World heat is represented by a lattice grid.  The size of this
-	 * grid depends on world dimensions, scale and border size.  The heat in
-	 * a grid point depends on its current value and the value of the four
-	 * Moore neighbours.
+	 * grid depends on world dimensions, scale and border size.  The
+	 * temperature in a grid point depends on its current value and the
+	 * temperature and heat diffusivity of the four Moore neighbours.  We
+	 * also implement heat dissipation, meaning the temperature will tend to
+	 * world temperature.
+
+	 * <p> We use two grids.  A {@code AbstractGridSimulation} instance is
+	 * used to computed the temperature in the next iteration.  An {@code
+	 * AbstractGridProperties} instance is used to store grid properties,
+	 * namely heat diffusivity.
 	 */
 	class WorldHeat :
-		public AbstractGridSimulation<Cell>
+		public AbstractGridSimulation<double>,
+		public AbstractGridProperties<double>
 	{
 		/**
 		 * Value of alpha without the value of parameter {@code deltaTime}.  Alpha
@@ -75,10 +77,6 @@ namespace Enki
 		 * Heat in enki can diffuse through copper connections between CASUs.
 		 */
 		static const double THERMAL_DIFFUSIVITY_COPPER;
-
-		static const double DEFAULT_TEMPERATURE;
-		static const double DEFAULT_HEAT_DIFFUSIVITY;
-
 	public:
 		WorldHeat (double normalHeat, double gridScale, double borderSize, int logRate = 1);
 		virtual ~WorldHeat ();
