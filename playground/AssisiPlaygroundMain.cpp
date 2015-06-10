@@ -25,6 +25,12 @@
 #include <iostream>
 #include <fstream>
 
+// MAC workaround for Thomas
+#if defined __APPLE__
+#include <mach-o/dyld.h>
+#include <sys/param.h>
+#endif
+
 using namespace std;
 using namespace Enki;
 
@@ -90,11 +96,23 @@ int main(int argc, char *argv[])
     double maxVibration;
 	 double parallelismLevel = 1.0;
 
-    fs::path default_config = fs::read_symlink(fs::path("/proc/self/exe"));
+    fs::path default_config = fs::path("");
+    // MAC workaround for Thomas
+#if defined __APPLE__
+    char * pathbuf = new char[MAXPATHLEN];
+    uint32_t* bufsize = new uint32_t(MAXPATHLEN);
+    _NSGetExecutablePath(pathbuf, bufsize);
+    default_config = fs::path(pathbuf);
+    delete [] pathbuf;
+    delete bufsize;
+#elif defined __linux__
+    default_config = fs::read_symlink(fs::path("/proc/self/exe"));
+#endif
+
     default_config.remove_filename() /= "Playground.cfg";
 
     desc.add_options
-		 ()
+        ()
         ("help,h", "produce help message")
         ("nogui", "run without viewer")
         ("config_file,c", 
@@ -113,56 +131,56 @@ int main(int argc, char *argv[])
         ("Heat.scale", po::value<double>(&heat_scale), 
          "heat model scale")
         ("Heat.border_size", po::value<int>(&heat_border_size), "playground radius, in cm")
-         (
-          "Vibration.range",
-          po::value<double> (&Casu::VIBRATION_SOURCE_RANGE),
-          "vibration range, in cm"
-          )
-		(
-		 "Heat.log_file",
-		 po::value<string> (&heat_log_file_name)->default_value (""),
-		 "heat log file name"
-		 )
         (
-         "Vibration.maximum_amplitude", 
-         po::value<double> (&Casu::VIBRATION_SOURCE_MAXIMUM_AMPLITUDE),
-         "maximum amplitude of vibration"
-         )
+            "Vibration.range",
+            po::value<double> (&Casu::VIBRATION_SOURCE_RANGE),
+            "vibration range, in cm"
+            )
         (
-         "Vibration.amplitude_quadratic_decay", 
-         po::value<double> (&Casu::VIBRATION_SOURCE_AMPLITUDE_QUADRATIC_DECAY),
-         "quadratic decay of vibration amplitude"
-         )
+            "Heat.log_file",
+            po::value<string> (&heat_log_file_name)->default_value (""),
+            "heat log file name"
+            )
         (
-         "Vibration.noise", 
-         po::value<double> (&Casu::VIBRATION_SOURCE_NOISE),
-         "vibration frequency noise"
-         )
+            "Vibration.maximum_amplitude", 
+            po::value<double> (&Casu::VIBRATION_SOURCE_MAXIMUM_AMPLITUDE),
+            "maximum amplitude of vibration"
+            )
         (
-         "Peltier.thermal_response", 
-         po::value<double> (&Casu::PELTIER_THERMAL_RESPONSE),
-         "peltier thermal response"
-         )
+            "Vibration.amplitude_quadratic_decay", 
+            po::value<double> (&Casu::VIBRATION_SOURCE_AMPLITUDE_QUADRATIC_DECAY),
+            "quadratic decay of vibration amplitude"
+            )
         (
-         "Viewer.max_vibration",
-         po::value<double> (&maxVibration),
-         "maximum displayed vibration intensity"
-          )
-		 (
-		  "Simulation.timer_period",
-		  po::value<double> (&timerPeriod),
-		  "simulation timer period (in seconds)"
-		  )
-		 (
-		  "Simulation.parallelism_level",
-		  po::value<double> (&parallelismLevel),
-		  "Percentage of CPU threads to use"
-		  )
-		 (
-		  "Bee.scale_factor",
-		  po::value<double> (&Bee::SCALE_FACTOR),
-		  "bee scale factor"
-		  )
+            "Vibration.noise", 
+            po::value<double> (&Casu::VIBRATION_SOURCE_NOISE),
+            "vibration frequency noise"
+            )
+        (
+            "Peltier.thermal_response", 
+            po::value<double> (&Casu::PELTIER_THERMAL_RESPONSE),
+            "peltier thermal response"
+            )
+        (
+            "Viewer.max_vibration",
+            po::value<double> (&maxVibration),
+            "maximum displayed vibration intensity"
+            )
+        (
+             "Simulation.timer_period",
+             po::value<double> (&timerPeriod),
+             "simulation timer period (in seconds)"
+             )
+        (
+             "Simulation.parallelism_level",
+             po::value<double> (&parallelismLevel),
+             "Percentage of CPU threads to use"
+             )
+        (
+             "Bee.scale_factor",
+             po::value<double> (&Bee::SCALE_FACTOR),
+             "bee scale factor"
+             )
         ;
 
     po::variables_map vm;

@@ -8,6 +8,7 @@
 #include "ExtendedWorld.h"
 
 #include "interactions/VibrationSource.h"
+#include "interactions/AirPump.h"
 #include "interactions/NotSimulated.h"
 #include "interactions/WorldHeat.h"
 
@@ -105,4 +106,21 @@ double ExtendedWorld::getVibrationAmplitudeAt (const Point &position, double tim
 		}
 	}
 	return result;
+}
+
+double ExtendedWorld::getAirFlowIntensityAt (const Point &position) const
+{
+	Vector result (0, 0);
+	for (ObjectsIterator i = this->objects.begin (); i != this->objects.end (); ++i) {
+		PhysicalObject *po = (*i);
+		AirPump *airPump = dynamic_cast<AirPump *> (po);
+		if (airPump != NULL) {
+			try {
+				result += airPump->getAirFlowAt (position);
+			}
+			catch (NotSimulated *ns) {
+			}
+		}
+	}
+	return result.norm ();
 }

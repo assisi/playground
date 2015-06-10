@@ -85,6 +85,11 @@ namespace Enki
 		 * time.
 		 */
 		virtual double getVibrationAmplitudeAt (const Point &position, double time) const;
+
+		/**
+		 * Return the air flow intensity at the given position.
+		 */
+		virtual double getAirFlowIntensityAt (const Point &position) const;
 		// /**
 		//  * Return the vibration intensity sensed at the given position and
 		//  * time.

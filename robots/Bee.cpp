@@ -23,15 +23,18 @@ int sign(T val)
 
 namespace Enki
 {
-	double Bee::SCALE_FACTOR = 1.0;
+    double Bee::SCALE_FACTOR = 1.0;
+
+    const Vector Bee::AIR_FLOW_SENSOR_POSITION (0, 0);
+    const double Bee::AIR_FLOW_SENSOR_RANGE = 5;
 
     Bee::Bee(double scaleFactor) :
         DifferentialWheeled(0.4, 2, 0.0),
         object_sensors(5),
         color_r_(0.93), color_g_(0.79), color_b_(0)
     {
-		 collisionElasticity = 0.1;
-		 dryFrictionCoefficient=0.25;
+        collisionElasticity = 0.1;
+        dryFrictionCoefficient=0.25;
         // Set shape & color
 
         double len = 1.35; // Body length
@@ -58,25 +61,34 @@ namespace Enki
 
         int i = 0;
         for (double a = -pi/2; i < 5; i++, a += pi/4) 
-        {
-            object_sensors[i] = new ObjectSensor(this, 
-                                            Vector(len/2-sin(a)*w/2, sin(a)*w/2),
-                                            0, a, 10, 3731, 0, 0.7, 0);
+            {
+            object_sensors[i] = new ObjectSensor
+               (this, 
+                Vector(len/2-sin(a)*w/2, sin(a)*w/2),
+                0, a, 10, 3731, 0, 0.7, 0);
             addLocalInteraction(object_sensors[i]);
-        }
+            }
 
         double light_sensor_range = 10.0;
-        light_sensor_blue = new LightSensor(light_sensor_range, this,
-                                            Vector(0,0), 0.0, Light::Blue);
+        light_sensor_blue = new LightSensor
+           (light_sensor_range, this,
+            Vector(0,0), 0.0, Light::Blue);
         addLocalInteraction(light_sensor_blue);
 
         // Check in the model why is this necessary
         double minMeasurableHeat = 0.0;
         double maxMeasurableHeat = 100.0;
-        heat_sensor = new HeatSensor(this, Vector(0,0),
-                                     minMeasurableHeat,
-                                     maxMeasurableHeat);
+        heat_sensor = new HeatSensor
+           (this, Vector(0,0),
+            minMeasurableHeat,
+            maxMeasurableHeat);
         addPhysicInteraction(heat_sensor);
+
+        air_flow_sensor = new AirFlowSensor
+            (Bee::AIR_FLOW_SENSOR_RANGE,
+             this,
+             Bee::AIR_FLOW_SENSOR_POSITION);
+        addLocalInteraction (this->air_flow_sensor);
     }
 
     /* virtual */
