@@ -7,12 +7,16 @@ using namespace std;
 
 const double WorldHeat::THERMAL_DIFFUSIVITY_AIR = 1.9e-5;
 const double WorldHeat::THERMAL_DIFFUSIVITY_COPPER = 1.11e-4;
-const double HEAT_DISSIPATION = 0; // 1e-4;
+const double HEAT_DISSIPATION = 1e-6;
 
 WorldHeat::
-WorldHeat (double normalHeat, double gridScale, double borderSize, int logRate):
-	AbstractGrid (gridScale, borderSize),
+WorldHeat (const ExtendedWorld *world, double normalHeat, double gridScale, double borderSize, double concurrencyLevel, int logRate):
+	AbstractGrid (world, gridScale, borderSize),
+#ifdef WORLDHEAT_SERIAL
 	AbstractGridSimulation (),
+#else
+	AbstractGridParallelSimulation (concurrencyLevel, this, false),
+#endif
 	AbstractGridProperties (),
 	normalHeat (normalHeat),
 	logStream (NULL),
@@ -80,9 +84,6 @@ setHeatDiffusivityAt (const Point &pos, double value)
 void WorldHeat::
 initParameters (const ExtendedWorld *world)
 {
-	AbstractGrid::initParameters (world);
-	AbstractGridSimulation::initParameters (world);
-	AbstractGridProperties::initParameters (world);
 	for (int x = 0; x < this->size.x; x++) {
 		for (int y = 0; y < this->size.y; y++) {
 			for (int i = 0; i < 2; i++) {
@@ -110,6 +111,7 @@ computeNextState (double deltaTime)
 			this->iterationsToNextLog--;
 		}
 	}
+#ifdef WORLDHEAT_SERIAL
 	const int nextAdtIndex = 1 - this->adtIndex;
 	const double alpha = this->partialAlpha * deltaTime;
 	for (int x = 1; x < this->size.x - 1; x++) {
@@ -129,7 +131,34 @@ computeNextState (double deltaTime)
 		}
 	}
 	this->adtIndex = nextAdtIndex;
+#else
+	AbstractGridParallelSimulation::updateState (deltaTime);
+#endif
 }
+
+void WorldHeat::
+updateGrid (double deltaTime, int xmin, int ymin, int xmax, int ymax)
+{
+	const int nextAdtIndex = 1 - this->adtIndex;
+	const double alpha = this->partialAlpha * deltaTime;
+	for (int x = xmin; x < xmax; x++) {
+		for (int y = ymin; y < ymax; y++) {
+			const double currentHeat = this->grid [this->adtIndex][x][y];
+			const double deltaHeat =
+				(
+				 + (this->grid [this->adtIndex][x][y + 1] - currentHeat) * this->prop [x][y + 1]
+				 + (this->grid [this->adtIndex][x][y - 1] - currentHeat) * this->prop [x][y - 1]
+				 + (this->grid [this->adtIndex][x + 1][y] - currentHeat) * this->prop [x + 1][y]
+				 + (this->grid [this->adtIndex][x - 1][y] - currentHeat) * this->prop [x - 1][y]
+				 + (this->normalHeat - currentHeat ) * HEAT_DISSIPATION
+				 ) * alpha
+				;
+			this->grid [nextAdtIndex][x][y] =
+				this->grid [this->adtIndex][x][y] + deltaHeat;
+		}
+	}
+}
+
 
 void WorldHeat::
 dumpState (ostream &os)

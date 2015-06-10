@@ -22,20 +22,11 @@ const double pi = boost::math::constants::pi<double>();
 namespace Enki
 {
 
-	// void setHeatDiffusivity (Enki::Cell &cell)
-	// {
-	// 	cell.heatDiffusivity = WorldHeat::THERMAL_DIFFUSIVITY_COPPER;
-	// }
-
-	void setHeatDiffusivity (double &cell)
-	{
-		cell = WorldHeat::THERMAL_DIFFUSIVITY_COPPER;
-	}
-
 	// Bee-Casu geometry
 	const double Casu::BRIDGE_LENGTH = 4.5;
 	const double Casu::BRIDGE_WIDTH = 1.0;
 
+	const double Casu::THERMAL_DIFFUSIVITY_COPPER_BRIDGE = 0.5 * WorldHeat::THERMAL_DIFFUSIVITY_COPPER;
 
 	/*const*/ double Casu::VIBRATION_SOURCE_RANGE = 100;
 	const Vector Casu::VIBRATION_SOURCE_POSITION = Vector (0, 0);
@@ -152,6 +143,21 @@ namespace Enki
     // Add diagnostic led
     top_led = new DiagnosticLed(this);
 
+	 // Add bridges
+	 Matrix22 rot (yaw);
+	 if (bridgeMask & NORTH) {
+		 createBridge (world, rot * Point (0, 1));
+	 }
+	 if (bridgeMask & SOUTH) {
+	 	 createBridge (world, rot * Point (0, -1));
+	 }
+	 if (bridgeMask & EAST) {
+	 	 createBridge (world, rot * Point (1, 0));
+	 }
+	 if (bridgeMask & WEST) {
+	 	 createBridge (world, rot * Point (-1, 0));
+	 }
+
     // Add peltier actuator
 	 // TODO: make peltier parameters CASU constants
     peltier = new HeatActuatorMesh
@@ -161,20 +167,6 @@ namespace Enki
     this->addPhysicInteraction(this->peltier);
 	 world->worldHeat->drawCircle (WorldHeat::THERMAL_DIFFUSIVITY_COPPER, this->pos, PELTIER_RADIUS);
 
-	 // Add bridges
-	 Matrix22 rot (yaw);
-	 if (bridgeMask & NORTH) {
-		 createBridge (world, rot * Point (0, 1));
-	 }
-	 if (bridgeMask & SOUTH) {
-		 createBridge (world, rot * Point (0, -1));
-	 }
-	 if (bridgeMask & EAST) {
-		 createBridge (world, rot * Point (1, 0));
-	 }
-	 if (bridgeMask & WEST) {
-		 createBridge (world, rot * Point (-1, 0));
-	 }
 
 
 	 // Add vibration actuator
@@ -222,18 +214,42 @@ Casu::~Casu()
 void Casu::
 createBridge (ExtendedWorld* world, Vector direction)
 {
-	Point upperRight, lowerLeft;
+	std::vector<Point> polygon;
+	polygon.reserve (4);
 	Point p1, p2;
 	p2 = direction.perp ();
 	p2 *= Casu::BRIDGE_WIDTH / 2;
+	p2 += this->pos;
+	polygon.push_back (p2);
 	p1 = direction;
 	p1 *= Casu::BRIDGE_LENGTH;
-	p1 -= p2;
-	lowerLeft.x = std::min (p1.x, p2.x);
-	lowerLeft.y = std::min (p1.y, p2.y);
-	upperRight.x = std::max (p1.x, p2.x);
-	upperRight.y = std::max (p1.y, p2.y);
-	world->worldHeat->drawUprightRectangle (WorldHeat::THERMAL_DIFFUSIVITY_COPPER, lowerLeft, upperRight);
+	p1 += p2;
+	polygon.push_back (p1);
+	p1 = direction;
+	p1 *= Casu::BRIDGE_LENGTH;
+	p2 = direction.perp ();
+	p2 *= -Casu::BRIDGE_WIDTH / 2;
+	p1 += p2;
+	p1 += this->pos;
+	polygon.push_back (p1);
+	p2 += this->pos;
+	polygon.push_back (p2);
+	world->worldHeat->drawPolygon (Casu::THERMAL_DIFFUSIVITY_COPPER_BRIDGE, polygon);
+
+
+
+	// Point upperRight, lowerLeft;
+	// Point p1, p2;
+	// p2 = direction.perp ();
+	// p2 *= Casu::BRIDGE_WIDTH / 2;
+	// p1 = direction;
+	// p1 *= Casu::BRIDGE_LENGTH;
+	// p1 -= p2;
+	// lowerLeft.x = std::min (p1.x, p2.x);
+	// lowerLeft.y = std::min (p1.y, p2.y);
+	// upperRight.x = std::max (p1.x, p2.x);
+	// upperRight.y = std::max (p1.y, p2.y);
+	// world->worldHeat->drawUprightRectangle (Casu::THERMAL_DIFFUSIVITY_COPPER_BRIDGE, lowerLeft, upperRight);
 
 }
 

@@ -2,13 +2,9 @@
 #define __ABSTRACT_GRID_SIMULATION_H
 
 #include <vector>
-#include <iostream>
-#include <limits>
 
 #include "extensions/ExtendedWorld.h"
-#include "extensions/PhysicSimulation.h"
-
-#include "AbstractGrid.h"
+#include "interactions/AbstractGrid.h"
 
 namespace Enki
 {
@@ -38,26 +34,31 @@ namespace Enki
 		 * times class {@code AbstractGrid}.
 		 */
 		AbstractGridSimulation ():
-			AbstractGrid (-1, -1),
+			AbstractGrid (NULL, -1, -1),
 			adtIndex (0)
 		{
+			this->initFields ();
 		}
 		/**
 		 * Construct a new grid.
 		 */
-		AbstractGridSimulation (double gridScale, double borderSize):
-			AbstractGrid (gridScale, borderSize),
+		AbstractGridSimulation (const ExtendedWorld *world, double gridScale, double borderSize):
+			AbstractGrid (world, gridScale, borderSize),
 			adtIndex (0)
 		{
+			this->initFields ();
 		}
 
 		virtual ~AbstractGridSimulation () {}
 
-	public:
+	private:
 		/**
-		 * Initialise this physic interaction with the given world.
+		 * Initialise instance fields after the constructor has calculated
+		 * the grid size.
+		 *
+		 * <p> With C++11 this would be in the most general constructor.
 		 */
-		virtual void initParameters (const ExtendedWorld *world)
+		void initFields ()
 		{
 			this->grid [0].resize (this->size.x);
 			this->grid [1].resize (this->size.x);
@@ -66,6 +67,7 @@ namespace Enki
 				this->grid [1][x].resize (this->size.y);
 			}
 		}
+	public:
 		/**
 		 * Fill the grid with the given value.
 		 */

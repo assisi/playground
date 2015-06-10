@@ -1,9 +1,10 @@
 #ifndef __ABSTRACT_GRID_H
 #define __ABSTRACT_GRID_H
 
-#include <iostream>
+#include <enki/Geometry.h>
 
 #include "extensions/ExtendedWorld.h"
+#include "extensions/PhysicSimulation.h"
 
 namespace Enki
 {
@@ -33,18 +34,12 @@ namespace Enki
 		const double gridScale;
 		/**
 		 * Grid size.
-		 *
-		 * <p> Should be constant but has to be initialised in method {@code
-		 * initParameters(const ExtendedWorld*)}.
 		 */
-		Enki::Vector size;
+		const Enki::Vector size;
 		/**
 		 * Smallest world coordinates of cell (0,0) in the grid.
-		 *
-		 * <p> Should be constant but has to be initialised in method {@code
-		 * initParameters(const ExtendedWorld*)}.
 		 */
-		Enki::Vector origin;
+		const Enki::Vector origin;
 
 	protected:
 		/**
@@ -52,27 +47,21 @@ namespace Enki
 		 */
 		const double borderSize;
 		/**
-		 * @param gridScale
-		 * @param borderSize
+		 * Construct a new grid for the given world.
+		 *
+		 * @param world The world where the grid is going to be.
+		 *
+		 * @param gridScale Grid scale in respect to the world.
+		 *
+		 * @param borderSize Space between world border and grid border.
 		 */
-		AbstractGrid (double gridScale, double borderSize):
-			gridScale (gridScale),
-			borderSize (borderSize)
-		{
-		}
+		AbstractGrid (const ExtendedWorld *world, double gridScale, double borderSize);
+
 		virtual ~AbstractGrid () {}
-
-	public:
-		/**
-		 * Initialise grid fields with the given world.
-		 */
-		virtual void initParameters (const ExtendedWorld *world);
-
-	protected:
 		/**
 		 * Convert a world position to grid position.
 		 */
-		void toIndex (const Enki::Vector& position, int &x, int &y) const
+		inline void toIndex (const Enki::Vector& position, int &x, int &y) const
 		{
 			x = round ((position.x - this->origin.x) / this->gridScale);
 			y = round ((position.y - this->origin.y) / this->gridScale);
@@ -80,7 +69,7 @@ namespace Enki
 		/**
 		 * Scale a world value to grid index.
 		 */
-		int scale (double value)
+		inline int scale (double value)
 		{
 			return round (value / this->gridScale);
 		}

@@ -88,6 +88,7 @@ int main(int argc, char *argv[])
     int heat_border_size;
 
     double maxVibration;
+	 double parallelismLevel = 1.0;
 
     fs::path default_config = fs::read_symlink(fs::path("/proc/self/exe"));
     default_config.remove_filename() /= "Playground.cfg";
@@ -153,6 +154,11 @@ int main(int argc, char *argv[])
 		  "simulation timer period (in seconds)"
 		  )
 		 (
+		  "Simulation.parallelism_level",
+		  po::value<double> (&parallelismLevel),
+		  "Percentage of CPU threads to use"
+		  )
+		 (
 		  "Bee.scale_factor",
 		  po::value<double> (&Bee::SCALE_FACTOR),
 		  "bee scale factor"
@@ -187,7 +193,7 @@ int main(int argc, char *argv[])
 			texture.height(),
 			(const uint32_t*) texture.constBits ()));
 
-	heatModel = new WorldHeat (env_temp, heat_scale, heat_border_size);
+    heatModel = new WorldHeat (world, env_temp, heat_scale, heat_border_size, parallelismLevel);
 	if (heat_log_file_name != "") {
 		heatModel->logToStream (heat_log_file_name);
 	}

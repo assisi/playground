@@ -1,15 +1,30 @@
 #include <limits>
 
+#ifdef DEBUG
+#include <iostream>
+#endif
+
 #include "AbstractGrid.h"
 
 using namespace std;
 using namespace Enki;
 
-void AbstractGrid::
-initParameters (const ExtendedWorld *world)
+Point gridSize (const ExtendedWorld *world, double gridScale, double borderSize);
+Point gridOrigin (const ExtendedWorld *world, double gridScale, double borderSize);
+
+AbstractGrid::
+AbstractGrid (const ExtendedWorld *world, double gridScale, double borderSize):
+	gridScale (gridScale),
+	borderSize (borderSize),
+	size (gridSize (world, gridScale, borderSize)),
+	origin (gridOrigin (world, gridScale, borderSize))
+{
+}
+
+void gridProperties (const ExtendedWorld *world, double gridScale, double borderSize, Point *size, Point *origin)
 {
 	Enki::Vector min, max;
-
+	// check type of wall
 	switch (world->wallsType) {
 	case World::WALLS_SQUARE:
 		min = Point (0, 0);
@@ -36,20 +51,40 @@ initParameters (const ExtendedWorld *world)
 	default:
 		throw new string ("AbstractGrid::initParameters(const ExtendedWorld*): Unhandled wall type");
 	}
-
+	// adjust to border size
 	min.x -= borderSize + gridScale;
 	min.y -= borderSize + gridScale;
 	max.x += borderSize + gridScale;
 	max.y += borderSize + gridScale;
-	this->size = (max - min) / gridScale;
-	this->size.x = ceil (this->size.x);
-	this->size.y = ceil (this->size.y);
-	this->origin = min;
+	// compute output parameters
+	if (size) {
+		*size = (max - min) / gridScale;
+		size->x = ceil (size->x);
+		size->y = ceil (size->y);
+	}
+	if (origin) {
+		*origin = min;
+	}
 #ifdef DEBUG
 	std::cout
-		<< "Abstract Grid Simulation\nmin: " << min
+		<< "Abstract Grid\nmin: " << min
 		<< "\nmax: " << max
+		<< "\norigin: " << origin
 		<< "\nsize: " << size
 		<< "\ngrid scale: " << gridScale << std::endl;
 #endif
+}
+
+Point gridSize (const ExtendedWorld *world, double gridScale, double borderSize)
+{
+	Point result;
+	gridProperties (world, gridScale, borderSize, &result, NULL);
+	return result;
+}
+
+Point gridOrigin (const ExtendedWorld *world, double gridScale, double borderSize)
+{
+	Point result;
+	gridProperties (world, gridScale, borderSize, NULL, &result);
+	return result;
 }

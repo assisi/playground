@@ -64,6 +64,7 @@ namespace Enki
 		 static const double PELTIER_RADIUS;
        static const double BRIDGE_LENGTH;
        static const double BRIDGE_WIDTH;
+       static const double THERMAL_DIFFUSIVITY_COPPER_BRIDGE;
 
     public:
         //! Create a CASU

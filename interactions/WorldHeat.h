@@ -8,7 +8,7 @@
 
 #include "extensions/ExtendedWorld.h"
 #include "extensions/PhysicSimulation.h"
-#include "interactions/AbstractGridSimulation.h"
+#include "interactions/AbstractGridParallelSimulation.h"
 #include "interactions/AbstractGridProperties.h"
 
 namespace Enki
@@ -29,7 +29,11 @@ namespace Enki
 	 * namely heat diffusivity.
 	 */
 	class WorldHeat :
+#ifdef WORLDHEAT_SERIAL
 		public AbstractGridSimulation<double>,
+#else
+		public AbstractGridParallelSimulation<WorldHeat, double>,
+#endif
 		public AbstractGridProperties<double>
 	{
 		/**
@@ -78,7 +82,7 @@ namespace Enki
 		 */
 		static const double THERMAL_DIFFUSIVITY_COPPER;
 	public:
-		WorldHeat (double normalHeat, double gridScale, double borderSize, int logRate = 1);
+		WorldHeat (const ExtendedWorld *world, double normalHeat, double gridScale, double borderSize, double concurrencyLevel, int logRate = 1);
 		virtual ~WorldHeat ();
 		/**
 		 * Checks if this instance of the heat model combined with the given
@@ -161,12 +165,17 @@ namespace Enki
 		 * Reset temperature to given value.  Heat dissipation is NOT changed.
 		 */
 		void resetTemperature (double value);
-	protected:
+	// protected:
+	// 	/**
+	// 	 * Update the heat grid and return the largest difference between two
+	// 	 * adjacent grid cells.
+	// 	 */
+	// 	double updateGrid (double deltaTime);
+	public:
 		/**
-		 * Update the heat grid and return the largest difference between two
-		 * adjacent grid cells.
+		 * Update part of the grid.
 		 */
-		double updateGrid (double deltaTime);
+		void updateGrid (double deltaTime, int xmin, int ymin, int xmax, int ymax);
 	};
 }
 
