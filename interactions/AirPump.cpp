@@ -7,6 +7,8 @@
 
 #include <limits>
 
+#include <stdio.h>
+
 #include "AirPump.h"
 
 using namespace Enki;
@@ -23,6 +25,12 @@ AirPump::~AirPump ()
 {
 }
 
+void AirPump::
+init (double dt, Enki::World* w)
+{
+	Component::init ();
+	printf ("AirPump::  %10p  position %3f %3f\n", this->Component::owner, this->absolutePosition.x, this->absolutePosition.y);
+}
 
 Vector AirPump::getAirFlowAt (const Point &position) const
 {
