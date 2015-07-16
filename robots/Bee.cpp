@@ -27,7 +27,7 @@ namespace Enki
 
     const Vector Bee::AIR_FLOW_SENSOR_POSITION (0, 0);
     /*const*/ double Bee::AIR_FLOW_SENSOR_RANGE = 5;
-    const double Bee::AIR_FLOW_SENSOR_ORIENTATION = pi / 3;
+    const double Bee::AIR_FLOW_SENSOR_ORIENTATION = 0;
 
     Bee::Bee(double scaleFactor) :
         DifferentialWheeled(0.4, 2, 0.0),
