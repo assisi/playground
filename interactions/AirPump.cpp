@@ -7,7 +7,11 @@
 
 #include <limits>
 
+#include <boost/math/constants/constants.hpp>
+
 #include "AirPump.h"
+
+const double pi = boost::math::constants::pi<double>();
 
 using namespace Enki;
 
@@ -23,6 +27,11 @@ AirPump::~AirPump ()
 {
 }
 
+void AirPump::
+init (double dt, Enki::World* w)
+{
+	Component::init ();
+}
 
 Vector AirPump::getAirFlowAt (const Point &position) const
 {
@@ -33,12 +42,24 @@ Vector AirPump::getAirFlowAt (const Point &position) const
 	else if (delta.norm2 () > this->LocalInteraction::r * this->LocalInteraction::r) {
 		return Vector (0, 0);
 	}
-	else if (fabs (delta.angle () - this->absoluteOrientation) > this->aperture) {
-		return Vector (0, 0);
-	}
 	else {
-		double x = intensity * cos (this->absoluteOrientation);
-		double y = intensity * sin (this->absoluteOrientation);
-		return Vector (x, y);
+		double deltangle = delta.angle ();
+		double diff = deltangle - this->absoluteOrientation;
+		while (diff > pi) {
+			diff -= 2 * pi;
+		}
+		while (diff < -pi) {
+			diff += 2 * pi;
+		}
+		if (fabs (diff) > this->aperture) {
+			return Vector (0, 0);
+		}
+		else {
+			// double x = intensity * cos (this->absoluteOrientation);
+			// double y = intensity * sin (this->absoluteOrientation);
+			double x = intensity * cos (deltangle);
+			double y = intensity * sin (deltangle);
+			return Vector (x, y);
+		}
 	}
 }

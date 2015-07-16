@@ -20,11 +20,11 @@ const double pi = boost::math::constants::pi<double>();
 
 namespace Enki
 {
-    const int Casu::AIR_PUMP_QUANTITY = 5;
-    const double Casu::AIR_PUMP_DISTANCE = 2.5;
-    const double Casu::AIR_PUMP_RANGE = 5;
+    const int Casu::AIR_PUMP_QUANTITY = 1;
+    const double Casu::AIR_PUMP_DISTANCE = 0;
+    /*const*/ double Casu::AIR_PUMP_RANGE = 5;
     const double Casu::AIR_PUMP_ORIENTATION = 0;
-    const double Casu::AIR_PUMP_APERTURE = 2 * pi / (AIR_PUMP_QUANTITY / 2);
+    const double Casu::AIR_PUMP_APERTURE = 2 * pi / AIR_PUMP_QUANTITY / 2;
 
     /*const*/ double Casu::VIBRATION_SOURCE_RANGE = 100;
     const Vector Casu::VIBRATION_SOURCE_POSITION = Vector (0, 0);
@@ -176,7 +176,7 @@ namespace Enki
 
         // Add air pump actuator
         for (int i = 0; i < Casu::AIR_PUMP_QUANTITY; i++) {
-            double angle = Casu::AIR_PUMP_ORIENTATION + i * pi / Casu::AIR_PUMP_QUANTITY;
+            double angle = Casu::AIR_PUMP_ORIENTATION + i * 2 * pi / Casu::AIR_PUMP_QUANTITY;
             Vector position (Casu::AIR_PUMP_DISTANCE * cos (angle), Casu::AIR_PUMP_DISTANCE * sin (angle));
             AirPump *airPump = new AirPump
                 (Casu::AIR_PUMP_RANGE,
@@ -186,6 +186,7 @@ namespace Enki
                  Casu::AIR_PUMP_APERTURE);
             airPump->setCylindric(0, 0, -1); // Set to point object
             world_->addObject (airPump);
+            addLocalInteraction (airPump);
             this->air_pumps [i] = airPump;
         }
     }

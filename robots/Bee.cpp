@@ -26,7 +26,8 @@ namespace Enki
     double Bee::SCALE_FACTOR = 1.0;
 
     const Vector Bee::AIR_FLOW_SENSOR_POSITION (0, 0);
-    const double Bee::AIR_FLOW_SENSOR_RANGE = 5;
+    /*const*/ double Bee::AIR_FLOW_SENSOR_RANGE = 5;
+    const double Bee::AIR_FLOW_SENSOR_ORIENTATION = 0;
 
     Bee::Bee(double scaleFactor) :
         DifferentialWheeled(0.4, 2, 0.0),
@@ -87,7 +88,8 @@ namespace Enki
         air_flow_sensor = new AirFlowSensor
             (Bee::AIR_FLOW_SENSOR_RANGE,
              this,
-             Bee::AIR_FLOW_SENSOR_POSITION);
+             Bee::AIR_FLOW_SENSOR_POSITION,
+             Bee::AIR_FLOW_SENSOR_ORIENTATION);
         addLocalInteraction (this->air_flow_sensor);
     }
 

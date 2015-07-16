@@ -170,10 +170,11 @@ namespace Enki
             send_multipart(socket, ca.first, "Color", "ColorVal", data);
 
             /* Publish air flow sensor */
-            Airflow airflow;
-				airflow.set_intensity (ca.second->air_flow_sensor->intensity.norm ());
-				airflow.SerializeToString (&data);
-				send_multipart (socket, ca.first, "AirFlow", "Intensity", data);
+            AirflowReading airflowReading;
+				airflowReading.set_intensity (ca.second->air_flow_sensor->intensity.norm ());
+				airflowReading.set_direction (ca.second->air_flow_sensor->intensity.angle ());
+				airflowReading.SerializeToString (&data);
+				send_multipart (socket, ca.first, "Airflow", "Reading", data);
 
             /* Publish other stuff as necessary */
         }
