@@ -26,7 +26,7 @@ namespace Enki
     double Bee::SCALE_FACTOR = 1.0;
 
     const Vector Bee::AIR_FLOW_SENSOR_POSITION (0, 0);
-    const double Bee::AIR_FLOW_SENSOR_RANGE = 5;
+    /*const*/ double Bee::AIR_FLOW_SENSOR_RANGE = 5;
     const double Bee::AIR_FLOW_SENSOR_ORIENTATION = pi / 3;
 
     Bee::Bee(double scaleFactor) :

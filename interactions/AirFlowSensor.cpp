@@ -1,8 +1,6 @@
 #include "AirFlowSensor.h"
 #include "AirPump.h"
 
-#include <stdio.h>
-
 using namespace Enki;
 
 AirFlowSensor::AirFlowSensor (double range, Enki::Robot* owner, Enki::Vector relativePosition, double relativeOrientation):
@@ -20,7 +18,6 @@ init (double dt, Enki::World* w)
 {
 	this->intensity = Vector (0, 0);
 	Component::init ();
-	printf ("AirFlowSensor::  %10p  position %3f %3f\n", this->Component::owner, this->absolutePosition.x, this->absolutePosition.y);
 }
 
 void AirFlowSensor::
