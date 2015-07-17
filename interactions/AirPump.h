@@ -73,6 +73,8 @@ namespace Enki {
 		{
 			this->intensity = v;
 		}
+
+		virtual void init (double dt, Enki::World* w);
 	};
 }
 

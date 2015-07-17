@@ -148,6 +148,16 @@ int main(int argc, char *argv[])
             "heat log file name"
             )
         (
+            "AirFlow.pump_range",
+            po::value<double> (&Casu::AIR_PUMP_RANGE),
+            "maximum range of CASU air pump"
+            )
+        (
+            "AirFlow.sensor_range",
+            po::value<double> (&Bee::AIR_FLOW_SENSOR_RANGE),
+            "maximum range of Bee air flow sensor"
+            )
+        (
             "Vibration.maximum_amplitude", 
             po::value<double> (&Casu::VIBRATION_SOURCE_MAXIMUM_AMPLITUDE),
             "maximum amplitude of vibration"

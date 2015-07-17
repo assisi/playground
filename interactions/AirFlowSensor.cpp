@@ -3,9 +3,9 @@
 
 using namespace Enki;
 
-AirFlowSensor::AirFlowSensor (double range, Enki::Robot* owner, Enki::Vector relativePosition):
+AirFlowSensor::AirFlowSensor (double range, Enki::Robot* owner, Enki::Vector relativePosition, double relativeOrientation):
 	LocalInteraction (range, owner),
-	Component (owner, relativePosition, OMNIDIRECTIONAL)
+	Component (owner, relativePosition, relativeOrientation)
 {
 }
 
@@ -34,4 +34,11 @@ objectStep (double dt, Enki::World* w, Enki::PhysicalObject *po)
 	}
 
 	this->intensity += airPump->getAirFlowAt (this->absolutePosition);
+}
+
+void AirFlowSensor::
+finalize (double dt, Enki::World* w)
+{
+	Matrix22 rot (-this->absoluteOrientation);
+	this->intensity = rot * this->intensity;
 }
