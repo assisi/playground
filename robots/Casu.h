@@ -70,7 +70,7 @@ namespace Enki
        /* air pump's parameters and configuration */
        static const int AIR_PUMP_QUANTITY;
        static const double AIR_PUMP_DISTANCE;
-       static const double AIR_PUMP_RANGE;
+       static /*const*/ double AIR_PUMP_RANGE;
        static const double AIR_PUMP_ORIENTATION;
        static const double AIR_PUMP_APERTURE;
 
