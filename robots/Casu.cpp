@@ -70,13 +70,15 @@ namespace Enki
     /*const*/ double Casu::PELTIER_THERMAL_RESPONSE = 0.3;
     const double Casu::PELTIER_RADIUS = 1.6;
 
-    Casu::Casu(double yaw, ExtendedWorld* world, double ambientTemperature, int bridgeMask) :
+    Casu::Casu(Vector pos, double yaw, ExtendedWorld* world, double ambientTemperature, int bridgeMask) :
         world_(world),
         range_sensors(6),
         vibration_sensors (Casu::NUMBER_VIBRATION_SENSORS),
         temp_sensors(TEMP_SENS_COUNT),
         air_pumps (Casu::AIR_PUMP_QUANTITY)
     {
+        this->pos = pos;
+        this->angle = yaw;
   
         // Set physical properties
         double radius = 1;
