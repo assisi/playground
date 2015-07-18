@@ -13,7 +13,7 @@ HeatActuatorPointSource::HeatActuatorPointSource
 	Component (owner, relativePosition, Component::OMNIDIRECTIONAL), 
 	heat (ambientTemperature),
 	thermalResponseTime (thermalResponseTime),
-	switchedOn (true),
+	switchedOn (false),
 	recomputeHeatDistribution (false)
 {
 	Component::init ();

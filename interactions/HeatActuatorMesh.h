@@ -29,7 +29,7 @@ namespace Enki
 		public HeatActuatorPointSource
 	{
 		/**
-		 * The points that compose this heat actuator.
+		 * The points that compose the heat source of this actuator.
 		 */
 		const PointMesh *mesh;
 	public:
@@ -65,12 +65,6 @@ namespace Enki
 			double innerRadius,
 			double outerRadius,
 			int numberPoints);
-		HeatActuatorMesh (
-			Enki::Robot* owner,
-			Enki::Vector relativePosition,
-			double thermalResponseTime,
-			double ambientTemperature,
-			const PointMesh *mesh);
 		HeatActuatorMesh(const HeatActuatorMesh& orig);
 		virtual ~HeatActuatorMesh();
 		virtual void step (double dt, PhysicSimulation* w);
