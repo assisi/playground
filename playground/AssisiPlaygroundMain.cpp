@@ -142,6 +142,11 @@ int main(int argc, char *argv[])
             "heat log file name"
             )
         (
+            "Heat.cell_dissipation",
+            po::value<double> (&WorldHeat::CELL_DISSIPATION),
+            "heat lost by cells directly to outside world"
+            )
+        (
             "AirFlow.pump_range",
             po::value<double> (&Casu::AIR_PUMP_RANGE),
             "maximum range of CASU air pump"
