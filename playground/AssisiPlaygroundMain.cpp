@@ -61,6 +61,11 @@ static double timerPeriod = 0.01;
  */
 static const double DELTA_TIME = .03;
 
+static double cameraPosX = 0;
+static double cameraPosY = 0;
+static double cameraAltitude = 1;
+static char layer = 'N';
+
 /**
  * Semaphore used in the headless simulation mode with an alarm to block the
  * main thread.
@@ -182,6 +187,15 @@ int main(int argc, char *argv[])
             "maximum displayed vibration intensity"
             )
         (
+            "Viewer.no_help",
+            "do not show help text"
+            )
+        (
+            "Viewer.layer",
+            po::value<char> (&layer),
+            "which data layer should be displayed by default: N none, H heat, V vibration, A airflow"
+            )
+        (
              "Simulation.timer_period",
              po::value<double> (&timerPeriod),
              "simulation timer period (in seconds)"
@@ -196,6 +210,21 @@ int main(int argc, char *argv[])
              po::value<double> (&Bee::SCALE_FACTOR),
              "bee scale factor"
              )
+       (
+        "Camera.pos_x",
+        po::value<double> (&cameraPosX),
+        "camera x position"
+        )
+       (
+        "Camera.pos_y",
+        po::value<double> (&cameraPosY),
+        "camera y position"
+        )
+       (
+        "Camera.altitude",
+        po::value<double> (&cameraAltitude),
+        "camera altitude"
+        )
         ;
 
     po::variables_map vm;
@@ -249,6 +278,31 @@ int main(int argc, char *argv[])
 			cerr << "Parameters of heat model are not valid!\nExiting.\n";
 			return 1;
 		}
+      if (vm.count ("Camera.pos_x") > 0
+          || vm.count ("Camera.pos_y") > 0
+          || vm.count ("Camera.altitude") > 0) {
+         // viewer.setCameraPosition (cameraPosX, cameraPosY, cameraAltitude);
+      }
+      if (vm.count ("Viewer.no_help") > 0) {
+         viewer.showHelp = false;
+      }
+      if (vm.count ("Viewer.layer") > 0) {
+         switch (layer) {
+         case 'H':
+            viewer.layerToDraw = AssisiPlayground::HEAT;
+            break;
+         case 'V':
+            viewer.layerToDraw = AssisiPlayground::VIBRATION;
+            break;
+         case 'A':
+            viewer.layerToDraw = AssisiPlayground::AIR_FLOW;
+            break;
+         case 'N':
+         default:
+            viewer.layerToDraw = AssisiPlayground::NONE;
+            break;
+         }
+      }
 		viewer.show ();
 	
 		return app.exec();
