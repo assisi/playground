@@ -281,7 +281,7 @@ int main(int argc, char *argv[])
       if (vm.count ("Camera.pos_x") > 0
           || vm.count ("Camera.pos_y") > 0
           || vm.count ("Camera.altitude") > 0) {
-         // viewer.setCameraPosition (cameraPosX, cameraPosY, cameraAltitude);
+         viewer.setCameraPosition (-cameraPosX, -cameraPosY, cameraAltitude);
       }
       if (vm.count ("Viewer.no_help") > 0) {
          viewer.showHelp = false;
