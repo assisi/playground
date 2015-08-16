@@ -81,6 +81,11 @@ namespace Enki
 		 * Heat in enki can diffuse through copper connections between CASUs.
 		 */
 		static const double THERMAL_DIFFUSIVITY_COPPER;
+		/**
+		 * Cells loose heat directly to the outside world, not only through border
+		 * cells.
+		 */
+		static /*const*/ double CELL_DISSIPATION;
 	public:
 		WorldHeat (const ExtendedWorld *world, double normalHeat, double gridScale, double borderSize, double concurrencyLevel, int logRate = 1);
 		virtual ~WorldHeat ();
