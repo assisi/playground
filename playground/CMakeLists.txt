@@ -11,7 +11,7 @@ find_package(Threads)
 
 find_package(ZeroMQ REQUIRED)
 
-find_package(Boost COMPONENTS program_options filesystem system thread REQUIRED)
+find_package(Boost COMPONENTS program_options filesystem system thread timer REQUIRED)
 
 # Set up compilation of protobuffer files
 find_package(Protobuf REQUIRED)

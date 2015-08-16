@@ -56,15 +56,22 @@ static WorldHeat *heatModel;
 static double timerPeriod = 0.01;
 
 /**
+ * Camera view parameters.
+ */
+static double cameraPosX = 0;
+static double cameraPosY = 0;
+static double cameraAltitude = 1;
+static char layer = 'N';
+
+/**
  * Delta time used to update world state.  It is equal to the value used by
  * enki.  Unit is seconds.
  */
 static const double DELTA_TIME = .03;
 
-static double cameraPosX = 0;
-static double cameraPosY = 0;
-static double cameraAltitude = 1;
-static char layer = 'N';
+static unsigned int skewMonitorRate = 60;
+
+static double skewReportThreshold = 0.05;
 
 /**
  * Semaphore used in the headless simulation mode with an alarm to block the
@@ -200,55 +207,65 @@ int main(int argc, char *argv[])
             "which data layer should be displayed by default: N none, H heat, V vibration, A airflow"
             )
         (
-             "Simulation.timer_period",
-             po::value<double> (&timerPeriod),
-             "simulation timer period (in seconds)"
-             )
-        (
-             "Simulation.parallelism_level",
-             po::value<double> (&parallelismLevel),
-             "Percentage of CPU threads to use"
-             )
-        (
-             "Bee.body_length",
-             po::value<double> (&bee_body_length),
-             "Bee body length"
-             )
-        (
-             "Bee.body_width",
-             po::value<double> (&bee_body_width),
-             "Bee body width"
-             )
-        (
-             "Bee.body_height",
-             po::value<double> (&bee_body_height),
-             "Bee body height"
-             )
-        (
-             "Bee.body_mass",
-             po::value<double> (&bee_body_mass),
-             "Bee body mass"
+            "Simulation.timer_period",
+            po::value<double> (&timerPeriod),
+            "simulation timer period (in seconds)"
             )
         (
-             "Bee.max_speed",
-             po::value<double> (&bee_max_speed),
-             "Maximum bee motion velocity"
+            "Simulation.parallelism_level",
+            po::value<double> (&parallelismLevel),
+            "Percentage of CPU threads to use"
+            )
+        (
+            "Bee.body_length",
+            po::value<double> (&bee_body_length),
+            "Bee body length"
+            )
+        (
+            "Bee.body_width",
+            po::value<double> (&bee_body_width),
+            "Bee body width"
+            )
+        (
+            "Bee.body_height",
+            po::value<double> (&bee_body_height),
+            "Bee body height"
+            )
+        (
+            "Bee.body_mass",
+            po::value<double> (&bee_body_mass),
+            "Bee body mass"
+            )
+        (
+            "Bee.max_speed",
+            po::value<double> (&bee_max_speed),
+            "Maximum bee motion velocity"
+            )
+        (
+            "Camera.pos_x",
+            po::value<double> (&cameraPosX),
+            "camera x position"
+            )
+       (
+           "Camera.pos_y",
+           po::value<double> (&cameraPosY),
+           "camera y position"
+           )
+        (
+           "Camera.altitude",
+           po::value<double> (&cameraAltitude),
+           "camera altitude"
+            )
+        (
+             "Skew.rate",
+             po::value<unsigned int> (&skewMonitorRate),
+             "Rate at which we check skewness between real time and simulated time"
              )
-       (
-        "Camera.pos_x",
-        po::value<double> (&cameraPosX),
-        "camera x position"
-        )
-       (
-        "Camera.pos_y",
-        po::value<double> (&cameraPosY),
-        "camera y position"
-        )
-       (
-        "Camera.altitude",
-        po::value<double> (&cameraAltitude),
-        "camera altitude"
-        )
+        (
+             "Skew.threshold",
+             po::value<double> (&skewReportThreshold),
+             "Threshold to print a message because of skewness between real time and simulated time"
+            )
         ;
 
     po::variables_map vm;
@@ -273,11 +290,13 @@ int main(int argc, char *argv[])
     //texture.invertPixels(QImage::InvertRgba);
     
     world = new WorldExt (r, pub_address, sub_address,
-		Color::gray, 
-		World::GroundTexture (
-			texture.width(),
-			texture.height(),
-			(const uint32_t*) texture.constBits ()));
+        Color::gray, 
+        World::GroundTexture (
+            texture.width(),
+            texture.height(),
+            (const uint32_t*) texture.constBits ()),
+        skewMonitorRate,
+        skewReportThreshold);
 
     heatModel = new WorldHeat (world, env_temp, heat_scale, heat_border_size, parallelismLevel);
 	if (heat_log_file_name != "") {
