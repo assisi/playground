@@ -94,7 +94,11 @@ int main(int argc, char *argv[])
     int heat_border_size;
 
     double maxVibration;
-	 double parallelismLevel = 1.0;
+    double parallelismLevel = 1.0;
+
+    // Bee physical parameters
+    double bee_body_length, bee_body_width, bee_body_height,
+        bee_body_mass, bee_max_speed;
 
     fs::path default_config = fs::path("");
     // MAC workaround for Thomas
@@ -187,9 +191,29 @@ int main(int argc, char *argv[])
              "Percentage of CPU threads to use"
              )
         (
-             "Bee.scale_factor",
-             po::value<double> (&Bee::SCALE_FACTOR),
-             "bee scale factor"
+             "Bee.body_length",
+             po::value<double> (&bee_body_length),
+             "Bee body length"
+             )
+        (
+             "Bee.body_width",
+             po::value<double> (&bee_body_width),
+             "Bee body width"
+             )
+        (
+             "Bee.body_height",
+             po::value<double> (&bee_body_height),
+             "Bee body height"
+             )
+        (
+             "Bee.body_mass",
+             po::value<double> (&bee_body_mass),
+             "Bee body mass"
+            )
+        (
+             "Bee.max_speed",
+             po::value<double> (&bee_max_speed),
+             "Maximum bee motion velocity"
              )
         ;
 
@@ -233,7 +257,8 @@ int main(int argc, char *argv[])
 	PhysicalObjectHandler *ph = new PhysicalObjectHandler();
 	world->addHandler("Physical", ph);
 
-	BeeHandler *bh = new BeeHandler();
+	BeeHandler *bh = new BeeHandler(bee_body_length,bee_body_width, bee_body_height,
+                                    bee_body_mass, bee_max_speed);
 	world->addHandler("Bee", bh);
 
 	if (vm.count ("nogui") == 0) {
