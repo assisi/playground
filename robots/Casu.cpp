@@ -3,6 +3,7 @@
  */
 
 #include <cmath>
+#include <iostream>
 
 #include <boost/foreach.hpp>
 #include <boost/math/constants/constants.hpp>
@@ -20,11 +21,17 @@ const double pi = boost::math::constants::pi<double>();
 
 namespace Enki
 {
-    const int Casu::AIR_PUMP_QUANTITY = 5;
-    const double Casu::AIR_PUMP_DISTANCE = 2.5;
-    const double Casu::AIR_PUMP_RANGE = 5;
+    // Bee-Casu geometry
+    const double Casu::BRIDGE_LENGTH = 4.5;
+    const double Casu::BRIDGE_WIDTH = 1.0;
+
+    const double Casu::THERMAL_DIFFUSIVITY_COPPER_BRIDGE = 0.5 * WorldHeat::THERMAL_DIFFUSIVITY_COPPER;
+
+    const int Casu::AIR_PUMP_QUANTITY = 1;
+    const double Casu::AIR_PUMP_DISTANCE = 0;
+    /*const*/ double Casu::AIR_PUMP_RANGE = 5;
     const double Casu::AIR_PUMP_ORIENTATION = 0;
-    const double Casu::AIR_PUMP_APERTURE = 2 * pi / (AIR_PUMP_QUANTITY / 2);
+    const double Casu::AIR_PUMP_APERTURE = 2 * pi / AIR_PUMP_QUANTITY / 2;
 
     /*const*/ double Casu::VIBRATION_SOURCE_RANGE = 100;
     const Vector Casu::VIBRATION_SOURCE_POSITION = Vector (0, 0);
@@ -61,15 +68,17 @@ namespace Enki
     /* peltier's parameters and configuration */
     const Vector Casu::PELTIER_POSITION = Vector (0, 0);
     /*const*/ double Casu::PELTIER_THERMAL_RESPONSE = 0.3;
+    const double Casu::PELTIER_RADIUS = 1.6;
 
-
-    Casu::Casu(World* world, double ambientTemperature) :
+    Casu::Casu(Vector pos, double yaw, ExtendedWorld* world, double ambientTemperature, int bridgeMask) :
         world_(world),
         range_sensors(6),
         vibration_sensors (Casu::NUMBER_VIBRATION_SENSORS),
         temp_sensors(TEMP_SENS_COUNT),
         air_pumps (Casu::AIR_PUMP_QUANTITY)
     {
+        this->pos = pos;
+        this->angle = yaw;
   
         // Set physical properties
         double radius = 1;
@@ -141,13 +150,29 @@ namespace Enki
         // Add diagnostic led
         top_led = new DiagnosticLed(this);
 
+        // Add bridges
+        Matrix22 rot (yaw);
+        if (bridgeMask & NORTH) {
+           createBridge (world, rot * Point (0, 1));
+        }
+        if (bridgeMask & SOUTH) {
+           createBridge (world, rot * Point (0, -1));
+        }
+        if (bridgeMask & EAST) {
+           createBridge (world, rot * Point (1, 0));
+        }
+        if (bridgeMask & WEST) {
+           createBridge (world, rot * Point (-1, 0));
+        }
+
         // Add peltier actuator
         // TODO: make peltier parameters CASU constants
         peltier = new HeatActuatorMesh
-            (this, Vector(0,0),
-             PELTIER_THERMAL_RESPONSE, ambientTemperature,
-             PointMesh::makeCircumferenceMesh (1.6, 16));
+           (this, Vector(0,0),
+            PELTIER_THERMAL_RESPONSE, ambientTemperature,
+            PELTIER_RADIUS, 16);
         this->addPhysicInteraction(this->peltier);
+        world->worldHeat->drawCircle (WorldHeat::THERMAL_DIFFUSIVITY_COPPER, this->pos, PELTIER_RADIUS);
 
         // Add vibration actuator
 
@@ -176,7 +201,7 @@ namespace Enki
 
         // Add air pump actuator
         for (int i = 0; i < Casu::AIR_PUMP_QUANTITY; i++) {
-            double angle = Casu::AIR_PUMP_ORIENTATION + i * pi / Casu::AIR_PUMP_QUANTITY;
+            double angle = Casu::AIR_PUMP_ORIENTATION + i * 2 * pi / Casu::AIR_PUMP_QUANTITY;
             Vector position (Casu::AIR_PUMP_DISTANCE * cos (angle), Casu::AIR_PUMP_DISTANCE * sin (angle));
             AirPump *airPump = new AirPump
                 (Casu::AIR_PUMP_RANGE,
@@ -186,6 +211,7 @@ namespace Enki
                  Casu::AIR_PUMP_APERTURE);
             airPump->setCylindric(0, 0, -1); // Set to point object
             world_->addObject (airPump);
+            addLocalInteraction (airPump);
             this->air_pumps [i] = airPump;
         }
     }
@@ -210,5 +236,31 @@ namespace Enki
     }
 
 // -----------------------------------------------------------------------------
+
+void Casu::
+createBridge (ExtendedWorld* world, Vector direction)
+{
+	std::vector<Point> polygon;
+	polygon.reserve (4);
+	Point p1, p2;
+	p2 = direction.perp ();
+	p2 *= Casu::BRIDGE_WIDTH / 2;
+	p2 += this->pos;
+	polygon.push_back (p2);
+	p1 = direction;
+	p1 *= Casu::BRIDGE_LENGTH;
+	p1 += p2;
+	polygon.push_back (p1);
+	p1 = direction;
+	p1 *= Casu::BRIDGE_LENGTH;
+	p2 = direction.perp ();
+	p2 *= -Casu::BRIDGE_WIDTH / 2;
+	p1 += p2;
+	p1 += this->pos;
+	polygon.push_back (p1);
+	p2 += this->pos;
+	polygon.push_back (p2);
+	world->worldHeat->drawPolygon (Casu::THERMAL_DIFFUSIVITY_COPPER_BRIDGE, polygon);
+}
 
 }

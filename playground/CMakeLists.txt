@@ -11,7 +11,7 @@ find_package(Threads)
 
 find_package(ZeroMQ REQUIRED)
 
-find_package(Boost COMPONENTS program_options filesystem system REQUIRED)
+find_package(Boost COMPONENTS program_options filesystem system thread REQUIRED)
 
 # Set up compilation of protobuffer files
 find_package(Protobuf REQUIRED)
@@ -68,6 +68,12 @@ set(QT_USE_QTOPENGL TRUE)
 include(${QT_USE_FILE})
 add_definitions(${QT_DEFINITIONS})
 
+#set(GCC_GRAPHITE_COMPILE_FLAGS, "-floop-parallelize-all -ftree-parallelize-loops=4")
+
+set(GCC_GRAPHITE_COMPILE_FLAGS, "")
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${GCC_GRAPHITE_COMPILE_FLAGS}" )
+
+
 # The ASSISI playground
 set(playground_SOURCES AssisiPlaygroundMain.cpp
                        AssisiPlayground.cpp
@@ -84,6 +90,7 @@ set(playground_SOURCES AssisiPlaygroundMain.cpp
                        ../interactions/LightSensor.cpp
                        ../interactions/WorldHeat.cpp
                        ../interactions/HeatSensor.cpp
+                       ../interactions/AbstractGrid.cpp
                        ../interactions/VibrationSource.cpp
                        ../interactions/HeatActuatorMesh.cpp
                        ../interactions/HeatActuatorPointSource.cpp
