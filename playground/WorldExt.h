@@ -35,12 +35,22 @@ namespace Enki
                                and deletes it in the destructor!
             \param pub_address The publisher will be bound to this address.
             \param sub_address The subscriber will connect to this address for data.
+         
+           \param skewMonitorRate Rate at which the skew monitor checks the
+           simulated time against wall time.  Unit is second.  By default the
+           rate is 1 minute.
+         
+           \param skewReportThreshold How much skew must be present in order
+           to print a message.  By default is 5%.
          */
         WorldExt(double r, 
                  const std::string& pub_address,
                  const std::string& sub_address,
                  const Color& wallsColor = Color::gray,
-                 const World::GroundTexture& groundTexture = World::GroundTexture());
+                 const World::GroundTexture& groundTexture = World::GroundTexture(),
+                 unsigned int skewMonitorRate = 60,
+                 double skewReportThreshold = 0.05
+                 );
 
         //! Destructor
         virtual ~WorldExt();
@@ -71,6 +81,13 @@ it must be created on the heap and should not be deleted!
         bool handleSim_(const std::string& device,
                         const std::string& command,
                         const std::string& data);
+        //! Send outgoing messages.
+        /*! 
+            Send a message with sim state bar robot state.
+
+            \arg sock Outgoing messages are written to socket sock.
+         */
+        int sendSim_(zmq::socket_t& socket);
 
         typedef std::map<std::string, ObjectHandler*> HandlerMap;
         // Robot handler pointer, one handler per robot type

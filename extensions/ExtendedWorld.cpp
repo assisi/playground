@@ -16,23 +16,35 @@ using namespace Enki;
 
 ExtendedWorld::ExtendedWorld (double width, double height, 
                               const Color& wallsColor, 
-                              const World::GroundTexture& groundTexture):
+                              const World::GroundTexture& groundTexture,
+                              unsigned int skewMonitorRate,
+                              double skewReportThreshold):
 	World (width, height, wallsColor, groundTexture),
+	SKEW_MONITOR_RATE (skewMonitorRate),
+	SKEW_REPORT_THRESHOLD (skewReportThreshold + 1),
 	worldHeat (NULL),
 	absoluteTime (0)
 {
 }
 
 ExtendedWorld::ExtendedWorld (double r, const Color& wallsColor,
-                              const World::GroundTexture& groundTexture):
+                              const World::GroundTexture& groundTexture,
+                              unsigned int skewMonitorRate,
+                              double skewReportThreshold):
 	World (r, wallsColor, groundTexture),
+	SKEW_MONITOR_RATE (skewMonitorRate),
+	SKEW_REPORT_THRESHOLD (skewReportThreshold + 1),
 	worldHeat (NULL),
 	absoluteTime (0)
 {
 }
 
-ExtendedWorld::ExtendedWorld ():
+ExtendedWorld::ExtendedWorld (
+                              unsigned int skewMonitorRate,
+                              double skewReportThreshold):
 	World (),
+	SKEW_MONITOR_RATE (skewMonitorRate),
+	SKEW_REPORT_THRESHOLD (skewReportThreshold + 1),
 	worldHeat (NULL),
 	absoluteTime (0)
 {
@@ -89,6 +101,25 @@ void ExtendedWorld::step (double dt, unsigned physicsOversampling)
 	}
 	World::step (dt, physicsOversampling);
 	absoluteTime += dt;
+	// check skewness
+	this->simulatedElapsedTime += dt;
+	if (this->simulatedElapsedTime > this->SKEW_MONITOR_RATE) {
+		boost::timer::cpu_times elapsed = this->skewTimer.elapsed ();
+		double realElapsedTime = elapsed.wall / 1000000000.0;
+		double skew = realElapsedTime / this->simulatedElapsedTime;
+		if (skew > this->SKEW_REPORT_THRESHOLD) {
+			std::cerr << "elapsed: " << elapsed.wall
+			          << "\n simulated: " << simulatedElapsedTime
+			          << "\n skew: " << skew << "  ~  " << this->SKEW_REPORT_THRESHOLD
+			          << "\n";
+			std::cerr << "Simulation time skew is ";
+			std::cerr << std::fixed << std::setprecision (1) << (skew - 1) * 100;
+			std::cerr << "%\n";
+		}
+		this->simulatedElapsedTime = 0;
+		this->skewTimer.stop ();
+		this->skewTimer.start ();
+	}
 }
 
 double ExtendedWorld::getVibrationAmplitudeAt (const Point &position, double time) const
