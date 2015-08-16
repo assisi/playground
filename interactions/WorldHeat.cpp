@@ -7,7 +7,7 @@ using namespace std;
 
 const double WorldHeat::THERMAL_DIFFUSIVITY_AIR = 1.9e-5;
 const double WorldHeat::THERMAL_DIFFUSIVITY_COPPER = 1.11e-4;
-const double HEAT_DISSIPATION = 1e-6;
+/*const*/ double WorldHeat::CELL_DISSIPATION = 1e-6;
 
 WorldHeat::
 WorldHeat (const ExtendedWorld *world, double normalHeat, double gridScale, double borderSize, double concurrencyLevel, int logRate):
@@ -123,7 +123,7 @@ computeNextState (double deltaTime)
 				 + (this->grid [this->adtIndex][x][y - 1] - currentHeat) * this->prop [x][y - 1]
 				 + (this->grid [this->adtIndex][x + 1][y] - currentHeat) * this->prop [x + 1][y]
 				 + (this->grid [this->adtIndex][x - 1][y] - currentHeat) * this->prop [x - 1][y]
-				 + (this->normalHeat - currentHeat ) * HEAT_DISSIPATION
+				 + (this->normalHeat - currentHeat ) * CELL_DISSIPATION
 				 ) * alpha
 				;
 			this->grid [nextAdtIndex][x][y] =
@@ -150,7 +150,7 @@ updateGrid (double deltaTime, int xmin, int ymin, int xmax, int ymax)
 				 + (this->grid [this->adtIndex][x][y - 1] - currentHeat) * this->prop [x][y - 1]
 				 + (this->grid [this->adtIndex][x + 1][y] - currentHeat) * this->prop [x + 1][y]
 				 + (this->grid [this->adtIndex][x - 1][y] - currentHeat) * this->prop [x - 1][y]
-				 + (this->normalHeat - currentHeat ) * HEAT_DISSIPATION
+				 + (this->normalHeat - currentHeat ) * CELL_DISSIPATION
 				 ) * alpha
 				;
 			this->grid [nextAdtIndex][x][y] =
