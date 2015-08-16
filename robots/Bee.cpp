@@ -42,14 +42,14 @@ namespace Enki
 
         //setRectangular(len_, w_, h_, 1);
         Polygone footprint;
-        footprint.push_back(Point(len_/2,w_/4) * scaleFactor);
-        footprint.push_back(Point(len_/2-w_/(4*sqrt(2)),w_/2) * scaleFactor);
-        footprint.push_back(Point(-len_/2+w_/(4*sqrt(2)),w_/2) * scaleFactor);
-        footprint.push_back(Point(-len_/2,w_/4) * scaleFactor);
-        footprint.push_back(Point(-len_/2,-w_/4) * scaleFactor);
-        footprint.push_back(Point(-len_/2+w_/(2*sqrt(2)),-w_/2) * scaleFactor);
-        footprint.push_back(Point(len_/2-w_/(2*sqrt(2)),-w_/2) * scaleFactor);
-        footprint.push_back(Point(len_/2,-w_/4) * scaleFactor);
+        footprint.push_back(Point(len_/2,w_/4));
+        footprint.push_back(Point(len_/2-w_/(4*sqrt(2)),w_/2));
+        footprint.push_back(Point(-len_/2+w_/(4*sqrt(2)),w_/2));
+        footprint.push_back(Point(-len_/2,w_/4));
+        footprint.push_back(Point(-len_/2,-w_/4));
+        footprint.push_back(Point(-len_/2+w_/(2*sqrt(2)),-w_/2));
+        footprint.push_back(Point(len_/2-w_/(2*sqrt(2)),-w_/2));
+        footprint.push_back(Point(len_/2,-w_/4));
         PhysicalObject::Hull hull(PhysicalObject::Part(footprint, h_));
         setCustomHull(hull, m_);
         setColor(color_r_, color_g_ , color_b_);

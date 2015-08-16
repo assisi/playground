@@ -42,7 +42,7 @@ namespace Enki
             Point pos(spawn_msg.pose().position().x(),
                       spawn_msg.pose().position().y());
             double yaw(spawn_msg.pose().orientation().z());
-            bees_[name] = new Bee(bee_length_,bee_width_,bee_height_,
+            bees_[name] = new Bee(body_length_,body_width_,body_height_,
                                   body_mass_, max_speed_);
             bees_[name]->pos = pos;
             bees_[name]->angle = yaw;
