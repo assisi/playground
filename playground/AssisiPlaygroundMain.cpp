@@ -61,6 +61,11 @@ static double timerPeriod = 0.01;
  */
 static const double DELTA_TIME = .03;
 
+static unsigned int skewMonitorRate = 60;
+
+static double skewReportThreshold = 0.05;
+
+
 /**
  * Semaphore used in the headless simulation mode with an alarm to block the
  * main thread.
@@ -196,6 +201,16 @@ int main(int argc, char *argv[])
              po::value<double> (&Bee::SCALE_FACTOR),
              "bee scale factor"
              )
+        (
+             "Skew.rate",
+             po::value<unsigned int> (&skewMonitorRate),
+             "Rate at which we check skewness between real time and simulated time"
+             )
+        (
+             "Skew.threshold",
+             po::value<double> (&skewReportThreshold),
+             "Threshold to print a message because of skewness between real time and simulated time"
+             )
         ;
 
     po::variables_map vm;
@@ -220,11 +235,13 @@ int main(int argc, char *argv[])
     //texture.invertPixels(QImage::InvertRgba);
     
     world = new WorldExt (r, pub_address, sub_address,
-		Color::gray, 
-		World::GroundTexture (
-			texture.width(),
-			texture.height(),
-			(const uint32_t*) texture.constBits ()));
+        Color::gray, 
+        World::GroundTexture (
+            texture.width(),
+            texture.height(),
+            (const uint32_t*) texture.constBits ()),
+        skewMonitorRate,
+        skewReportThreshold);
 
     heatModel = new WorldHeat (world, env_temp, heat_scale, heat_border_size, parallelismLevel);
 	if (heat_log_file_name != "") {
