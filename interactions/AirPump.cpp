@@ -21,6 +21,8 @@ AirPump::AirPump (double range, Robot* owner, Vector relativePosition, double or
 	aperture (aperture),
 	intensity (intensity)
 {
+	//TODO: this only works for fixed air pumps.
+	PhysicalObject::pos = owner->pos;
 }
 
 AirPump::~AirPump ()
