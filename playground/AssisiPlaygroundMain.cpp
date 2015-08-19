@@ -56,10 +56,22 @@ static WorldHeat *heatModel;
 static double timerPeriod = 0.01;
 
 /**
+ * Camera view parameters.
+ */
+static double cameraPosX = 0;
+static double cameraPosY = 0;
+static double cameraAltitude = 1;
+static char layer = 'N';
+
+/**
  * Delta time used to update world state.  It is equal to the value used by
  * enki.  Unit is seconds.
  */
 static const double DELTA_TIME = .03;
+
+static unsigned int skewMonitorRate = 60;
+
+static double skewReportThreshold = 0.05;
 
 /**
  * Semaphore used in the headless simulation mode with an alarm to block the
@@ -101,7 +113,11 @@ int main(int argc, char *argv[])
     int heat_border_size;
 
     double maxVibration;
-	 double parallelismLevel = 1.0;
+    double parallelismLevel = 1.0;
+
+    // Bee physical parameters
+    double bee_body_length, bee_body_width, bee_body_height,
+        bee_body_mass, bee_max_speed;
 
     fs::path default_config = fs::path("");
     // MAC workaround for Thomas
@@ -149,6 +165,11 @@ int main(int argc, char *argv[])
             "heat log file name"
             )
         (
+            "Heat.cell_dissipation",
+            po::value<double> (&WorldHeat::CELL_DISSIPATION),
+            "heat lost by cells directly to outside world"
+            )
+        (
             "AirFlow.pump_range",
             po::value<double> (&Casu::AIR_PUMP_RANGE),
             "maximum range of CASU air pump"
@@ -184,35 +205,74 @@ int main(int argc, char *argv[])
             "maximum displayed vibration intensity"
             )
         (
-             "Simulation.timer_period",
-             po::value<double> (&timerPeriod),
-             "simulation timer period (in seconds)"
+            "Viewer.no_help",
+            "do not show help text"
+            )
+        (
+            "Viewer.layer",
+            po::value<char> (&layer),
+            "which data layer should be displayed by default: N none, H heat, V vibration, A airflow"
+            )
+        (
+            "Simulation.timer_period",
+            po::value<double> (&timerPeriod),
+            "simulation timer period (in seconds)"
+            )
+        (
+            "Simulation.parallelism_level",
+            po::value<double> (&parallelismLevel),
+            "Percentage of CPU threads to use"
+            )
+        (
+            "Bee.body_length",
+            po::value<double> (&bee_body_length),
+            "Bee body length"
+            )
+        (
+            "Bee.body_width",
+            po::value<double> (&bee_body_width),
+            "Bee body width"
+            )
+        (
+            "Bee.body_height",
+            po::value<double> (&bee_body_height),
+            "Bee body height"
+            )
+        (
+            "Bee.body_mass",
+            po::value<double> (&bee_body_mass),
+            "Bee body mass"
+            )
+        (
+            "Bee.max_speed",
+            po::value<double> (&bee_max_speed),
+            "Maximum bee motion velocity"
+            )
+        (
+            "Camera.pos_x",
+            po::value<double> (&cameraPosX),
+            "camera x position"
+            )
+       (
+           "Camera.pos_y",
+           po::value<double> (&cameraPosY),
+           "camera y position"
+           )
+        (
+           "Camera.altitude",
+           po::value<double> (&cameraAltitude),
+           "camera altitude"
+            )
+        (
+             "Skew.rate",
+             po::value<unsigned int> (&skewMonitorRate),
+             "Rate at which we check skewness between real time and simulated time"
              )
         (
-             "Simulation.parallelism_level",
-             po::value<double> (&parallelismLevel),
-             "Percentage of CPU threads to use"
-             )
-        (
-             "Bee.scale_factor",
-             po::value<double> (&Bee::SCALE_FACTOR),
-             "bee scale factor"
-             )
-		 (
-		  "Camera.pos_x",
-		  po::value<double> (&cameraPosX),
-		  "camera x position"
-		  )
-		 (
-		  "Camera.pos_y",
-		  po::value<double> (&cameraPosY),
-		  "camera y position"
-		  )
-		 (
-		  "Camera.altitude",
-		  po::value<double> (&cameraAltitude),
-		  "camera altitude"
-		  )
+             "Skew.threshold",
+             po::value<double> (&skewReportThreshold),
+             "Threshold to print a message because of skewness between real time and simulated time"
+            )
         ;
 
     po::variables_map vm;
@@ -237,11 +297,13 @@ int main(int argc, char *argv[])
     //texture.invertPixels(QImage::InvertRgba);
     
     world = new WorldExt (r, pub_address, sub_address,
-		Color::gray, 
-		World::GroundTexture (
-			texture.width(),
-			texture.height(),
-			(const uint32_t*) texture.constBits ()));
+        Color::gray, 
+        World::GroundTexture (
+            texture.width(),
+            texture.height(),
+            (const uint32_t*) texture.constBits ()),
+        skewMonitorRate,
+        skewReportThreshold);
 
     heatModel = new WorldHeat (world, env_temp, heat_scale, heat_border_size, parallelismLevel);
 	if (heat_log_file_name != "") {
@@ -255,7 +317,8 @@ int main(int argc, char *argv[])
 	PhysicalObjectHandler *ph = new PhysicalObjectHandler();
 	world->addHandler("Physical", ph);
 
-	BeeHandler *bh = new BeeHandler();
+	BeeHandler *bh = new BeeHandler(bee_body_length,bee_body_width, bee_body_height,
+                                    bee_body_mass, bee_max_speed);
 	world->addHandler("Bee", bh);
 
 	if (vm.count ("nogui") == 0) {
@@ -266,11 +329,31 @@ int main(int argc, char *argv[])
 			cerr << "Parameters of heat model are not valid!\nExiting.\n";
 			return 1;
 		}
-		if (vm.count ("Camera.pos_x") > 0
-			 || vm.count ("Camera.pos_y") > 0
-			 || vm.count ("Camera.altitude") > 0) {
-			viewer.setCameraPosition (cameraPosX, cameraPosY, cameraAltitude);
-		}
+      if (vm.count ("Camera.pos_x") > 0
+          || vm.count ("Camera.pos_y") > 0
+          || vm.count ("Camera.altitude") > 0) {
+         viewer.setCameraPosition (-cameraPosX, -cameraPosY, cameraAltitude);
+      }
+      if (vm.count ("Viewer.no_help") > 0) {
+         viewer.showHelp = false;
+      }
+      if (vm.count ("Viewer.layer") > 0) {
+         switch (layer) {
+         case 'H':
+            viewer.layerToDraw = AssisiPlayground::HEAT;
+            break;
+         case 'V':
+            viewer.layerToDraw = AssisiPlayground::VIBRATION;
+            break;
+         case 'A':
+            viewer.layerToDraw = AssisiPlayground::AIR_FLOW;
+            break;
+         case 'N':
+         default:
+            viewer.layerToDraw = AssisiPlayground::NONE;
+            break;
+         }
+      }
 		viewer.show ();
 	
 		return app.exec();

@@ -23,14 +23,16 @@ int sign(T val)
 
 namespace Enki
 {
-    double Bee::SCALE_FACTOR = 1.0;
 
     const Vector Bee::AIR_FLOW_SENSOR_POSITION (0, 0);
     /*const*/ double Bee::AIR_FLOW_SENSOR_RANGE = 5;
     const double Bee::AIR_FLOW_SENSOR_ORIENTATION = 0;
 
-    Bee::Bee(double scaleFactor) :
-        DifferentialWheeled(0.4, 2, 0.0),
+    Bee::Bee(double body_length, double body_width, double body_height,
+             double body_mass, double max_speed) :
+        len_(body_length), w_(body_width), h_(body_height),
+        m_(body_mass), v_max_(max_speed),
+        DifferentialWheeled(body_width, max_speed, 0.0),
         object_sensors(5),
         color_r_(0.93), color_g_(0.79), color_b_(0)
     {
@@ -38,23 +40,18 @@ namespace Enki
         dryFrictionCoefficient=0.25;
         // Set shape & color
 
-        double len = 1.35; // Body length
-        double w = 0.5; // Body width
-        double h = 0.4; // Body height
-        double m = 1;   // Body mass
-
-        //setRectangular(len, w, h, 1);
+        //setRectangular(len_, w_, h_, 1);
         Polygone footprint;
-        footprint.push_back(Point(len/2,w/4) * scaleFactor);
-        footprint.push_back(Point(len/2-w/(4*sqrt(2)),w/2) * scaleFactor);
-        footprint.push_back(Point(-len/2+w/(4*sqrt(2)),w/2) * scaleFactor);
-        footprint.push_back(Point(-len/2,w/4) * scaleFactor);
-        footprint.push_back(Point(-len/2,-w/4) * scaleFactor);
-        footprint.push_back(Point(-len/2+w/(2*sqrt(2)),-w/2) * scaleFactor);
-        footprint.push_back(Point(len/2-w/(2*sqrt(2)),-w/2) * scaleFactor);
-        footprint.push_back(Point(len/2,-w/4) * scaleFactor);
-        PhysicalObject::Hull hull(PhysicalObject::Part(footprint, h));
-        setCustomHull(hull, m);
+        footprint.push_back(Point(len_/2,w_/4));
+        footprint.push_back(Point(len_/2-w_/(4*sqrt(2)),w_/2));
+        footprint.push_back(Point(-len_/2+w_/(4*sqrt(2)),w_/2));
+        footprint.push_back(Point(-len_/2,w_/4));
+        footprint.push_back(Point(-len_/2,-w_/4));
+        footprint.push_back(Point(-len_/2+w_/(2*sqrt(2)),-w_/2));
+        footprint.push_back(Point(len_/2-w_/(2*sqrt(2)),-w_/2));
+        footprint.push_back(Point(len_/2,-w_/4));
+        PhysicalObject::Hull hull(PhysicalObject::Part(footprint, h_));
+        setCustomHull(hull, m_);
         setColor(color_r_, color_g_ , color_b_);
 
         // Set other physical properties
@@ -65,7 +62,7 @@ namespace Enki
             {
             object_sensors[i] = new ObjectSensor
                (this, 
-                Vector(len/2-sin(a)*w/2, sin(a)*w/2),
+                Vector(len_/2-sin(a)*w_/2, sin(a)*w_/2),
                 0, a, 10, 3731, 0, 0.7, 0);
             addLocalInteraction(object_sensors[i]);
             }
