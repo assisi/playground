@@ -83,13 +83,6 @@ static sem_t block;
 
 static bool go = true;
 
-static QPointF cameraPos;
-static double cameraPosX = 0;
-static double cameraPosY = 0;
-static double cameraAltitude = 1;
-static double cameraYaw = -M_PI / 2;
-static double cameraPitch = 3 * M_PI / 8;
-
 int runTimer ();
 
 void runLoop ();
