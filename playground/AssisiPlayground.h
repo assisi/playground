@@ -31,11 +31,12 @@ namespace Enki
 	{
 		
 		Q_OBJECT;
-
+	public:
 		/**
 		 * Data layers that can be drawn in the window.
 		 */
-		enum Layer {NONE, HEAT, ELECTRIC_FIELD, VIBRATION, LIGHT};
+		enum Layer {NONE, HEAT, ELECTRIC_FIELD, VIBRATION, LIGHT, AIR_FLOW, DIFFUSIVITY};
+	private:
 		/**
 		 * Heat physic simulation used in the underlying world.
 		 */
@@ -53,6 +54,11 @@ namespace Enki
 		 */
 		const double maxVibration;
 		/**
+		 * Maximum presentable air flow intensity.
+		 */
+		const double MAX_AIR_FLOW;
+	public:
+		/**
 		 * The layer to drawn upon robots. 
 		 */
 		Layer layerToDraw;
@@ -60,6 +66,7 @@ namespace Enki
 		 * Transparency of the layer drawn above robots.
 		 */
 		double transparency;
+	private:
 		/**
 		 * Whether to draw data using a gradient or not.
 		 */
@@ -67,10 +74,12 @@ namespace Enki
 
 		Point dataSize;
 		std::vector<std::vector<std::vector<float> > > dataColour;
+	public:
 		/**
 		 * Whether to show a help message or not.
 		 */
 		bool showHelp;
+	private:
 		/**
 		 * The world that is shown in this widget.
 		 */
@@ -100,11 +109,17 @@ namespace Enki
 		void drawVibrationLayer_Chequerboard ();
 		void drawHeatLayer_Chequerboard ();
 		void drawHeatLayer_Gradient ();
+		void drawDiffusivityLayer_Chequerboard ();
+		void drawAirFlowLayer_Chequerboard ();
+		void drawAirFlowLayer_Gradient ();
 
 		void drawHeatLegend ();
 
 		void setDataToHeat ();
+		void setDataToDiffusivity ();
 		void setDataToVibration ();
+		void setDataToAirFlow ();
+
 		void drawDataAsGradient ();
 		void drawDataAsCheckerBoard ();
 

@@ -52,16 +52,26 @@ void Enki::processConfiguration (int argc, char *argv[])
 		("config_file,c", 
 		 po::value<string> (&config_file_name)->default_value ("Playground.cfg"),
 		 "configuration file name")
-		("Arena.radius,r", po::value<int> (&radius), 
-		 "playground radius, in cm")
+		(
+		 "Arena.radius,r",
+		 po::value<int> (&radius), 
+		 "playground radius, in cm"
+		 )
 		(
 		 "Heat.env_temp,t",
 		 po::value<double> (&env_temp), 
 		 "environment temperature, in C"
 		 )
-		("Heat.scale", po::value<double>(&heat_scale), 
-		 "heat model scale")
-		("Heat.border_size", po::value<int>(&heat_border_size), "playground radius, in cm")
+		(
+		 "Heat.scale",
+		 po::value<double> (&heat_scale), 
+		 "heat model scale"
+		 )
+		(
+		 "Heat.border_size",
+		 po::value<int> (&heat_border_size),
+		 "playground radius, in cm"
+		 )
 		(
 		 "Vibration.range",
 		 po::value<double> (&Casu::VIBRATION_SOURCE_RANGE),

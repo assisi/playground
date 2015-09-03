@@ -22,7 +22,10 @@ namespace Enki
     class BeeHandler : public ObjectHandler
     {
     public:
-        BeeHandler() { }
+        BeeHandler(double body_length, double body_width, double body_height,
+                   double body_mass, double max_speed) :
+        body_length_(body_length), body_width_(body_width), body_height_(body_height),
+          body_mass_(body_mass), max_speed_(max_speed) { }
         virtual ~BeeHandler() { }
 
         //! Bee factory method
@@ -55,6 +58,11 @@ namespace Enki
     private:
         typedef std::map<std::string, Bee*> BeeMap;
         BeeMap bees_;
+        double body_length_;
+        double body_width_;
+        double body_height_;
+        double body_mass_;
+        double max_speed_;
     };
 }
 

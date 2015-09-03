@@ -8,27 +8,44 @@
 #include "ExtendedWorld.h"
 
 #include "interactions/VibrationSource.h"
+#include "interactions/AirPump.h"
 #include "interactions/NotSimulated.h"
+#include "interactions/WorldHeat.h"
 
 using namespace Enki;
 
 ExtendedWorld::ExtendedWorld (double width, double height, 
                               const Color& wallsColor, 
-                              const World::GroundTexture& groundTexture):
+                              const World::GroundTexture& groundTexture,
+                              unsigned int skewMonitorRate,
+                              double skewReportThreshold):
 	World (width, height, wallsColor, groundTexture),
+	SKEW_MONITOR_RATE (skewMonitorRate),
+	SKEW_REPORT_THRESHOLD (skewReportThreshold + 1),
+	worldHeat (NULL),
 	absoluteTime (0)
 {
 }
 
 ExtendedWorld::ExtendedWorld (double r, const Color& wallsColor,
-                              const World::GroundTexture& groundTexture):
+                              const World::GroundTexture& groundTexture,
+                              unsigned int skewMonitorRate,
+                              double skewReportThreshold):
 	World (r, wallsColor, groundTexture),
+	SKEW_MONITOR_RATE (skewMonitorRate),
+	SKEW_REPORT_THRESHOLD (skewReportThreshold + 1),
+	worldHeat (NULL),
 	absoluteTime (0)
 {
 }
 
-ExtendedWorld::ExtendedWorld ():
+ExtendedWorld::ExtendedWorld (
+                              unsigned int skewMonitorRate,
+                              double skewReportThreshold):
 	World (),
+	SKEW_MONITOR_RATE (skewMonitorRate),
+	SKEW_REPORT_THRESHOLD (skewReportThreshold + 1),
+	worldHeat (NULL),
 	absoluteTime (0)
 {
 }
@@ -47,6 +64,22 @@ void ExtendedWorld::addObject (PhysicalObject *o)
 
 void ExtendedWorld::addPhysicSimulation (PhysicSimulation *pi)
 {
+	WorldHeat *newWorldHeat = dynamic_cast<WorldHeat *> (pi);
+	if (newWorldHeat != NULL) {
+		if (this->worldHeat != NULL) {
+			// remove previous heat model
+			PhysicSimulationsIterator iterator = this->physicSimulations.begin ();
+			while (iterator != this->physicSimulations.end ()) {
+				if (*iterator == this->worldHeat) {
+					this->physicSimulations.erase (iterator);
+					break;
+				}
+				iterator++;
+			}
+		}
+		// update world heat model
+		this->worldHeat = newWorldHeat;
+	}
 	this->physicSimulations.push_back (pi);
 	pi->initParameters (this);
 }
@@ -68,6 +101,25 @@ void ExtendedWorld::step (double dt, unsigned physicsOversampling)
 	}
 	World::step (dt, physicsOversampling);
 	absoluteTime += dt;
+	// check skewness
+	this->simulatedElapsedTime += dt;
+	if (this->simulatedElapsedTime > this->SKEW_MONITOR_RATE) {
+		boost::timer::cpu_times elapsed = this->skewTimer.elapsed ();
+		double realElapsedTime = elapsed.wall / 1000000000.0;
+		double skew = realElapsedTime / this->simulatedElapsedTime;
+		if (skew > this->SKEW_REPORT_THRESHOLD) {
+			std::cerr << "elapsed: " << elapsed.wall
+			          << "\n simulated: " << simulatedElapsedTime
+			          << "\n skew: " << skew << "  ~  " << this->SKEW_REPORT_THRESHOLD
+			          << "\n";
+			std::cerr << "Simulation time skew is ";
+			std::cerr << std::fixed << std::setprecision (1) << (skew - 1) * 100;
+			std::cerr << "%\n";
+		}
+		this->simulatedElapsedTime = 0;
+		this->skewTimer.stop ();
+		this->skewTimer.start ();
+	}
 }
 
 double ExtendedWorld::getVibrationAmplitudeAt (const Point &position, double time) const
@@ -85,4 +137,21 @@ double ExtendedWorld::getVibrationAmplitudeAt (const Point &position, double tim
 		}
 	}
 	return result;
+}
+
+double ExtendedWorld::getAirFlowIntensityAt (const Point &position) const
+{
+	Vector result (0, 0);
+	for (ObjectsIterator i = this->objects.begin (); i != this->objects.end (); ++i) {
+		PhysicalObject *po = (*i);
+		AirPump *airPump = dynamic_cast<AirPump *> (po);
+		if (airPump != NULL) {
+			try {
+				result += airPump->getAirFlowAt (position);
+			}
+			catch (NotSimulated *ns) {
+			}
+		}
+	}
+	return result.norm ();
 }

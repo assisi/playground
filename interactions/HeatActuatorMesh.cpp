@@ -5,11 +5,14 @@
  * Created on 9 de Junho de 2014, 16:31
  */
 
+#include <boost/foreach.hpp>
+
 #include "HeatActuatorMesh.h"
 
 #include "WorldHeat.h"
 
 #include "extensions/PointMesh.h"
+#include "extensions/PhysicSimulation.h"
 
 using namespace Enki;
 
@@ -22,7 +25,7 @@ HeatActuatorMesh::HeatActuatorMesh (
 	int numberPoints
 	):
 	HeatActuatorPointSource (owner, relativePosition, thermalResponseTime, ambientTemperature),
-	mesh (PointMesh::makeCircleMesh (radius, numberPoints))
+	mesh (PointMesh::makeCircumferenceMesh (radius, numberPoints))
 {
 }
 
@@ -40,18 +43,6 @@ HeatActuatorMesh::HeatActuatorMesh (
 {
 }
 
-HeatActuatorMesh::HeatActuatorMesh (
-	Enki::Robot* owner,
-	Enki::Vector relativePosition,
-	double thermalResponseTime,
-	double ambientTemperature,
-	const PointMesh *mesh
-	):
-	HeatActuatorPointSource (owner, relativePosition, thermalResponseTime, ambientTemperature), 
-	mesh (mesh)
-{
-}
-
 HeatActuatorMesh::HeatActuatorMesh (const HeatActuatorMesh& orig):
 	HeatActuatorPointSource (orig),
 	mesh (orig.mesh)
@@ -61,6 +52,7 @@ HeatActuatorMesh::HeatActuatorMesh (const HeatActuatorMesh& orig):
 HeatActuatorMesh::~HeatActuatorMesh ()
 {
 	delete this->mesh;
+	// delete this->shape;
 }
 
 #include <iostream>

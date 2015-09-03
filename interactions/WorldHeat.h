@@ -8,7 +8,8 @@
 
 #include "extensions/ExtendedWorld.h"
 #include "extensions/PhysicSimulation.h"
-#include "interactions/AbstractGridSimulation.h"
+#include "interactions/AbstractGridParallelSimulation.h"
+#include "interactions/AbstractGridProperties.h"
 
 namespace Enki
 {
@@ -16,21 +17,52 @@ namespace Enki
 	 * Provides a simulation of heat to be used in Enki.
 
 	 * <p> World heat is represented by a lattice grid.  The size of this
-	 * grid depends on world dimensions, scale and border size.  The heat in
-	 * a grid point depends on its current value and the value of the four
-	 * Moore neighbours.
+	 * grid depends on world dimensions, scale and border size.  The
+	 * temperature in a grid point depends on its current value and the
+	 * temperature and heat diffusivity of the four Moore neighbours.  We
+	 * also implement heat dissipation, meaning the temperature will tend to
+	 * world temperature.
+
+	 * <p> We use two grids.  A {@code AbstractGridSimulation} instance is
+	 * used to computed the temperature in the next iteration.  An {@code
+	 * AbstractGridProperties} instance is used to store grid properties,
+	 * namely heat diffusivity.
 	 */
 	class WorldHeat :
-		public AbstractGridSimulation<double>
+#ifdef WORLDHEAT_SERIAL
+		public AbstractGridSimulation<double>,
+#else
+		public AbstractGridParallelSimulation<WorldHeat, double>,
+#endif
+		public AbstractGridProperties<double>
 	{
 		/**
-		 * Maximum admissible delta time when computing the next state.
+		 * Value of alpha without the value of parameter {@code deltaTime}.  Alpha
+		 * is used in the discrete equation that models heat propagation.
+		 * state.
 		 */
-		const double maxDeltaTime;
+		const double partialAlpha;
 		/**
 		 * Output stream where heat information is logged.
 		 */
-		std::ostream *logStream;
+		std::ofstream *logStream;
+		/**
+		 * Rate at which world heat is logged.  This is used with field
+		 * {@code iterationsToNextLog} to produce logs.
+		 *
+		 * <p> When field {@code iterationsToNextLog} reaches zero, we log
+		 * the world heat and reset this field to value {@code logRate}.
+		 */
+		const int logRate;
+		/**
+		 * How many iterations should we wait before logging the next
+		 * iteration.  This is used with field {@code logRate} to
+		 * produce logs.
+		 *
+		 * <p> When field {@code iterationsToNextLog} reaches zero, we log
+		 * the world heat and reset this field to value {@code logRate}.
+		 */
+		int iterationsToNextLog;
 		/**
 		 * How much time has passed since the simulation started.  Unit is
 		 * simulation time.
@@ -49,13 +81,30 @@ namespace Enki
 		 * Heat in enki can diffuse through copper connections between CASUs.
 		 */
 		static const double THERMAL_DIFFUSIVITY_COPPER;
-
+		/**
+		 * Cells loose heat directly to the outside world, not only through border
+		 * cells.
+		 */
+		static /*const*/ double CELL_DISSIPATION;
 	public:
-		WorldHeat (double normalHeat, double gridScale, double borderSize);
-		virtual ~WorldHeat () {}
+		WorldHeat (const ExtendedWorld *world, double normalHeat, double gridScale, double borderSize, double concurrencyLevel, int logRate = 1);
+		virtual ~WorldHeat ();
+		/**
+		 * Checks if this instance of the heat model combined with the given
+		 * {@code deltaTime} parameter is valid.  A valid set of parameters does
+		 * not cause instability or overshooting in the heat model.
+
+		 * @param deltaTime parameter used in the discrete equation that models
+		 * heat propagation.
+		 */
+		bool validParameters (double deltaTime) const;
 
 		double getHeatAt (const Vector &pos) const;
 		void setHeatAt (const Vector &pos, double value);
+
+		double getHeatDiffusivityAt (const Point &position) const;
+		void setHeatDiffusivityAt (const Point &position, double value);
+
 		/**
 		 * When a heat actuator turns off, we have to recompute the heat
 		 * distribution in the world.  We do this for a certain number of
@@ -77,8 +126,14 @@ namespace Enki
 		//  * interaction.
 		//  */
 		// virtual void handleObjectAction (const PhysicalObject *po);
+
 		/**
 		 * Computes the next state of this physic interaction.
+		 *
+		 * @param  deltaTime parameter used in the discrete equation that models
+		 * heat propagation.
+		 *
+		 * @pre validParameters(deltaTime)
 		 */
 		virtual void computeNextState (double deltaTime);
 		// /**
@@ -95,7 +150,7 @@ namespace Enki
 		void logToStream (std::string fileName)
 		{
 			if (this->logStream != NULL) {
-				// this->logStream->close ();
+				this->logStream->flush ();
 				delete this->logStream;
 			}
 			this->logStream = new std::ofstream (
@@ -111,13 +166,21 @@ namespace Enki
 			}
 			this->logStream = NULL;
 		}
-
-	protected:
 		/**
-		 * Update the heat grid and return the largest difference between two
-		 * adjacent grid cells.
+		 * Reset temperature to given value.  Heat dissipation is NOT changed.
 		 */
-		double updateGrid (double deltaTime);
+		void resetTemperature (double value);
+	// protected:
+	// 	/**
+	// 	 * Update the heat grid and return the largest difference between two
+	// 	 * adjacent grid cells.
+	// 	 */
+	// 	double updateGrid (double deltaTime);
+	public:
+		/**
+		 * Update part of the grid.
+		 */
+		void updateGrid (double deltaTime, int xmin, int ymin, int xmax, int ymax);
 	};
 }
 

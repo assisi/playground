@@ -42,7 +42,8 @@ namespace Enki
             Point pos(spawn_msg.pose().position().x(),
                       spawn_msg.pose().position().y());
             double yaw(spawn_msg.pose().orientation().z());
-            bees_[name] = new Bee;
+            bees_[name] = new Bee(body_length_,body_width_,body_height_,
+                                  body_mass_, max_speed_);
             bees_[name]->pos = pos;
             bees_[name]->angle = yaw;
             world->addObject(bees_[name]);
@@ -168,7 +169,14 @@ namespace Enki
             color.mutable_color()->set_blue(ca.second->color_b_);
             color.SerializeToString(&data);
             send_multipart(socket, ca.first, "Color", "ColorVal", data);
-            
+
+            /* Publish air flow sensor */
+            AirflowReading airflowReading;
+				airflowReading.set_intensity (ca.second->air_flow_sensor->intensity.norm ());
+				airflowReading.set_direction (ca.second->air_flow_sensor->intensity.angle ());
+				airflowReading.SerializeToString (&data);
+				send_multipart (socket, ca.first, "Airflow", "Reading", data);
+
             /* Publish other stuff as necessary */
         }
 
