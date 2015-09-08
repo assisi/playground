@@ -101,6 +101,7 @@ int main(int argc, char *argv[])
     int heat_border_size;
 
     double maxVibration;
+	 double parallelismLevel = 1.0;
 
     fs::path default_config = fs::path("");
     // MAC workaround for Thomas
@@ -142,7 +143,7 @@ int main(int argc, char *argv[])
             po::value<double> (&Casu::VIBRATION_SOURCE_RANGE),
             "vibration range, in cm"
             )
-		(
+        (
             "Heat.log_file",
             po::value<string> (&heat_log_file_name)->default_value (""),
             "heat log file name"
@@ -182,12 +183,17 @@ int main(int argc, char *argv[])
             po::value<double> (&maxVibration),
             "maximum displayed vibration intensity"
             )
-		 (
+        (
              "Simulation.timer_period",
              po::value<double> (&timerPeriod),
              "simulation timer period (in seconds)"
              )
-		 (
+        (
+             "Simulation.parallelism_level",
+             po::value<double> (&parallelismLevel),
+             "Percentage of CPU threads to use"
+             )
+        (
              "Bee.scale_factor",
              po::value<double> (&Bee::SCALE_FACTOR),
              "bee scale factor"
@@ -237,7 +243,7 @@ int main(int argc, char *argv[])
 			texture.height(),
 			(const uint32_t*) texture.constBits ()));
 
-	heatModel = new WorldHeat (env_temp, heat_scale, heat_border_size);
+    heatModel = new WorldHeat (world, env_temp, heat_scale, heat_border_size, parallelismLevel);
 	if (heat_log_file_name != "") {
 		heatModel->logToStream (heat_log_file_name);
 	}

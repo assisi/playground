@@ -187,7 +187,7 @@ namespace Enki
               while (iterator != end) {
                  WorldHeat *worldHeat = dynamic_cast<WorldHeat *> (*iterator);
                  if (worldHeat != NULL) {
-                    worldHeat->fillGrid (temp_msg.temp ());
+                    worldHeat->resetTemperature (temp_msg.temp ());
                  }
                  iterator++;
               }

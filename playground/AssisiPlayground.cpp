@@ -46,7 +46,7 @@ namespace Enki
 
 using namespace Enki;
 
-const double AssisiPlayground::MAX_HEAT = 50;
+const double AssisiPlayground::MAX_HEAT = 38;
 const double AssisiPlayground::MIN_HEAT = 25;
 const int AssisiPlayground::NUMBER_HEAT_TICS = 9;
 
@@ -81,6 +81,10 @@ void AssisiPlayground::sceneCompletedHook()
 			drawVibrationLayer_Gradient ();
 		else
 			drawVibrationLayer_Chequerboard ();
+		break;
+	case DIFFUSIVITY:
+		drawHeatLegend ();
+		drawDiffusivityLayer_Chequerboard ();
 		break;
 	case AIR_FLOW:
 		if (this->useGradient)
@@ -119,7 +123,7 @@ void AssisiPlayground::heatToColour (double heat)
 
 void AssisiPlayground::heatToColour (double heat, float &red, float &green, float &blue)
 {
-	double CUT_HEAT = 40;
+	double CUT_HEAT = (MAX_HEAT - MIN_HEAT) / 2 + MIN_HEAT;
 	if (heat > CUT_HEAT) {
 		blue = 0;
 			// (AssisiPlayground::MAX_HEAT - heat)
@@ -194,6 +198,12 @@ void AssisiPlayground::drawHeatLayer_Chequerboard ()
 	drawDataAsCheckerBoard ();
 }
 
+void AssisiPlayground::drawDiffusivityLayer_Chequerboard ()
+{
+	setDataToDiffusivity ();
+	drawDataAsCheckerBoard ();
+}
+
 void AssisiPlayground::drawVibrationLayer_Gradient ()
 {
 	setDataToVibration ();
@@ -226,8 +236,28 @@ void AssisiPlayground::setDataToHeat ()
 		where.y = -this->world->r + this->worldHeat->gridScale;
 		for (pos.y = 0; pos.y < this->dataSize.y; pos.y++) {
 			double heat = this->worldHeat->getHeatAt (where);
+			//double heat = (this->worldHeat->getHeatDiffusivityAt (where) - 1.11e-4) / (1.9e-5 - 1.11e-4) * (25) + 25 ;
 			std::vector<float> &dc = this->dataColour [pos.x][pos.y];
 			heatToColour (heat, dc [0], dc [1], dc [2]);
+			where.y += this->worldHeat->gridScale;
+		}
+		where.x += this->worldHeat->gridScale;
+	}
+}
+
+void AssisiPlayground::setDataToDiffusivity ()
+{
+	Vector pos, where;
+	where.x = -this->world->r + this->worldHeat->gridScale;
+	for (pos.x = 0; pos.x < this->dataSize.x; pos.x++) {
+		where.y = -this->world->r + this->worldHeat->gridScale;
+		for (pos.y = 0; pos.y < this->dataSize.y; pos.y++) {
+			double value =
+				(this->worldHeat->getHeatDiffusivityAt (where) - 1.9e-5)
+				/ (1.11e-4 - 1.9e-5)
+				* (MAX_HEAT - MIN_HEAT) + MIN_HEAT ;
+			std::vector<float> &dc = this->dataColour [pos.x][pos.y];
+			heatToColour (value, dc [0], dc [1], dc [2]);
 			where.y += this->worldHeat->gridScale;
 		}
 		where.x += this->worldHeat->gridScale;
@@ -365,6 +395,11 @@ void AssisiPlayground::keyPressEvent (QKeyEvent *event)
 	case Qt::Key_V:
 		qDebug () << "Switching vibration";
 		this->layerToDraw = (this->layerToDraw == VIBRATION ? NONE : VIBRATION);
+		updateGL ();
+		break;
+	case Qt::Key_D:
+		qDebug () << "Switching heat diffusivity";
+		this->layerToDraw = (this->layerToDraw == DIFFUSIVITY ? NONE : DIFFUSIVITY);
 		updateGL ();
 		break;
 	case Qt::Key_A:

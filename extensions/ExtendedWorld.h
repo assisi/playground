@@ -19,6 +19,7 @@ namespace Enki
 {
 	class ExtendedRobot;
 	class PhysicSimulation;
+	class WorldHeat;
 	/**
 	 * Extends world class with other physic interactions besides collision
 	 * detection.  Robots can also interact with these physic simulations by
@@ -27,12 +28,17 @@ namespace Enki
 	class ExtendedWorld:
 		public World
 	{
-	protected:
+	public:
 		typedef std::vector<PhysicSimulation *> PhysicSimulations;
 		typedef PhysicSimulations::iterator PhysicSimulationsIterator;
 		//! Vector of physic simulations.
 		PhysicSimulations physicSimulations;
+		/**
+		 * Current heat model used in the world.
+		 */
+		WorldHeat *worldHeat;
 
+	protected:
 		typedef std::set<ExtendedRobot *> ExtendedRobots;
 		typedef ExtendedRobots::iterator ExtendedRobotsIterator;
 		

@@ -26,6 +26,9 @@ namespace Enki
 		PointMesh (int size);
 	public:
 		PointMesh (const PointMesh& orig);
+
+		void addPointMesh (const PointMesh& orig, const Point &delta);
+
 		virtual ~PointMesh();
 		/**
 		 * Create a random mesh of points arranged in a circle of the given
@@ -42,6 +45,16 @@ namespace Enki
 		 * radii.
 		 */
 		static PointMesh *makeCircumferenceMesh (double radius, int numberPoints);
+		/**
+		 * Create a mesh of points arranged as a rectangular with the given
+		 * width and height.
+		 */
+		static PointMesh *makeRectangularMesh (double width, double height, int numberPoints);
+		/**
+		 * Create a mesh of points arranged as a rectangular with the given
+		 * width and height.
+		 */
+		static PointMesh *makeLineMesh (double x, double y, int numberPoints);
 		/**
 		 * Return the point at position {@code i}.
 		 */
@@ -68,7 +81,7 @@ namespace Enki
 
 	};
 
-	std::ostream &operator<< (std::ostream &os, const PointMesh &mesh);
+	std::ostream &operator<< (std::ostream &os, PointMesh const &mesh);
 }
 
 

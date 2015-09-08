@@ -44,9 +44,11 @@ namespace Enki
             Point pos(spawn_msg.pose().position().x(),
                       spawn_msg.pose().position().y());
             double yaw(spawn_msg.pose().orientation().z());
-            casus_[name] = new Casu(world, env_temp);
+            casus_[name] = new Casu(pos, yaw, world, env_temp);
             casus_[name]->pos = pos;
             casus_[name]->angle = yaw;
+            // casus_[name]->peltier->setHeatDiffusivity (world, WorldHeat::THERMAL_DIFFUSIVITY_COPPER);
+
             world->addObject(casus_[name]);
         }
         else
@@ -250,3 +252,7 @@ namespace Enki
 // -----------------------------------------------------------------------------
 
 }
+
+// Local Variables: 
+// indent-tabs-mode: nil
+// End: 
