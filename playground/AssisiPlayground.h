@@ -31,11 +31,12 @@ namespace Enki
 	{
 		
 		Q_OBJECT;
-
+	public:
 		/**
 		 * Data layers that can be drawn in the window.
 		 */
 		enum Layer {NONE, HEAT, ELECTRIC_FIELD, VIBRATION, LIGHT, AIR_FLOW, DIFFUSIVITY};
+	private:
 		/**
 		 * Heat physic simulation used in the underlying world.
 		 */
@@ -56,6 +57,7 @@ namespace Enki
 		 * Maximum presentable air flow intensity.
 		 */
 		const double MAX_AIR_FLOW;
+	public:
 		/**
 		 * The layer to drawn upon robots. 
 		 */
@@ -64,6 +66,7 @@ namespace Enki
 		 * Transparency of the layer drawn above robots.
 		 */
 		double transparency;
+	private:
 		/**
 		 * Whether to draw data using a gradient or not.
 		 */
@@ -71,10 +74,12 @@ namespace Enki
 
 		Point dataSize;
 		std::vector<std::vector<std::vector<float> > > dataColour;
+	public:
 		/**
 		 * Whether to show a help message or not.
 		 */
 		bool showHelp;
+	private:
 		/**
 		 * The world that is shown in this widget.
 		 */

@@ -25,7 +25,7 @@ HeatActuatorMesh::HeatActuatorMesh (
 	int numberPoints
 	):
 	HeatActuatorPointSource (owner, relativePosition, thermalResponseTime, ambientTemperature),
-	mesh (PointMesh::makeCircleMesh (radius, numberPoints))
+	mesh (PointMesh::makeCircumferenceMesh (radius, numberPoints))
 {
 }
 
