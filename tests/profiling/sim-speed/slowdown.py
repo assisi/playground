@@ -1,12 +1,11 @@
 from assisipy import bee
 import time
 import argparse, sys
-import numpy as np
 
 from assisipy import sim
 from math import pi, sin, cos
 import random
-from numpy import linspace, deg2rad
+from numpy import linspace, deg2rad, zeros
 
 
 
@@ -79,7 +78,6 @@ def err_meas2(abee, dt=1.0, vel=2.0, lag=0.25, verb=True):
 
 #}}}
 
-
 #{{{ spawning
 def spawn_extras(rng, FACE_SOUTH=True):
     for i in rng:
@@ -141,7 +139,6 @@ f) if possible, a-e in "headless" mode
    - measurement time (if I say "get me pos now, when was it last computed?)
 
 
-
 '''
 
 '''
@@ -155,7 +152,6 @@ specific procedure
   - we can do tests progressively introducing new bees
   - we can't go backwards (well there is a "kill" but lets start from
     clean slate each time)
-
 
 
 - generate data to draw a graph with
@@ -183,6 +179,7 @@ if __name__ == '__main__':
                         help="subscribe port of the SIMULATOR")
 
     args = parser.parse_args()
+    # does the main bee trigger sensors of the distractor bees? SOUTH=>no.
     FACE_SOUTH = False
 
     # the server publishes on X, reads on Y means that clients here should
@@ -221,7 +218,7 @@ if __name__ == '__main__':
 
     # make some measurements
     t = 4.0; lag=0.5; vel = 1.5
-    D = np.zeros((args.rpts, 3))
+    D = zeros((args.rpts, 3))
     for r in xrange(args.rpts):
         simctrl.teleport(mybee._Bee__name, ic0)
         #print "r {} first teleport:".format(r), mybee.get_true_pose()

@@ -1,0 +1,7 @@
+# example data listing. The format for each series is 
+# ['filename', 'label for series', <number of CASUs in experiment>],
+[
+    ['i7_0casu.csv',         'i7, bees facing', 0],
+    ['i3_north_0casu.dat',   'i3, bees facing', 0],
+    ['i3_north_20casu.dat',  'i3, bees facing', 10],
+]

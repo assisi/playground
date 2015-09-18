@@ -43,9 +43,24 @@ Interpreting results
 ====================
 
 A graphing script is provided to generate two plots from one series of data.
-It currently requires manual editing to define the data files and series names.
+It is written to be used interactively (e.g. with ipython), but if this is not 
+desired, some simple edits could be made
+- remove the call `plt.ion()`
+- add some calls to `plt.savefig()` after each graphic.
+
+   $ ipython
+   In [1]: %run plot_results.py --datalist sample_data/example_data.list --datapath sample_data
+
+Some example test runs are included, for comparison and to help show how to use
+the scripts.
 
 
+
+TODO
+====
+
+At this stage, the repository commits are not recorded, and annotation
+regarding the machine (OS, processor, etc) is entirely manual.  
 
 
 
