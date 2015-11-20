@@ -61,6 +61,9 @@ static double timerPeriod = 0.01;
 static double cameraPosX = 0;
 static double cameraPosY = 0;
 static double cameraAltitude = 1;
+static double cameraYaw = 0;
+static double cameraPitch = M_PI/2;
+
 static char layer = 'N';
 
 /**
@@ -257,6 +260,16 @@ int main(int argc, char *argv[])
            "camera altitude"
             )
         (
+           "Camera.yaw",
+           po::value<double> (&cameraYaw),
+           "camera yaw"
+            )
+        (
+           "Camera.pitch",
+           po::value<double> (&cameraPitch),
+           "camera pitch"
+            )
+        (
              "Skew.rate",
              po::value<unsigned int> (&skewMonitorRate),
              "Rate at which we check skewness between real time and simulated time"
@@ -326,6 +339,14 @@ int main(int argc, char *argv[])
           || vm.count ("Camera.pos_y") > 0
           || vm.count ("Camera.altitude") > 0) {
          viewer.setCameraPosition (-cameraPosX, -cameraPosY, cameraAltitude);
+      }
+      if (vm.count ("Camera.pitch") > 0) {
+          cerr << "I: setting the custom pitch " << cameraPitch << "\n";
+          viewer.setCameraPitch(cameraPitch);
+      }
+      if (vm.count ("Camera.yaw") > 0) {
+          cerr << "I: setting the custom yaw " << cameraYaw << "\n";
+          viewer.setCameraYaw(cameraYaw);
       }
       if (vm.count ("Viewer.no_help") > 0) {
          viewer.showHelp = false;
