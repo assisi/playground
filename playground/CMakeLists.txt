@@ -128,3 +128,72 @@ target_link_libraries(assisi_playground ${enki_LIBRARIES}
 
 # Copy config files to binary dir
 configure_file(Playground.cfg Playground.cfg COPYONLY)
+
+
+##
+##
+##
+## CALIBRATE_HEAT
+
+
+
+#find_package(Qt4 REQUIRED)
+#find_package(OpenGL REQUIRED)
+#set(QT_USE_QTOPENGL TRUE)
+
+#include(${QT_USE_FILE})
+#add_definitions(${QT_DEFINITIONS})
+
+#set(calibratePeltier_SOURCES calibratePeltier.cpp
+#                       WorldExt.cpp
+#							  configuration.cpp
+#                       ../robots/Casu.cpp
+#                       ../robots/Bee.cpp
+#                       ../handlers/EPuckHandler.cpp
+#                       ../handlers/CasuHandler.cpp
+#                       ../handlers/PhysicalObjectHandler.cpp
+#                       ../handlers/BeeHandler.cpp
+#                       ../interactions/LightConstants.cpp
+#                       ../interactions/LightSource.cpp
+#                       ../interactions/LightSourceFromAbove.cpp
+#                       ../interactions/LightSensor.cpp
+#                       ../interactions/WorldHeat.cpp
+#                       ../interactions/HeatSensor.cpp
+#			           ../interactions/VibrationSource.cpp
+#                       ../interactions/HeatActuatorMesh.cpp
+#                       ../interactions/HeatActuatorPointSource.cpp
+#					   ../interactions/WaveVibrationSource.cpp
+#                       ../interactions/VibrationSensor.cpp
+#                       ../interactions/AirPump.cpp
+#                       ../interactions/AirFlowSensor.cpp
+#                       ../interactions/ObjectSensor.cpp
+#                       ../extensions/Component.cpp
+#                       ../extensions/ExtendedRobot.cpp
+#                       ../extensions/ExtendedWorld.cpp
+#                      ../extensions/PointMesh.cpp
+#                       ${ProtoSources})
+
+#set(calibratePeltier_QT_HEADERS AssisiPlayground.h)
+
+#qt4_wrap_cpp(calibratePeltier_QT_HEADERS_MOC ${calibratePeltier_QT_HEADERS})
+
+#qt4_add_resources(calibratePeltier_RCC_SOURCES playground-textures.qrc)
+	
+#include_directories (${OPENGL_INCLUDE_DIR})    
+
+#add_executable(
+#  calibratePeltier
+#  ${calibratePeltier_SOURCES}
+#  ${calibratePeltier_QT_HEADERS_MOC}
+#  ${calibratePeltier_RCC_SOURCES}
+#)
+
+#target_link_libraries(
+#  calibratePeltier
+#  ${enki_LIBRARIES}
+#  ${QT_LIBRARIES} 
+#  ${OPENGL_LIBRARIES} 
+#  ${ZeroMQ_LIBRARY}
+#  ${PROTOBUF_LIBRARY}
+#  ${Boost_LIBRARIES}
+#)
