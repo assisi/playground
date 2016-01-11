@@ -158,7 +158,10 @@ namespace Enki
 
             /* Publish temperature sensor data */
             TemperatureArray temps;
-            temps.add_temp(ca.second->heat_sensor->getMeasuredHeat());
+            BOOST_FOREACH(HeatSensor* hs, ca.second->heat_sensors)
+            {
+                temps.add_temp(hs->getMeasuredHeat());
+            }
             temps.SerializeToString(&data);
             send_multipart(socket, ca.first, "Temp", "Temperatures", data);
 

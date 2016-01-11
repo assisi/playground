@@ -79,40 +79,33 @@ namespace Enki
         double maxMeasurableHeat = 100.0;
 
         // Add heat sensors 
-        heat_sensor_front = new HeatSensor
+        HeatSensor* heat_sensor_front = new HeatSensor
            (this, Vector(len_/2,0),
-            minMeasurableHet,
+            minMeasurableHeat,
             maxMeasurableHeat);
         addPhysicInteraction(heat_sensor_front);
         heat_sensors[0] = heat_sensor_front;
 
-        heat_sensor_left = new HeatSensor
+        HeatSensor* heat_sensor_left = new HeatSensor
            (this, Vector(0,w_),
-            minMeasurableHet,
+            minMeasurableHeat,
             maxMeasurableHeat);
         addPhysicInteraction(heat_sensor_left);
         heat_sensors[1] = heat_sensor_left;
 
-        heat_sensor_back = new HeatSensor
+        HeatSensor* heat_sensor_back = new HeatSensor
            (this, Vector(-len_/2,0),
-            minMeasurableHet,
+            minMeasurableHeat,
             maxMeasurableHeat);
-        addPhysicInteraction(heat_sensor_front);
+        addPhysicInteraction(heat_sensor_back);
         heat_sensors[2] = heat_sensor_back;
 
-        heat_sensor_right = new HeatSensor
+        HeatSensor* heat_sensor_right = new HeatSensor
            (this, Vector(0,-w_),
-            minMeasurableHet,
+            minMeasurableHeat,
             maxMeasurableHeat);
-        addPhysicInteraction(heat_sensor_front);
-        heat_sensors[0] = heat_sensor_front;
-
-        heat_sensor_front = new HeatSensor
-           (this, Vector(len_/2,0),
-            minMeasurableHet,
-            maxMeasurableHeat);
-        addPhysicInteraction(heat_sensor_front);
-        heat_sensors[0] = heat_sensor_front;
+        addPhysicInteraction(heat_sensor_right);
+        heat_sensors[3] = heat_sensor_right;
 
         // Add airflow sensor
         air_flow_sensor = new AirFlowSensor
@@ -131,6 +124,11 @@ namespace Enki
             delete p;
         }
         delete light_sensor_blue;
+
+        BOOST_FOREACH(HeatSensor* p, heat_sensors)
+        {
+            delete p;
+        }
     }
 
     void Bee::setColor(double r, double g, double b)
