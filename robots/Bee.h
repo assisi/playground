@@ -44,7 +44,8 @@ namespace Enki
         LightSensor* light_sensor_blue;
 
         //! Heat sensor.
-        HeatSensor* heat_sensor;
+        typedef std::vector<HeatSensor*> HeatSensorVector;
+        HeatSensorVector heat_sensors;
 
         //! Air flow sensor.
         AirFlowSensor *air_flow_sensor;
