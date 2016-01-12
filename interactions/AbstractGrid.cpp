@@ -21,6 +21,16 @@ AbstractGrid (const ExtendedWorld *world, double gridScale, double borderSize):
 {
 }
 
+AbstractGrid::
+AbstractGrid (double gridScale, double borderSize, const Vector &size, const Vector &origin):
+	gridScale (gridScale),
+	borderSize (borderSize),
+	size (size),
+	origin (origin)
+{
+}
+
+
 void gridProperties (const ExtendedWorld *world, double gridScale, double borderSize, Point *size, Point *origin)
 {
 	Enki::Vector min, max;

@@ -101,6 +101,7 @@ int main(int argc, char *argv[])
 	// Create the world and the viewer
     string pub_address("tcp://*:5555"); 
     string sub_address("tcp://*:5556");
+	 string heat_state_filename;
     string heat_log_file_name;
     double heat_scale;
     int heat_border_size;
@@ -142,6 +143,9 @@ int main(int argc, char *argv[])
          "Address for subscribing to commands, in the form tcp://hostname:port")
         ("Arena.radius,r", po::value<int>(&r), 
          "playground radius, in cm")
+        ("Heat.state", po::value<string>(&heat_state_filename)->default_value (""), 
+         "use heat state stored in given filename")
+
         ("Heat.env_temp,t", po::value<double>(&env_temp), 
          "environment temperature, in C")
         ("Heat.scale", po::value<double>(&heat_scale), 
@@ -293,7 +297,11 @@ int main(int argc, char *argv[])
         skewMonitorRate,
         skewReportThreshold);
 
-    heatModel = new WorldHeat (world, env_temp, heat_scale, heat_border_size, parallelismLevel);
+    if (heat_state_filename != "" && vm.count ("Heat.state")) {
+       heatModel = WorldHeat::worldHeatFromFile (heat_state_filename);
+    }
+    else
+       heatModel = new WorldHeat (world, env_temp, heat_scale, heat_border_size, parallelismLevel);
 	if (heat_log_file_name != "") {
 		heatModel->logToStream (heat_log_file_name);
 	}

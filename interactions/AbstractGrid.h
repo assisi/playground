@@ -57,6 +57,8 @@ namespace Enki
 		 */
 		AbstractGrid (const ExtendedWorld *world, double gridScale, double borderSize);
 
+		AbstractGrid (double gridScale, double borderSize, const Enki::Vector& size, const Enki::Vector& origin);
+
 		virtual ~AbstractGrid () {}
 		/**
 		 * Convert a world position to grid position.
