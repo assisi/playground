@@ -34,6 +34,7 @@ namespace Enki
         m_(body_mass), v_max_(max_speed),
         DifferentialWheeled(body_width, max_speed, 0.0),
         object_sensors(5),
+        heat_sensors(4),
         color_r_(0.93), color_g_(0.79), color_b_(0)
     {
         collisionElasticity = 0.1;
@@ -73,15 +74,40 @@ namespace Enki
             Vector(0,0), 0.0, Light::Blue);
         addLocalInteraction(light_sensor_blue);
 
-        // Check in the model why is this necessary
+        // Check in the model why this is necessary
         double minMeasurableHeat = 0.0;
         double maxMeasurableHeat = 100.0;
-        heat_sensor = new HeatSensor
-           (this, Vector(0,0),
+
+        // Add heat sensors 
+        HeatSensor* heat_sensor_front = new HeatSensor
+           (this, Vector(len_/2,0),
             minMeasurableHeat,
             maxMeasurableHeat);
-        addPhysicInteraction(heat_sensor);
+        addPhysicInteraction(heat_sensor_front);
+        heat_sensors[0] = heat_sensor_front;
 
+        HeatSensor* heat_sensor_left = new HeatSensor
+           (this, Vector(0,w_),
+            minMeasurableHeat,
+            maxMeasurableHeat);
+        addPhysicInteraction(heat_sensor_left);
+        heat_sensors[1] = heat_sensor_left;
+
+        HeatSensor* heat_sensor_back = new HeatSensor
+           (this, Vector(-len_/2,0),
+            minMeasurableHeat,
+            maxMeasurableHeat);
+        addPhysicInteraction(heat_sensor_back);
+        heat_sensors[2] = heat_sensor_back;
+
+        HeatSensor* heat_sensor_right = new HeatSensor
+           (this, Vector(0,-w_),
+            minMeasurableHeat,
+            maxMeasurableHeat);
+        addPhysicInteraction(heat_sensor_right);
+        heat_sensors[3] = heat_sensor_right;
+
+        // Add airflow sensor
         air_flow_sensor = new AirFlowSensor
             (Bee::AIR_FLOW_SENSOR_RANGE,
              this,
@@ -98,6 +124,11 @@ namespace Enki
             delete p;
         }
         delete light_sensor_blue;
+
+        BOOST_FOREACH(HeatSensor* p, heat_sensors)
+        {
+            delete p;
+        }
     }
 
     void Bee::setColor(double r, double g, double b)
