@@ -110,7 +110,7 @@ namespace Enki
         }
         else if (device == "Peltier")
         {
-            if (command == "temp")
+            if (command == "On")
             {
                 Temperature temp_msg;
                 assert(temp_msg.ParseFromString(data));
@@ -126,7 +126,7 @@ namespace Enki
         }
         else if (device == "VibeMotor")
         {
-            if (command == "on")
+            if (command == "On")
             {
                 VibrationSetpoint freq_msg;
                 assert (freq_msg.ParseFromString (data));
