@@ -36,7 +36,7 @@ namespace Enki
                        unsigned int skewMonitorRate,
                        double skewReportThreshold)
          : ExtendedWorld(r, wallsColor, groundTexture, skewMonitorRate, skewReportThreshold),
-          pub_address_(pub_address), sub_address_(sub_address)
+           pub_address_(pub_address), sub_address_(sub_address), pub_td_(0.3), pub_timer_(0.0)
     {
         GOOGLE_PROTOBUF_VERIFY_VERSION;
 
@@ -122,16 +122,21 @@ namespace Enki
                                  command, data, ZMQ_DONTWAIT);
         }
 
-        // Publish sensor data
-        int out_count = 0;
-
-        sendSim_ (*publisher_);
-        // Invoke all handlers to send messages
-        BOOST_FOREACH(const HandlerMap::value_type& rh, handlers_)
+        pub_timer_ += dt;
+        if (pub_timer_ >= pub_td_)
         {
-            rh.second->sendOutgoing(*publisher_);
-        }
 
+            // Publish sensor data
+            int out_count = 0;
+
+            sendSim_ (*publisher_);
+            // Invoke all handlers to send messages
+            BOOST_FOREACH(const HandlerMap::value_type& rh, handlers_)
+            {
+                rh.second->sendOutgoing(*publisher_);
+            }
+            pub_timer_ = 0.0;
+        }
     }
 
 // -----------------------------------------------------------------------------

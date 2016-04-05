@@ -22,10 +22,11 @@ namespace Enki
     class DiagnosticLed : public LocalInteraction
     {
     public:
-        DiagnosticLed(Robot* owner) : 
-            LocalInteraction(0, owner),
-            active_color_(owner->getColor()),
-            inactive_color_(owner->getColor())
+    DiagnosticLed(Robot* owner) : 
+        LocalInteraction(0, owner),
+          active_color_(owner->getColor()),
+          inactive_color_(owner->getColor()),
+          is_on_(false)
         {
             
         }
@@ -34,16 +35,34 @@ namespace Enki
         {
             owner->setColor(color);
             active_color_ = color;
+            is_on_ = true;
         }
 
         void off(void)
         {
             owner->setColor(inactive_color_);
+            is_on_ = false;
         }
 
-                
+        Color getColor(void)
+        {
+            Color col = inactive_color_;
+            if (is_on_) 
+            { 
+              col =  active_color_;
+            }
+
+            return col;
+        }
+
+        bool isSwitchedOn(void)
+        {
+            return is_on_;
+        }
+
     private:
             Color active_color_, inactive_color_;
+            bool is_on_;
     };
 }
 
