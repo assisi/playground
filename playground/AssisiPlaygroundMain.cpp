@@ -257,11 +257,6 @@ int main(int argc, char *argv[])
            "camera altitude"
             )
         (
-             "Skew.rate",
-             po::value<unsigned int> (&skewMonitorRate),
-             "Rate at which we check skewness between real time and simulated time"
-             )
-        (
              "Skew.threshold",
              po::value<double> (&skewReportThreshold),
              "Threshold to print a message because of skewness between real time and simulated time"
