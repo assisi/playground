@@ -103,6 +103,12 @@ it must be created on the heap and should not be deleted!
         zmq::context_t* context_;
         zmq::socket_t* publisher_;
         zmq::socket_t* subscriber_;
+
+        // Publish sample time. Messages will be published every pub_td_
+        // Should be a multiple of the world update time step.
+        double pub_td_; 
+        // Publish timer. Keeps track of time between two publish events.
+        double pub_timer_;
     };
 
 }
