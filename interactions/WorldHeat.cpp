@@ -80,6 +80,11 @@ worldHeatFromFile (string filename)
 			}
 		}
 	}
+	for (int x = 0; x < size.x; x++) {
+		for (int y = 0; y < size.y; y++) {
+			result->prop [x][y] = WorldHeat::THERMAL_DIFFUSIVITY_AIR;
+		}
+	}
 	printf ("Read %d heat cells\n", qty);
 	ifs.close ();
 
