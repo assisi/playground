@@ -89,28 +89,9 @@ namespace Enki
                 cerr << "Unknown command for " << name << "/" << device << endl;
             }         
         }
-        else if (device == "Light")
-        {
-            if (command == "On")
-            {
-                ColorStamped color_msg;
-                assert(color_msg.ParseFromString(data));
-                casus_[name]->light_source_blue->on( color_msg.color().blue());
-                count++;
-             }
-            else if (command == "Off")
-            {
-                casus_[name]->light_source_blue->off( );
-                count++;
-            }
-            else
-            {
-                cerr << "Unknown command " << command << " for " << name << "/" << device << endl;
-            }
-        }
         else if (device == "Peltier")
         {
-            if (command == "temp")
+            if (command == "On")
             {
                 Temperature temp_msg;
                 assert(temp_msg.ParseFromString(data));
@@ -124,9 +105,9 @@ namespace Enki
                 count++;
             }
         }
-        else if (device == "VibeMotor")
+        else if (device == "Speaker")
         {
-            if (command == "on")
+            if (command == "On")
             {
                 VibrationSetpoint freq_msg;
                 assert (freq_msg.ParseFromString (data));
@@ -215,7 +196,9 @@ namespace Enki
             temperatures.SerializeToString(&data);
             zmq::send_multipart(socket, ca.first, "Temp", "Temperatures", data);
 
-            /* Publish temperature actuator setpoint and state. */            
+            /* Publish actuator setpoints and states. */           
+            
+            /* Temperature setpoint */
             Temperature temp_ref;
             temp_ref.set_temp(ca.second->peltier->getHeat());
             temp_ref.SerializeToString(&data);
@@ -227,8 +210,51 @@ namespace Enki
             {
                 zmq::send_multipart(socket, ca.first, "Peltier", "Off", data);
             }                
+            
+            /* Vibration setpoint */
+            VibrationSetpoint vib_ref;
+            vib_ref.set_freq(ca.second->vibration_source->getFrequency());
+            vib_ref.set_amplitude(ca.second->vibration_source->getMaximumAmplitude());
+            vib_ref.SerializeToString(&data);
+            //! TODO: WaveVibrationSource should implement an isSwitchedOn function!
+            if (ca.second->vibration_source->getFrequency())
+            {
+                zmq::send_multipart(socket, ca.first, "Speaker", "On", data);
+            }
+            else
+            {
+                zmq::send_multipart(socket, ca.first, "Speaker", "Off", data);
+            }
 
-            /* Publish other stuff as necessary ... */
+            /* Airflow setpoint */
+            Airflow air_ref;
+            air_ref.set_intensity(ca.second->air_pumps[0]->getIntensity());
+            air_ref.SerializeToString(&data);
+            //! TODO: AirPump should implement an isSwitchedOn function!
+            if (ca.second->air_pumps[0]->getIntensity())
+            {
+                zmq::send_multipart(socket, ca.first, "Airflow", "On", data);
+            }
+            else
+            {
+                zmq::send_multipart(socket, ca.first, "Airflow", "Off", data);
+            }
+
+            /* Diagnostic LED setpoint */
+            ColorStamped color_ref;
+            Color col = ca.second->top_led->getColor();
+            color_ref.mutable_color()->set_red(col.r());
+            color_ref.mutable_color()->set_green(col.g());
+            color_ref.mutable_color()->set_blue(col.b());
+            color_ref.SerializeToString(&data);
+            if (ca.second->top_led->isSwitchedOn())
+            {
+                zmq::send_multipart(socket, ca.first, "DiagnosticLed", "On", data);
+            }
+            else
+            {
+                zmq::send_multipart(socket, ca.first, "DiagnosticLed", "Off", data);
+            }
 
             count++;
         }
