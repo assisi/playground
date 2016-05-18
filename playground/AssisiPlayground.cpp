@@ -3,6 +3,7 @@
  */
 
 #include <iostream>
+#include <time.h>
 
 #include "AssisiPlayground.h"
 
@@ -20,6 +21,7 @@ namespace Enki
 		dataSize (ceil (2 * world->r / worldHeat->gridScale), ceil (2 * world->r / worldHeat->gridScale)),
 		dataColour (dataSize.x, std::vector<std::vector<float> > (dataSize.y, std::vector<float> (3, 0) ) ),
 		showHelp (true),
+		timeMode (REAL_TIME),
 		dataLayerZ (5)
 	{
 		//ViewerWidget::pos = QPointF(-world->w*5, -world->h * 2);
@@ -110,8 +112,23 @@ void AssisiPlayground::sceneCompletedHook()
 	}
 	glColor3d (0, 0, 0);
 	char time[1000];
-	sprintf (time, "time %6.1f", ((ExtendedWorld *) this->world)->getAbsoluteTime ());
-	renderText (10, height () - 10, tr (time));
+	struct tm realTime;
+	time_t unixTime;
+	switch (this->timeMode) {
+	case SIMULATION_TIME:
+		sprintf (time, "time %6.1f", ((ExtendedWorld *) this->world)->getAbsoluteTime ());
+		renderText (10, height () - 10, tr (time));
+		break;
+	case REAL_TIME:
+		unixTime = std::time (0);
+		localtime_r (&unixTime, &realTime);
+		sprintf (time, "%4d/%02d/%02d %02d:%02d:%02d", realTime.tm_year + 1900, realTime.tm_mon + 1, realTime.tm_mday, realTime.tm_hour, realTime.tm_min, realTime.tm_sec);
+		// asctime_r (&realTime, time);
+		renderText (10, height () - 10, tr (time));
+		break;
+	case NO_TIME:
+		break;
+	}
 }
 
 void AssisiPlayground::heatToColour (double heat)
@@ -405,6 +422,10 @@ void AssisiPlayground::keyPressEvent (QKeyEvent *event)
 	case Qt::Key_A:
 		qDebug () << "Switching air flow";
 		this->layerToDraw = (this->layerToDraw == AIR_FLOW ? NONE : AIR_FLOW);
+		updateGL ();
+		break;
+	case Qt::Key_T:
+		this->timeMode = (TimeMode) ((this->timeMode + 1) % N_TIME_MODE);
 		updateGL ();
 		break;
 	case Qt::Key_F1:
