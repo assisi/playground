@@ -53,31 +53,30 @@ WorldHeat (const Vector &size, const Vector &origin, double normalHeat, double g
 }
 
 WorldHeat *WorldHeat::
-worldHeatFromFile (string filename)
+worldHeatFromFile (string filename, double concurrencyLevel, int logRate)
 {
 	ifstream ifs (filename.c_str ());
 	Vector size;
 	Vector origin;
 	double gridScale;
 	double borderSize;
-	ifs >> borderSize >> gridScale >> size.x >> size.y >> origin.x >> origin.y;
 	double normalHeat;
-	double concurrencyLevel;
-	int logRate;
-	ifs >> normalHeat >> concurrencyLevel >> logRate;
+	string dummy;
+	ifs >> dummy >> borderSize;
+	ifs >> dummy >> gridScale;
+	ifs >> dummy >> size.x >> size.y;
+	ifs >> dummy >> origin.x >> origin.y;
+	ifs >> dummy >> normalHeat;
 	WorldHeat *result = new WorldHeat
 		(size, origin,
 		 normalHeat, gridScale, borderSize, concurrencyLevel, logRate);
-	ifs >> result->adtIndex;
 	int qty = 0;
-	for (int a = 0; a < 2; a++) {
-		for (int y = 0; y < result->size.y; y++) {
-			for (int x = 0; x < result->size.x; x++) {
-				double v;
-				ifs >> v;
-				qty++;
-				result->grid [a][x][y] = v;
-			}
+	for (int y = 0; y < result->size.y; y++) {
+		for (int x = 0; x < result->size.x; x++) {
+			double v;
+			ifs >> v;
+			qty++;
+			result->grid [0][x][y] = v;
 		}
 	}
 	for (int x = 0; x < size.x; x++) {
@@ -87,46 +86,7 @@ worldHeatFromFile (string filename)
 	}
 	printf ("Read %d heat cells\n", qty);
 	ifs.close ();
-
-	result->saveState ("/tmp/check-state");
 	return result;
-		/*
-	FILE *file = fopen (filename.c_str (), "r");
-	Vector size;
-	Vector origin;
-	double gridScale;
-	double borderSize;
-	fscanf (file, "%f %f %f %f %f %f", &borderSize, &gridScale, &size.x, &size.y, &origin.x, &origin.y);
-	double normalHeat;
-	double concurrencyLevel;
-	int logRate;
-	fscanf (file, "%f %f %d", &normalHeat, &concurrencyLevel, &logRate);
-
-	printf ("%f %f %f %f %f %f\n", borderSize, gridScale, size.x, size.y, origin.x, origin.y);
-	printf ("%f %f %d\n", normalHeat, concurrencyLevel, logRate);
-	// printf ("%d\n", this->adtIndex);
-
-	WorldHeat *result = new WorldHeat
-		(size, origin,
-		 normalHeat, gridScale, borderSize, concurrencyLevel, logRate);
-	printf ("Aqui\n");
-	fscanf (file, "%d", &result->adtIndex);
-	printf ("Aqui\n");
-	int qty = 0;
-	for (int a = 0; a < 2; a++) {
-		for (int y = 0; y < result->size.y; y++) {
-			for (int x = 0; x < result->size.x; x++) {
-				double v;
-				if (fscanf (file, "%f", &v) == 1)
-					qty++;
-				result->grid [a][x][y] = v;
-			}
-		}
-	}
-	fclose (file);
-	printf ("Read %d heat cells\n", qty);
-	return result;
-		*/
 }
 
 WorldHeat::
@@ -265,37 +225,19 @@ void WorldHeat::
 saveState (std::string filename) const
 {
 	ofstream ofs (filename.c_str (), std::ofstream::out | std::ofstream::trunc);
-	ofs << this->borderSize << ' ' << this->gridScale << ' ' << this->size.x << ' ' << this->size.y << ' ' << this->origin.x << ' ' << this->origin.y << '\n';
-	//TODO fix save of this field.
-	double concurrencyLevel = 0.5;
-	ofs << this->normalHeat << ' ' << concurrencyLevel << ' ' << this->logRate << '\n';
-	ofs << this->adtIndex << '\n';
-	for (int a = 0; a < 2; a++) {
-		for (int y = 0; y < this->size.y; y++) {
-			for (int x = 0; x < this->size.x; x++) {
-				ofs << ' ' << this->grid [a][x][y];
-			}
-			ofs << '\n';
+	ofs << "borderSize " << this->borderSize << '\n';
+	ofs << "gridScale " << this->gridScale << '\n';
+	ofs << "size " << this->size.x << ' ' << this->size.y << '\n';
+	ofs << "origin "<< this->origin.x << ' ' << this->origin.y << '\n';
+	ofs << "normalHeat " << this->normalHeat<< '\n';
+	int ai = this->adtIndex;
+	for (int y = 0; y < this->size.y; y++) {
+		for (int x = 0; x < this->size.x; x++) {
+			ofs << ' ' << this->grid [ai][x][y];
 		}
 		ofs << '\n';
 	}
 	ofs.close ();
-	/*
-	FILE *file = fopen (filename.c_str (), "w");
-	fprintf (file, "%f %f %f %f %f %f\n", this->borderSize, this->gridScale, this->size.x, this->size.y, this->origin.x, this->origin.y);
-	fprintf (file, "%f %f %d\n", this->normalHeat, concurrencyLevel, this->logRate);
-	fprintf (file, "%d\n", this->adtIndex);
-	for (int a = 0; a < 2; a++) {
-		for (int y = 0; y < this->size.y; y++) {
-			for (int x = 0; x < this->size.x; x++) {
-				fprintf (file, " %f", this->grid [a][x][y]);
-			}
-			fprintf (file, "\n");
-		}
-		fprintf (file, "\n");
-	}
-	fclose (file);
-	*/
 }
 
 void WorldHeat::

@@ -95,7 +95,7 @@ namespace Enki
 		
 	public:
 		WorldHeat (const ExtendedWorld *world, double normalHeat, double gridScale, double borderSize, double concurrencyLevel, int logRate = 1);
-		static WorldHeat *worldHeatFromFile (std::string filename);
+		static WorldHeat *worldHeatFromFile (std::string filename, double concurrencyLevel, int logRate = 1);
 		virtual ~WorldHeat ();
 		/**
 		 * Checks if this instance of the heat model combined with the given

@@ -298,7 +298,13 @@ int main(int argc, char *argv[])
         skewReportThreshold);
 
     if (heat_state_filename != "" && vm.count ("Heat.state")) {
-       heatModel = WorldHeat::worldHeatFromFile (heat_state_filename);
+       if (vm.count ("Heat.env_temp"))
+          cout << "Discarding parameter Heat.env_temp\n";
+       if (vm.count ("Heat.scale"))
+          cout << "Discarding parameter Heat.scale\n";
+       if (vm.count ("Heat.border_size"))
+          cout << "Discarding parameter Heat.border_size\n";
+       heatModel = WorldHeat::worldHeatFromFile (heat_state_filename, parallelismLevel);
     }
     else
        heatModel = new WorldHeat (world, env_temp, heat_scale, heat_border_size, parallelismLevel);
@@ -306,7 +312,6 @@ int main(int argc, char *argv[])
 		heatModel->logToStream (heat_log_file_name);
 	}
 	world->addPhysicSimulation(heatModel);
-
 	CasuHandler *ch = new CasuHandler();
 	world->addHandler("Casu", ch);
 
