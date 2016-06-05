@@ -407,6 +407,13 @@ void AssisiPlayground::keyPressEvent (QKeyEvent *event)
 		this->layerToDraw = (this->layerToDraw == AIR_FLOW ? NONE : AIR_FLOW);
 		updateGL ();
 		break;
+	case Qt::Key_S:
+		qDebug () << "Saving heat state to file heat-state.txt";
+		this->worldHeat->saveState ("heat-state.txt");
+		if (false) {
+			qDebug () << "Problems saving heat state!!!";
+		}
+		break;
 	case Qt::Key_F1:
 		qDebug () << "Toggle help";
 		this->showHelp = !this->showHelp;
