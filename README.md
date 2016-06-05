@@ -9,8 +9,8 @@ Instalation
 Dependencies
 ------------
 
-- Enki simulator (latest version from Github)
-- ZeroMQ v.3.2.4
-- cppzmq (corresponding to ZeroMQ version), just copy zmq.hpp to the ZeroMQ include folder
-- Protobuf (2.4.1)
-- assisi-msg (latest version from Github)
+- Enki simulator (larics/enki GitHub fork, latest version)
+- ZeroMQ v4.0.4
+- cppzmq v3.2.0
+- Protobuf (2.5.0-9)
+
