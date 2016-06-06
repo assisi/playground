@@ -21,6 +21,16 @@ AbstractGrid (const ExtendedWorld *world, double gridScale, double borderSize):
 {
 }
 
+AbstractGrid::
+AbstractGrid (double gridScale, double borderSize, const Vector &size, const Vector &origin):
+	gridScale (gridScale),
+	borderSize (borderSize),
+	size (size),
+	origin (origin)
+{
+}
+
+
 void gridProperties (const ExtendedWorld *world, double gridScale, double borderSize, Point *size, Point *origin)
 {
 	Enki::Vector min, max;
@@ -67,11 +77,16 @@ void gridProperties (const ExtendedWorld *world, double gridScale, double border
 	}
 #ifdef DEBUG
 	std::cout
-		<< "Abstract Grid\nmin: " << min
-		<< "\nmax: " << max
-		<< "\norigin: " << origin
-		<< "\nsize: " << size
-		<< "\ngrid scale: " << gridScale << std::endl;
+		<< "Abstract Grid\n  min: " << min
+		<< "\n  max: " << max
+		<< "\n  grid scale: " << gridScale
+		<< "\n  origin: ";
+	if (origin) std::cout << *origin;
+	else std::cout << "NULL";
+	std::cout << "\n  size: ";
+	if (size) std::cout << *size;
+	else std::cout << "NULL";
+	std::cout << std::endl;
 #endif
 }
 
