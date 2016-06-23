@@ -86,8 +86,16 @@ namespace Enki
 		 * cells.
 		 */
 		static /*const*/ double CELL_DISSIPATION;
+	private:
+		/**
+		 * Whether method initParameters should initialize temperature or not.
+		 */
+		const bool initFlag;
+		WorldHeat (const Vector &size, const Vector &origin, double normalHeat, double gridScale, double borderSize, double concurrencyLevel, int logRate = 1);
+		
 	public:
 		WorldHeat (const ExtendedWorld *world, double normalHeat, double gridScale, double borderSize, double concurrencyLevel, int logRate = 1);
+		static WorldHeat *worldHeatFromFile (std::string filename, double concurrencyLevel, int logRate = 1);
 		virtual ~WorldHeat ();
 		/**
 		 * Checks if this instance of the heat model combined with the given
@@ -166,6 +174,8 @@ namespace Enki
 			}
 			this->logStream = NULL;
 		}
+
+		void saveState (std::string filename) const;
 		/**
 		 * Reset temperature to given value.  Heat dissipation is NOT changed.
 		 */
