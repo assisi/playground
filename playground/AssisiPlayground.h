@@ -38,6 +38,11 @@ namespace Enki
 		enum Layer {NONE, HEAT, ELECTRIC_FIELD, VIBRATION, LIGHT, AIR_FLOW, DIFFUSIVITY};
 	private:
 		/**
+		 * Time that can be shown in the viewer.
+		 */
+		enum TimeMode {NO_TIME, REAL_TIME, SIMULATION_TIME, N_TIME_MODE};
+		TimeMode timeMode;
+		/**
 		 * Heat physic simulation used in the underlying world.
 		 */
 		const WorldHeat *worldHeat;
