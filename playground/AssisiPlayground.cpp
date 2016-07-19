@@ -25,8 +25,9 @@ namespace Enki
 		dataLayerZ (5)
 	{
 		//ViewerWidget::pos = QPointF(-world->w*5, -world->h * 2);
-		ViewerWidget::pitch = M_PI/2;
-		ViewerWidget::altitude = 80;
+        ViewerWidget::camera.pos =QPointF(0.0,0.0);
+		ViewerWidget::camera.pitch = -M_PI/2;
+		ViewerWidget::camera.altitude = 50;
 		std::cout << "dataSize: " << dataSize << "\n";
 	}
     

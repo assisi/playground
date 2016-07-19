@@ -348,19 +348,22 @@ int main(int argc, char *argv[])
 			cerr << "Parameters of heat model are not valid!\nExiting.\n";
 			return 1;
 		}
+        ViewerWidget::CameraPose cam = viewer.camera;
       if (vm.count ("Camera.pos_x") > 0
           || vm.count ("Camera.pos_y") > 0
           || vm.count ("Camera.altitude") > 0) {
-         viewer.setCameraPosition (-cameraPosX, -cameraPosY, cameraAltitude);
+          cam.pos = QPointF(cameraPosX, cameraPosY);
+          cam.altitude = cameraAltitude;
       }
       if (vm.count ("Camera.pitch") > 0) {
-          cerr << "I: setting the custom pitch " << cameraPitch << "\n";
-          viewer.setCameraPitch(cameraPitch);
+          cout << "I: setting the custom pitch " << cameraPitch << "\n";
+          cam.pitch = cameraPitch;
       }
       if (vm.count ("Camera.yaw") > 0) {
-          cerr << "I: setting the custom yaw " << cameraYaw << "\n";
-          viewer.setCameraYaw(cameraYaw);
+          cout << "I: setting the custom yaw " << cameraYaw << "\n";
+          cam.yaw = cameraYaw;
       }
+      viewer.setCamera(cam.pos, cam.altitude, cam.yaw, cam.pitch);
       if (vm.count ("Viewer.no_help") > 0) {
          viewer.showHelp = false;
       }
