@@ -61,6 +61,9 @@ static double timerPeriod = 0.01;
 static double cameraPosX = 0;
 static double cameraPosY = 0;
 static double cameraAltitude = 1;
+static double cameraYaw = 0;
+static double cameraPitch = M_PI/2;
+
 static char layer = 'N';
 
 /**
@@ -261,6 +264,16 @@ int main(int argc, char *argv[])
            "camera altitude"
             )
         (
+           "Camera.yaw",
+           po::value<double> (&cameraYaw),
+           "camera yaw"
+            )
+        (
+           "Camera.pitch",
+           po::value<double> (&cameraPitch),
+           "camera pitch"
+            )
+        (
              "Skew.rate",
              po::value<unsigned int> (&skewMonitorRate),
              "Rate at which we check skewness between real time and simulated time"
@@ -335,11 +348,22 @@ int main(int argc, char *argv[])
 			cerr << "Parameters of heat model are not valid!\nExiting.\n";
 			return 1;
 		}
+        ViewerWidget::CameraPose cam = viewer.camera;
       if (vm.count ("Camera.pos_x") > 0
           || vm.count ("Camera.pos_y") > 0
           || vm.count ("Camera.altitude") > 0) {
-         viewer.setCameraPosition (-cameraPosX, -cameraPosY, cameraAltitude);
+          cam.pos = QPointF(cameraPosX, cameraPosY);
+          cam.altitude = cameraAltitude;
       }
+      if (vm.count ("Camera.pitch") > 0) {
+          cout << "I: setting the custom pitch " << cameraPitch << "\n";
+          cam.pitch = cameraPitch;
+      }
+      if (vm.count ("Camera.yaw") > 0) {
+          cout << "I: setting the custom yaw " << cameraYaw << "\n";
+          cam.yaw = cameraYaw;
+      }
+      viewer.setCamera(cam.pos, cam.altitude, cam.yaw, cam.pitch);
       if (vm.count ("Viewer.no_help") > 0) {
          viewer.showHelp = false;
       }
