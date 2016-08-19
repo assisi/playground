@@ -59,10 +59,10 @@ namespace Enki
     const double Casu::MIN_MEASURABLE_HEAT = 0.0;
     const double Casu::MAX_MEASURABLE_HEAT = 100.0;
 
-    const Vector Casu::TEMP_SENS_NORTH_POS = Vector(2.5,0.0);
-    const Vector Casu::TEMP_SENS_EAST_POS = Vector(0.0,-2.5);
-    const Vector Casu::TEMP_SENS_SOUTH_POS = Vector(-2.5,0.0);
-    const Vector Casu::TEMP_SENS_WEST_POS = Vector(0.0,2.5);
+    const Vector Casu::TEMP_SENS_FRONT_POS = Vector(2.5,0.0);
+    const Vector Casu::TEMP_SENS_RIGHT_POS = Vector(0.0,-2.5);
+    const Vector Casu::TEMP_SENS_BACK_POS = Vector(-2.5,0.0);
+    const Vector Casu::TEMP_SENS_LEFT_POS = Vector(0.0,2.5);
     const Vector Casu::TEMP_SENS_CENTER_POS = Vector(0.0,0.0);
 
     /* peltier's parameters and configuration */
@@ -113,16 +113,16 @@ namespace Enki
             }
 
         // Add temperature senosrs
-        temp_sensors[0] = new HeatSensor(this, TEMP_SENS_NORTH_POS,
+        temp_sensors[0] = new HeatSensor(this, TEMP_SENS_FRONT_POS,
                                                     MIN_MEASURABLE_HEAT,
                                                     MAX_MEASURABLE_HEAT);
-        temp_sensors[1] = new HeatSensor(this, TEMP_SENS_EAST_POS,
+        temp_sensors[1] = new HeatSensor(this, TEMP_SENS_LEFT_POS,
                                                     MIN_MEASURABLE_HEAT,
                                                     MAX_MEASURABLE_HEAT);
-        temp_sensors[2] = new HeatSensor(this, TEMP_SENS_SOUTH_POS,
+        temp_sensors[2] = new HeatSensor(this, TEMP_SENS_BACK_POS,
                                                     MIN_MEASURABLE_HEAT,
                                                     MAX_MEASURABLE_HEAT);
-        temp_sensors[3] = new HeatSensor(this, TEMP_SENS_WEST_POS,
+        temp_sensors[3] = new HeatSensor(this, TEMP_SENS_RIGHT_POS,
                                                     MIN_MEASURABLE_HEAT,
                                                     MAX_MEASURABLE_HEAT);
         temp_sensors[4] = new HeatSensor(this, TEMP_SENS_CENTER_POS,
