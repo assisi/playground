@@ -54,10 +54,10 @@ namespace Enki
        static const double MIN_MEASURABLE_HEAT;
        static const double MAX_MEASURABLE_HEAT;
        static const Vector TEMP_SENS_CENTER_POS;
-       static const Vector TEMP_SENS_NORTH_POS;
-       static const Vector TEMP_SENS_EAST_POS;
-       static const Vector TEMP_SENS_SOUTH_POS;
-       static const Vector TEMP_SENS_WEST_POS;
+       static const Vector TEMP_SENS_FRONT_POS;
+       static const Vector TEMP_SENS_RIGHT_POS;
+       static const Vector TEMP_SENS_BACK_POS;
+       static const Vector TEMP_SENS_LEFT_POS;
 
        /* peltier's parameters and configuration */
        static const Vector PELTIER_POSITION;

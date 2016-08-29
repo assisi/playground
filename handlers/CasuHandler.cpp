@@ -160,12 +160,6 @@ namespace Enki
                 ranges.add_range(ir->getDist());                
                 ranges.add_raw_value(ir->getValue());
             }
-            // Add an additional (fake) reading for the top sensor which isn't modeled
-            // TODO: Do this in a smarter way, e.g., if more than half of the
-            //       sensors are detecting objects, assume this one is also detecting
-            //       and object. Right now, the top sensor is never detecting anything.
-            ranges.add_range(10000);
-            ranges.add_raw_value(0);
             
             ranges.SerializeToString(&data);
             zmq::send_multipart(socket, ca.first, "IR", "Ranges", data);
@@ -174,13 +168,13 @@ namespace Enki
             VibrationReadingArray vibrations;
             BOOST_FOREACH (VibrationSensor *vs, ca.second->vibration_sensors)
             {
-					VibrationReading *vibrationReading = vibrations.add_reading ();
-               const std::vector<double> &amplitudes = vs->getAmplitude ();
-               const std::vector<double> &frequencies = vs->getFrequency ();
-               BOOST_FOREACH (double a, vs->getAmplitude ())
-                  vibrationReading->add_amplitude (a);
-               BOOST_FOREACH (double f, vs->getFrequency ())
-                  vibrationReading->add_freq (f);
+                VibrationReading *vibrationReading = vibrations.add_reading ();
+                const std::vector<double> &amplitudes = vs->getAmplitude ();
+                const std::vector<double> &frequencies = vs->getFrequency ();
+                BOOST_FOREACH (double a, vs->getAmplitude ())
+                    vibrationReading->add_amplitude (a);
+                BOOST_FOREACH (double f, vs->getFrequency ())
+                    vibrationReading->add_freq (f);
 					// TODO
 					//  add vibration amplitude standard deviation
             }
@@ -193,6 +187,21 @@ namespace Enki
             {
                 temperatures.add_temp(h->getMeasuredHeat());
             }
+            /* Add fake readings for additional sensors and estimates
+               that exist on real CASUs.
+               TODO: This should also be calibrated with measurements.
+            */
+            double temp_avg = (ca.second->temp_sensors[0]->getMeasuredHeat() +
+                               ca.second->temp_sensors[1]->getMeasuredHeat() +
+                               ca.second->temp_sensors[2]->getMeasuredHeat() +
+                               ca.second->temp_sensors[3]->getMeasuredHeat()) / 4.0;
+            // Bottom PCB sensor
+            temperatures.add_temp(temp_avg+1.0);
+            // Metal ring around CASU
+            temperatures.add_temp(temp_avg+0.5);
+            // Wax around CASU
+            temperatures.add_temp(temp_avg);
+                                  
             temperatures.SerializeToString(&data);
             zmq::send_multipart(socket, ca.first, "Temp", "Temperatures", data);
 
