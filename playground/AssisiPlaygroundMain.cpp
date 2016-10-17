@@ -348,7 +348,7 @@ int main(int argc, char *argv[])
 			cerr << "Parameters of heat model are not valid!\nExiting.\n";
 			return 1;
 		}
-        ViewerWidget::CameraPose cam = viewer.camera;
+        ViewerWidget::CameraPose cam = viewer.getCamera ();
       if (vm.count ("Camera.pos_x") > 0
           || vm.count ("Camera.pos_y") > 0
           || vm.count ("Camera.altitude") > 0) {
