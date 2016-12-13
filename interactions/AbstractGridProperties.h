@@ -6,8 +6,9 @@
 //#include <iostream>
 //#include <iomanip>
 #include <limits>
+#ifndef Q_MOC_RUN
 #include <boost/foreach.hpp>
-
+#endif
 #include "extensions/ExtendedWorld.h"
 #include "extensions/PhysicSimulation.h"
 #include "interactions/AbstractGrid.h"

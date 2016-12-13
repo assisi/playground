@@ -11,8 +11,9 @@
 #define __EXTENDED_WORLD_H
 
 #include <enki/PhysicalEngine.h>
+#ifndef Q_MOC_RUN
 #include <boost/timer/timer.hpp>
-
+#endif
 #include "PhysicSimulation.h"
 #include "ExtendedRobot.h"
 

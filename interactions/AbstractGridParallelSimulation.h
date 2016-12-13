@@ -1,10 +1,11 @@
 #ifndef __ABSTRACT_GRID_PARALLEL_SIMULATION_H
 #define __ABSTRACT_GRID_PARALLEL_SIMULATION_H
 
+#ifndef Q_MOC_RUN
 #include <boost/thread.hpp>
 #include <boost/interprocess/sync/interprocess_semaphore.hpp>
 #include <boost/foreach.hpp>
-
+#endif
 #include "interactions/AbstractGridSimulation.h"
 #include "extensions/ExtendedWorld.h"
 
