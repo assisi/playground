@@ -1,11 +1,12 @@
 # Find dependencies
 
-# TODO: Make a FindEnki.cmake module
+# TODO: Figure out how to use enkiConfig.cmake
+#find_package(enki REQUIRED)
 find_path(enki_INCLUDE_DIR enki)
 set(enki_INCLUDE_DIR ${enki_INCLUDE_DIR}/enki)
 find_library(enki_LIBRARY enki)
 find_library(enkiviewer_LIBRARY enkiviewer)
-set(enki_LIBRARIES ${enki_LIBRARY} ${enkiviewer_LIBRARY})
+set(enki_LIBRARIES ${enkiviewer_LIBRARY} ${enki_LIBRARY})
 
 find_package(Threads)
 
