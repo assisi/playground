@@ -179,7 +179,7 @@ namespace Enki
 					//  add vibration amplitude standard deviation
             }
             vibrations.SerializeToString (&data);
-            zmq::send_multipart (socket, ca.first, "Acc", "Measurements", data);
+            zmq::send_multipart (socket, ca.first, "Fft", "Measurements", data);
 
             /* Publish temperature sensor readings. */
             TemperatureArray temperatures;
